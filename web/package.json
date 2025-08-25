@@ -1,0 +1,72 @@
+{
+  "name": "agentifui-pro-web",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "node": ">=v20.0.0"
+  },
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
+    "build": "next build",
+    "start": "next start",
+    "analyze": "cross-env ANALYZE=true pnpm build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint": "pnpx oxlint && pnpm eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
+    "lint-only-show-error": "pnpx oxlint && pnpm eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --quiet",
+    "lint-complexity": "eslint --rule 'complexity: [error, {max: 15}]' --quiet",
+    "fix": "eslint --fix .",
+    "eslint-fix": "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix",
+    "eslint-fix-only-show-error": "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix --quiet",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "type-check": "tsc --noEmit",
+    "type-check:staged": "tsc --noEmit --skipLibCheck",
+    "quality": "pnpm run type-check && pnpm run lint && pnpm run format:check",
+    "prepare": "cd ../ && node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky ./web/.husky"
+  },
+  "dependencies": {
+    "next": "15.5.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@happy-dom/jest-environment": "^18.0.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.6.2",
+    "@next/bundle-analyzer": "^15.5.0",
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "cross-env": "^10.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.0",
+    "eslint-plugin-oxlint": "^1.12.0",
+    "husky": "^9.1.7",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "lint-staged": "^16.1.5",
+    "oxlint": "^1.12.0",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "pnpm run type-check:staged",
+      "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix"
+    ],
+    "**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
+    ]
+  }
+}

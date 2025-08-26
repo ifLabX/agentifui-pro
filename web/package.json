@@ -24,14 +24,16 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
-    "type-check:staged": "tsc --noEmit --skipLibCheck",
     "quality": "pnpm run type-check && pnpm run lint && pnpm run format:check",
     "prepare": "cd ../ && node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky ./web/.husky"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "next": "15.5.0",
+    "next-themes": "^0.4.6",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -62,7 +64,6 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "pnpm run type-check:staged",
       "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix"
     ],
     "**/*.{js,jsx,ts,tsx,json,css,md}": [

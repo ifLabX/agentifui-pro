@@ -1,0 +1,7 @@
+html[data-theme="dark"] {
+  --colors-bg-primary: #292524;
+  --colors-bg-secondary: #1c1917;
+  --colors-text-primary: #f4f4f5;
+  --colors-text-secondary: #a8a29e;
+  --colors-border-default: #57534e;
+}

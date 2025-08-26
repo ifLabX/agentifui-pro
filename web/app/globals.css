@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "../themes/light.css";
+@import "../themes/dark.css";
 
 :root {
   --background: #ffffff;

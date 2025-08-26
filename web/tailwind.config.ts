@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+import { themeVars } from "./themes/tailwind-vars";
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -12,6 +14,9 @@ const config: Config = {
       colors: {
         background: "var(--color-background)",
         foreground: "var(--color-foreground)",
+
+        ...themeVars,
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

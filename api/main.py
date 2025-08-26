@@ -12,20 +12,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-def bad_formatting_example(param1, param2, param3):
-    result = [1, 2, 3, 4, 5]
-    data = {"key1": "value1", "key2": "value2", "key3": "value3"}
-    if True:
-        print("wrong")
-    return result, data
-
-
 @app.get("/")
 async def root():
     print("Agentifui Pro API is running")
     return {"message": "Agentifui Pro API"}
-
 
 @app.get("/health")
 async def health():

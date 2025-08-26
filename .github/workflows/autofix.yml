@@ -17,9 +17,12 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      # Fix lint errors
-      - run: uv run ruff check --fix-only .
-      # Format code
-      - run: uv run ruff format .
+      - run: |
+          cd api
+          uv sync --dev
+          # Fix lint errors
+          uv run ruff check --fix-only .
+          # Format code
+          uv run ruff format .
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27

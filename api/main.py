@@ -12,10 +12,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def root():
     print("Agentifui Pro API is running")
     return {"message": "Agentifui Pro API"}
+
 
 @app.get("/health")
 async def health():

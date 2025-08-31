@@ -92,3 +92,6 @@ coverage.xml
 cover/
 
 web/tsconfig.tsbuildinfo
+
+#claude
+.claude/settings.json

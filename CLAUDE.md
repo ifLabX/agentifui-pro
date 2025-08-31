@@ -129,3 +129,10 @@ The repository uses Husky with monorepo-aware pre-commit hooks that:
 - `web/tailwind.config.ts`: Tailwind CSS configuration with theme extensions
 - `web/jest.config.ts`: Jest testing configuration
 - Root `package.json`: Monorepo scripts and husky configuration
+
+## Pull Request Creation Guidelines
+
+### Before Creating PRs
+- **Always read PR template first**: Before using `gh pr create` or GitHub MCP to create PRs, you MUST read `.github/pull_request_template.md` to understand the required format and checklist
+- **Follow template structure**: Use the template's format including summary, type checkboxes, and issue linking
+- **All PRs in English**: Ensure all PR titles, descriptions, and comments are written in English

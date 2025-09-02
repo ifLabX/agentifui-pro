@@ -91,7 +91,5 @@ coverage.xml
 .pytest_cache/
 cover/
 
-web/tsconfig.tsbuildinfo
-
 #claude
 .claude/settings.json

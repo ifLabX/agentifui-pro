@@ -22,12 +22,10 @@ docs: update API guide
 ### Code Quality Standards
 
 **Python (Backend)**:
-- Line length: 120 characters
 - Use Ruff for linting/formatting
 - Type hints required
 
 **TypeScript (Frontend)**:
-- Maximum complexity: 15
 - Strict TypeScript configuration
 - Auto-sorted imports
 

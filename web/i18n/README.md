@@ -1,6 +1,6 @@
 # i18n Architecture
 
-Modern next-intl with namespace support, kebab-case naming, single t() function.
+Modern next-intl with namespace support, kebab-case naming, single t() function, and automated locale management.
 
 ## Quick Start
 
@@ -27,40 +27,36 @@ const t = await getTranslations(); // Server component
 
 ```bash
 pnpm i18n:locale fr-FR
-# Creates: messages/fr-FR/*.json + updates config
-# Then: translate JSON files
+# ✅ Auto-detects common languages (French, German, etc.)
+# ✅ Creates messages/fr-FR/*.json for all namespaces
+# ✅ Updates config.ts and adds intelligent display name
+# ✅ Ready to translate JSON files
 ```
 
 ### New Feature Namespace
 
 ```bash
 pnpm i18n:namespace dashboard
-# Creates: messages/*/dashboard.json + updates types
-# Then: add your translations
+# ✅ Creates messages/*/dashboard.json for all locales
+# ✅ Updates config.ts and types/i18n.d.ts automatically
+# ✅ Type-safe immediately, ready to add translations
 ```
 
-## File Structure
+## Configuration
 
-```
-i18n/config.ts          # Single source of truth
-messages/[locale]/[namespace].json
-types/i18n.d.ts         # Auto-generated types
-```
+**Single source of truth**: `i18n/config.ts`
 
-## Architecture Principles
-
-**Single Source**: All config in `i18n/config.ts`
-**Auto-Loading**: `request.ts` loops through namespaces
-**Type Safety**: Auto-generated from JSON structure  
-**Kebab-Case**: Consistent naming throughout
+- `locales`: Supported language codes
+- `namespaces`: Feature-based translation groups
+- `localeNames`: Display names (auto-generated for 20+ languages)
 
 ## Data Flow
 
 ```
-config.ts → messages/*.json → request.ts → types → components
+config.ts → automated scripts → messages/*.json → request.ts → types → components
 ```
 
-Only modify `config.ts` - everything else follows automatically.
+**No manual configuration needed** - scripts handle all updates automatically.
 
 ## Import Rules
 
@@ -71,3 +67,7 @@ Only modify `config.ts` - everything else follows automatically.
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 ```
+
+## Supported Auto-Locales
+
+English, French, German, Spanish, Portuguese, Italian, Dutch, Russian, Chinese, Japanese, Korean, Arabic, Hindi, and 7 more common languages with intelligent display names.

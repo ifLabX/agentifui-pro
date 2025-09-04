@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   turbopack: {
@@ -14,5 +17,5 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 // Use Turbopack mode when TURBOPACK env var is set, otherwise use standard mode with bundle analyzer
 export default process.env.TURBOPACK
-  ? nextConfig
-  : withBundleAnalyzer(nextConfig);
+  ? withNextIntl(nextConfig)
+  : withNextIntl(withBundleAnalyzer(nextConfig));

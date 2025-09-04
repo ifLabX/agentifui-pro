@@ -1,0 +1,22 @@
+{
+  "navigation": {
+    "home": "首页",
+    "about": "关于",
+    "contact": "联系",
+    "settings": "设置"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "submit": "提交",
+    "loading": "加载中..."
+  },
+  "messages": {
+    "success": "操作成功完成",
+    "error": "发生错误",
+    "not-found": "未找到",
+    "unauthorized": "未经授权的访问"
+  }
+}

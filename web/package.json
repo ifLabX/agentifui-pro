@@ -27,6 +27,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
     "quality": "pnpm run type-check && pnpm run lint && pnpm run format:check",
+    "i18n:locale": "node i18n/scripts/generate.mjs locale",
+    "i18n:namespace": "node i18n/scripts/generate.mjs namespace",
     "prepare": "cd ../ && node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky ./web/.husky"
   },
   "dependencies": {

@@ -2,14 +2,14 @@ import { cookies } from "next/headers";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 
-import { defaultLocale, locales, namespaces } from "./config";
+import { defaultLocale, locales, namespaces, type Locale } from "./config";
 
 /**
  * Dynamic message loading utility
  * Loads multiple namespace files and merges them into a single flat object
  * File structure: auth.json -> auth: { SignIn: {...}, SignUp: {...} }
  */
-async function loadMessages(locale: string) {
+async function loadMessages(locale: Locale) {
   const messages: Record<string, unknown> = {};
 
   for (const namespace of namespaces) {
@@ -33,7 +33,7 @@ async function loadMessages(locale: string) {
 /**
  * Get locale from storage (cookies, user settings, etc.)
  */
-async function getLocaleFromStorage(): Promise<string> {
+async function getLocaleFromStorage(): Promise<Locale> {
   const cookieStore = await cookies();
   const localeCookie = cookieStore.get("locale")?.value;
 

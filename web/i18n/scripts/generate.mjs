@@ -162,16 +162,16 @@ function addNamespace(namespace) {
     const capitalizedNamespace = namespace.charAt(0).toUpperCase() + namespace.slice(1);
     const typeImport = `type ${capitalizedNamespace}Messages = typeof import('../messages/en-US/${namespace}.json');`;
 
-    // Add type import
+    // Add type import after the last type declaration
     typesContent = typesContent.replace(
-      /(type AuthMessages = typeof import\("[^"]+"\);)/,
+      /(type \w+Messages = typeof import\("[^"]+"\);)(?=\n\nexport)/,
       `$1\n${typeImport}`
     );
 
-    // Add to Messages interface
+    // Add to Messages interface before the closing brace
     typesContent = typesContent.replace(
-      /(  auth: AuthMessages;)/,
-      `$1\n  ${namespace}: ${capitalizedNamespace}Messages;`
+      /(\s+)(\w+:\s+\w+Messages;)(\s*};)/,
+      `$1$2\n$1${namespace}: ${capitalizedNamespace}Messages;$3`
     );
 
     fs.writeFileSync(typesPath, typesContent);

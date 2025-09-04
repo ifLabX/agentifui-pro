@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import deepmerge from "deepmerge";
-import { hasLocale, IntlErrorCode } from "next-intl";
+import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 
 import { defaultLocale, locales, namespaces, type Locale } from "./config";

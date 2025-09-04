@@ -79,7 +79,7 @@ function addLocale(locale) {
 
     // 3. Add to localeNames
     configContent = configContent.replace(
-      /(\} as const;)$/,
+      /(\} as const;)$/m,
       `  "${locale}": "${locale}",\n$1`
     );
 
@@ -129,7 +129,7 @@ function addNamespace(namespace) {
 
     // Add type import
     typesContent = typesContent.replace(
-      /(type AuthMessages = typeof import\('[^']+'\);)/,
+      /(type AuthMessages = typeof import\("[^"]+"\);)/,
       `$1\n${typeImport}`
     );
 

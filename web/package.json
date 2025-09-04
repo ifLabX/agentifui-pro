@@ -69,10 +69,10 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
+    "**/*.{js,jsx,ts,tsx,mjs}": [
       "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix"
     ],
-    "**/*.{js,jsx,ts,tsx,json,css,md}": [
+    "**/*.{js,jsx,ts,tsx,mjs,json,css,md}": [
       "prettier --write"
     ]
   }

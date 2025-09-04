@@ -12,6 +12,7 @@ node_modules/
 *.min.*
 .env*
 next-env.d.ts
+types/i18n.d.ts
 
 # Config files
 pnpm-lock.yaml

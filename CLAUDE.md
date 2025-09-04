@@ -17,6 +17,13 @@ The backend runs on port 8000 with CORS configured for Next.js development serve
 - **Minimalism**: Comments should be written only when absolutely necessary
 - **Focus**: Explain WHY, not WHAT the code does
 
+### Naming Conventions
+- **Components** (web/): Use kebab-case for all file and directory names
+- **Translation Keys**: Use kebab-case to match component naming consistency
+  - Correct: `t('common.navigation.home')`, `t('auth.sign-in.email')`
+  - Incorrect: `t('common.Navigation.home')`, `t('auth.SignIn.email')`
+- **Consistency**: All naming should follow the same case convention throughout the project
+
 ### Commit Convention
 - **Format**: Follow conventional commit format with title only
 - **Title**: Required - clear, concise description of changes

@@ -11,6 +11,36 @@ const args = process.argv.slice(2);
 const command = args[0];
 const name = args[1] === '--' ? args[2] : args[1];
 
+/**
+ * Get display name for common locales
+ */
+function getLocaleDisplayName(locale) {
+  const localeMap = {
+    'en-US': 'English',
+    'en-GB': 'English (UK)',
+    'zh-Hans': 'Chinese (Simplified)',
+    'zh-Hant': 'Chinese (Traditional)',
+    'ja-JP': 'Japanese',
+    'ko-KR': 'Korean',
+    'fr-FR': 'French',
+    'de-DE': 'German',
+    'es-ES': 'Spanish',
+    'pt-BR': 'Portuguese (Brazil)',
+    'pt-PT': 'Portuguese',
+    'ru-RU': 'Russian',
+    'ar-SA': 'Arabic',
+    'hi-IN': 'Hindi',
+    'it-IT': 'Italian',
+    'nl-NL': 'Dutch',
+    'sv-SE': 'Swedish',
+    'da-DK': 'Danish',
+    'no-NO': 'Norwegian',
+    'fi-FI': 'Finnish'
+  };
+  
+  return localeMap[locale] || locale;
+}
+
 const configPath = path.join(__dirname, '../config.ts');
 let configContent = fs.readFileSync(configPath, 'utf-8');
 
@@ -78,16 +108,21 @@ function addLocale(locale) {
     );
 
     // 3. Add to localeNames
+    const displayName = getLocaleDisplayName(locale);
     configContent = configContent.replace(
       /(\} as const;)$/m,
-      `  "${locale}": "${locale}",\n$1`
+      `  "${locale}": "${displayName}",\n$1`
     );
 
     fs.writeFileSync(configPath, configContent);
     console.log(`   ✅ Updated: i18n/config.ts`);
 
     console.log(`\n🎉 Locale ${locale} added successfully!`);
-    console.log(`📝 Next: Update localeNames["${locale}"] with proper display name`);
+    if (displayName === locale) {
+      console.log(`📝 Next: Update localeNames["${locale}"] with proper display name`);
+    } else {
+      console.log(`✅ Display name set to: "${displayName}"`);
+    }
     
   } catch (error) {
     console.error('❌ Error:', error.message);

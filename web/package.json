@@ -30,6 +30,7 @@
     "i18n:locale": "node i18n/scripts/generate.mjs locale",
     "i18n:namespace": "node i18n/scripts/generate.mjs namespace",
     "i18n:check": "node i18n/scripts/check.mjs",
+    "i18n:fix": "node i18n/scripts/check.mjs --fix-extra",
     "prepare": "cd ../ && node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky ./web/.husky"
   },
   "dependencies": {

@@ -45,6 +45,7 @@ function parseArguments() {
     file: [],
     help: false,
     verbose: false,
+    fixExtra: false,
   };
 
   let currentFlag = null;
@@ -59,6 +60,8 @@ function parseArguments() {
         parsed.help = true;
       } else if (currentFlag === "verbose" || currentFlag === "v") {
         parsed.verbose = true;
+      } else if (currentFlag === "fix-extra") {
+        parsed.fixExtra = true;
       } else if (!["lang", "file"].includes(currentFlag)) {
         console.error(
           `${colors.red}${symbols.error} Unknown flag: ${arg}${colors.reset}`
@@ -198,6 +201,7 @@ ${colors.white}USAGE:${colors.reset}
 ${colors.white}OPTIONS:${colors.reset}
   --lang <locales...>     Check specific languages (e.g., --lang zh-Hans ja-JP)
   --file <namespaces...>  Check specific namespaces (e.g., --file common auth)
+  --fix-extra             Automatically remove extra keys from target languages
   --verbose, -v           Show detailed output
   --help, -h              Show this help message
 
@@ -205,7 +209,8 @@ ${colors.white}EXAMPLES:${colors.reset}
   pnpm i18n:check                           # Check all languages and files
   pnpm i18n:check --lang zh-Hans ja-JP      # Check only Chinese and Japanese
   pnpm i18n:check --file common auth        # Check only common and auth namespaces
-  pnpm i18n:check --lang zh-Hans --file common --verbose
+  pnpm i18n:check --fix-extra               # Remove extra keys from all languages
+  pnpm i18n:check --lang zh-Hans --fix-extra --verbose
 
 ${colors.white}OUTPUT:${colors.reset}
   ${symbols.success} Complete translations (no missing or extra keys)
@@ -306,6 +311,111 @@ function displayDetailedIssues(result) {
 }
 
 /**
+ * Remove a nested key from JSON object
+ * @param {Object} obj - JSON object to modify
+ * @param {string} keyPath - Dot-notation key path (e.g., "actions.delete")
+ */
+function removeNestedKey(obj, keyPath) {
+  const keys = keyPath.split(".");
+  const lastKey = keys.pop();
+
+  // Navigate to the parent object
+  let current = obj;
+  for (let i = 0; i < keys.length; i++) {
+    if (!(keys[i] in current) || typeof current[keys[i]] !== "object") {
+      // Key path doesn't exist, nothing to remove
+      return false;
+    }
+    current = current[keys[i]];
+  }
+
+  // Remove the final key
+  if (lastKey in current) {
+    delete current[lastKey];
+
+    // Clean up empty parent objects recursively
+    cleanupEmptyParents(obj, keys);
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Recursively remove empty parent objects
+ * @param {Object} obj - Root JSON object
+ * @param {string[]} parentKeys - Array of parent keys to check
+ */
+function cleanupEmptyParents(obj, parentKeys) {
+  if (parentKeys.length === 0) return;
+
+  // Navigate to the parent object
+  let current = obj;
+  for (let i = 0; i < parentKeys.length - 1; i++) {
+    current = current[parentKeys[i]];
+  }
+
+  const parentKey = parentKeys[parentKeys.length - 1];
+  const parentObj = current[parentKey];
+
+  // Check if parent object is empty
+  if (typeof parentObj === "object" && Object.keys(parentObj).length === 0) {
+    delete current[parentKey];
+
+    // Recursively check grandparents
+    cleanupEmptyParents(obj, parentKeys.slice(0, -1));
+  }
+}
+
+/**
+ * Fix extra keys in target translation files
+ * @param {Object} sourceData - Source translation data
+ * @param {Object} targetData - Target translation data to fix
+ * @param {string[]} extraKeys - Array of extra keys to remove
+ * @returns {Object} Fixed translation data
+ */
+function fixExtraKeys(sourceData, targetData, extraKeys) {
+  // Deep clone to avoid modifying original
+  const fixedData = JSON.parse(JSON.stringify(targetData));
+
+  let removedCount = 0;
+  const removedKeys = [];
+
+  extraKeys.forEach(keyPath => {
+    const success = removeNestedKey(fixedData, keyPath);
+    if (success) {
+      removedCount++;
+      removedKeys.push(keyPath);
+    }
+  });
+
+  return {
+    data: fixedData,
+    removedCount,
+    removedKeys,
+  };
+}
+
+/**
+ * Write fixed translation file with proper formatting
+ * @param {string} filePath - Path to the file
+ * @param {Object} data - JSON data to write
+ */
+function writeTranslationFile(filePath, data) {
+  try {
+    // Use 2-space indentation to match existing format
+    const content = JSON.stringify(data, null, 2) + "\n";
+    fs.writeFileSync(filePath, content, "utf-8");
+    return true;
+  } catch (error) {
+    console.error(
+      `${colors.red}${symbols.error} Failed to write ${filePath}: ${error.message}${colors.reset}`
+    );
+    return false;
+  }
+}
+
+/**
  * Main execution function
  */
 async function main() {
@@ -373,6 +483,7 @@ async function main() {
   const results = [];
   let hasErrors = false;
   let hasIssues = false;
+  let fixedFiles = [];
 
   // Check each combination of locale and namespace
   for (const namespace of targetNamespaces) {
@@ -403,11 +514,45 @@ async function main() {
 
       const comparison = compareKeys(sourceFile.keys, targetFile.keys);
 
+      // Auto-fix extra keys if requested
+      let fixResult = null;
+      if (args.fixExtra && comparison.extra.length > 0) {
+        fixResult = fixExtraKeys(
+          sourceFile.data,
+          targetFile.data,
+          comparison.extra
+        );
+
+        // Write the fixed file
+        const success = writeTranslationFile(
+          targetFile.filePath,
+          fixResult.data
+        );
+        if (success) {
+          fixedFiles.push({
+            locale,
+            namespace,
+            filePath: targetFile.filePath,
+            removedCount: fixResult.removedCount,
+            removedKeys: fixResult.removedKeys,
+          });
+
+          // Update comparison result to reflect the fix
+          comparison.extra = [];
+          comparison.extraCount = 0;
+          comparison.isComplete = comparison.missing.length === 0;
+        } else {
+          hasErrors = true;
+        }
+      }
+
       results.push({
         locale,
         namespace,
         ...comparison,
         isComplete: comparison.isComplete,
+        fixed: fixResult !== null,
+        removedCount: fixResult?.removedCount || 0,
       });
 
       if (!comparison.isComplete) {
@@ -421,6 +566,27 @@ async function main() {
 
   if (args.verbose || hasErrors || hasIssues) {
     results.forEach(result => displayDetailedIssues(result));
+  }
+
+  // Display fix summary if fixes were applied
+  if (args.fixExtra && fixedFiles.length > 0) {
+    console.log(
+      `\n${colors.cyan}${colors.bright}🔧 Fix Summary${colors.reset}`
+    );
+    console.log(
+      `${colors.green}${symbols.success} Fixed ${fixedFiles.length} translation file(s):${colors.reset}`
+    );
+
+    fixedFiles.forEach(fix => {
+      console.log(
+        `  ${colors.white}${fix.locale}/${fix.namespace}: ${colors.green}removed ${fix.removedCount} extra key(s)${colors.reset}`
+      );
+      if (args.verbose) {
+        fix.removedKeys.forEach(key => {
+          console.log(`    ${colors.yellow}• ${key}${colors.reset}`);
+        });
+      }
+    });
   }
 
   // Final status

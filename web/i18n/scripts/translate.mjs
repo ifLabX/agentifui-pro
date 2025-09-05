@@ -45,6 +45,7 @@ function parseArguments() {
     dryRun: false,
     verbose: false,
     force: false,
+    ciMode: false,
   };
 
   let currentFlag = null;
@@ -63,6 +64,8 @@ function parseArguments() {
         parsed.verbose = true;
       } else if (currentFlag === "force" || currentFlag === "f") {
         parsed.force = true;
+      } else if (currentFlag === "ci-mode") {
+        parsed.ciMode = true;
       } else if (!["lang", "file"].includes(currentFlag)) {
         console.error(
           `${colors.red}${symbols.error} Unknown flag: ${arg}${colors.reset}`
@@ -495,6 +498,7 @@ ${colors.white}OPTIONS:${colors.reset}
   --file <namespaces...>  Translate specific namespaces (e.g., --file common auth)
   --dry-run, -d           Preview mode (show what would be translated)
   --force, -f             Skip confirmation prompts (useful for CI)
+  --ci-mode               CI-friendly mode (no exit on translation errors)
   --verbose, -v           Show detailed output
   --help, -h              Show this help message
 
@@ -759,8 +763,8 @@ async function main() {
     );
   }
 
-  // Exit with appropriate code
-  process.exit(totalStats.errors > 0 ? 1 : 0);
+  // Exit with appropriate code (CI-mode is more forgiving)
+  process.exit(args.ciMode ? 0 : totalStats.errors > 0 ? 1 : 0);
 }
 
 // Execute main function

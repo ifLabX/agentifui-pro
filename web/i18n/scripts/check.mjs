@@ -46,6 +46,7 @@ function parseArguments() {
     help: false,
     verbose: false,
     fixExtra: false,
+    ciMode: false,
   };
 
   let currentFlag = null;
@@ -62,6 +63,8 @@ function parseArguments() {
         parsed.verbose = true;
       } else if (currentFlag === "fix-extra") {
         parsed.fixExtra = true;
+      } else if (currentFlag === "ci-mode") {
+        parsed.ciMode = true;
       } else if (!["lang", "file"].includes(currentFlag)) {
         console.error(
           `${colors.red}${symbols.error} Unknown flag: ${arg}${colors.reset}`
@@ -215,6 +218,7 @@ ${colors.white}OPTIONS:${colors.reset}
   --lang <locales...>     Check specific languages (e.g., --lang zh-Hans ja-JP)
   --file <namespaces...>  Check specific namespaces (e.g., --file common auth)
   --fix-extra             Automatically remove extra keys from target languages
+  --ci-mode               CI-friendly mode (no exit on missing keys)
   --verbose, -v           Show detailed output
   --help, -h              Show this help message
 
@@ -612,12 +616,12 @@ async function main() {
     console.log(
       `${colors.red}${symbols.error} Found critical errors - files missing or corrupted${colors.reset}`
     );
-    process.exit(1);
+    process.exit(args.ciMode ? 0 : 1);
   } else if (hasIssues) {
     console.log(
       `${colors.yellow}${symbols.warning} Found translation inconsistencies${colors.reset}`
     );
-    process.exit(1);
+    process.exit(args.ciMode ? 0 : 1);
   } else {
     console.log(
       `${colors.green}${symbols.success} All translations are complete and consistent${colors.reset}`

@@ -2,7 +2,7 @@
   "name": "agentifui-pro-web",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.15.1",
   "engines": {
     "node": ">=v20.0.0"
   },
@@ -29,6 +29,9 @@
     "quality": "pnpm run type-check && pnpm run lint && pnpm run format:check",
     "i18n:locale": "node i18n/scripts/generate.mjs locale",
     "i18n:namespace": "node i18n/scripts/generate.mjs namespace",
+    "i18n:check": "node i18n/scripts/check.mjs",
+    "i18n:fix": "node i18n/scripts/check.mjs --fix-extra",
+    "i18n:translate": "node i18n/scripts/translate.mjs",
     "prepare": "cd ../ && node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky ./web/.husky"
   },
   "dependencies": {

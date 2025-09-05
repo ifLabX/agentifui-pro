@@ -12,33 +12,27 @@ const command = args[0];
 const names = args[1] === "--" ? args.slice(2) : args.slice(1);
 
 /**
- * Get display name for common locales
+ * Load supported languages configuration
+ */
+function loadLanguagesConfig() {
+  try {
+    const langConfigPath = path.join(__dirname, "../languages.json");
+    const langConfig = JSON.parse(fs.readFileSync(langConfigPath, "utf-8"));
+    return langConfig.supported;
+  } catch (error) {
+    console.error(
+      `❌ Failed to load languages configuration: ${error.message}`
+    );
+    process.exit(1);
+  }
+}
+
+/**
+ * Get display name for a locale using unified configuration
  */
 function getLocaleDisplayName(locale) {
-  const localeMap = {
-    "en-US": "English",
-    "en-GB": "English (UK)",
-    "zh-Hans": "Chinese (Simplified)",
-    "zh-Hant": "Chinese (Traditional)",
-    "ja-JP": "Japanese",
-    "ko-KR": "Korean",
-    "fr-FR": "French",
-    "de-DE": "German",
-    "es-ES": "Spanish",
-    "pt-BR": "Portuguese (Brazil)",
-    "pt-PT": "Portuguese",
-    "ru-RU": "Russian",
-    "ar-SA": "Arabic",
-    "hi-IN": "Hindi",
-    "it-IT": "Italian",
-    "nl-NL": "Dutch",
-    "sv-SE": "Swedish",
-    "da-DK": "Danish",
-    "no-NO": "Norwegian",
-    "fi-FI": "Finnish",
-  };
-
-  return localeMap[locale] || locale;
+  const languagesConfig = loadLanguagesConfig();
+  return languagesConfig[locale]?.displayName || locale;
 }
 
 const configPath = path.join(__dirname, "../config.ts");

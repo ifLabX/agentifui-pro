@@ -2,14 +2,30 @@
 
 Modern next-intl with namespace support, kebab-case naming, single t() function, and automated locale management.
 
-## Quick Start
+## Quick Commands
+
+```bash
+# Add new languages
+pnpm i18n:locale fr-FR de-DE es-ES
+
+# Add feature namespace
+pnpm i18n:namespace dashboard
+
+# Check translation completeness
+pnpm i18n:check
+
+# Auto-translate missing keys
+pnpm i18n:translate
+```
+
+## Usage Pattern
 
 ```typescript
-// Usage - Single t() function for everything
+// Single t() function for all translations
 const t = useTranslations(); // Client component
 const t = await getTranslations(); // Server component
 
-// Access any translation with dot notation
+// Dot notation access
 {
   t("common.navigation.home");
 }
@@ -21,53 +37,28 @@ const t = await getTranslations(); // Server component
 }
 ```
 
-## Adding Content
+## Configuration Files
 
-### New Language
-
-```bash
-pnpm i18n:locale fr-FR
-# ✅ Auto-detects common languages (French, German, etc.)
-# ✅ Creates messages/fr-FR/*.json for all namespaces
-# ✅ Updates config.ts and adds intelligent display name
-# ✅ Ready to translate JSON files
-```
-
-### New Feature Namespace
-
-```bash
-pnpm i18n:namespace dashboard
-# ✅ Creates messages/*/dashboard.json for all locales
-# ✅ Updates config.ts and types/i18n.d.ts automatically
-# ✅ Type-safe immediately, ready to add translations
-```
-
-## Configuration
-
-**Single source of truth**: `i18n/config.ts`
-
-- `locales`: Supported language codes
-- `namespaces`: Feature-based translation groups
-- `localeNames`: Display names (auto-generated for 20+ languages)
-
-## Data Flow
-
-```
-config.ts → automated scripts → messages/*.json → request.ts → types → components
-```
-
-**No manual configuration needed** - scripts handle all updates automatically.
+| File              | Purpose                | When to Edit                               |
+| ----------------- | ---------------------- | ------------------------------------------ |
+| `config.ts`       | Main configuration     | Auto-updated by scripts                    |
+| `languages.json`  | Supported locales      | Add new languages                          |
+| `scripts/`        | Automation tools       | See [scripts/README.md](scripts/README.md) |
+| `messages/`       | Translation files      | Add actual translations                    |
+| `types/i18n.d.ts` | TypeScript definitions | Auto-updated by scripts                    |
 
 ## Import Rules
 
 ```typescript
-// Server component (no 'use client')
+// Server components (no 'use client')
 
-// Client component ('use client')
+// Client components ('use client')
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 ```
 
-## Supported Auto-Locales
+## Supported Languages
 
-English, French, German, Spanish, Portuguese, Italian, Dutch, Russian, Chinese, Japanese, Korean, Arabic, Hindi, and 7 more common languages with intelligent display names.
+**20+ languages with auto-detection**: English, Chinese (Simplified/Traditional), Japanese, Korean, French, German, Spanish, Portuguese (Brazil/Portugal), Italian, Dutch, Russian, Arabic, Hindi, Swedish, Danish, Norwegian, Finnish.
+
+For complete list with MyMemory API codes, see [`languages.json`](languages.json).

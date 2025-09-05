@@ -17,6 +17,13 @@ The backend runs on port 8000 with CORS configured for Next.js development serve
 - **Minimalism**: Comments should be written only when absolutely necessary
 - **Focus**: Explain WHY, not WHAT the code does
 
+### Naming Conventions
+- **Components** (web/): Use kebab-case for all file and directory names
+- **Translation Keys**: Use kebab-case to match component naming consistency
+  - Correct: `t('common.navigation.home')`, `t('auth.sign-in.email')`
+  - Incorrect: `t('common.Navigation.home')`, `t('auth.SignIn.email')`
+- **Consistency**: All naming should follow the same case convention throughout the project
+
 ### Commit Convention
 - **Format**: Follow conventional commit format with title only
 - **Title**: Required - clear, concise description of changes
@@ -28,6 +35,24 @@ Example:
 feat: add bundle analyzer configuration
 fix: resolve TypeScript compilation errors
 ```
+
+## Internationalization (i18n)
+
+**Architecture**: Next-intl with automated namespace management and type safety
+
+### Quick Commands
+```bash
+cd web
+pnpm i18n:locale <locale>     # Add new language (auto-detects common names)
+pnpm i18n:namespace <name>    # Add feature namespace (updates types)
+```
+
+### Development Notes
+- **Single t() function**: Always use `t('namespace.section.key')` format
+- **Kebab-case keys**: Match component naming (`sign-in`, not `SignIn`)  
+- **Server vs Client**: Import from `next-intl/server` for server components
+- **Type safety**: All translation keys are compile-time validated
+- **Details**: See `web/i18n/README.md` for complete documentation
 
 ## Development Commands
 
@@ -124,6 +149,8 @@ The repository uses Husky with monorepo-aware pre-commit hooks that:
 
 - `api/main.py`: FastAPI application entry point with CORS middleware
 - `web/app/`: Next.js App Router pages and layouts
+- `web/i18n/config.ts`: Single source of truth for i18n configuration
+- `web/types/i18n.d.ts`: Auto-generated i18n type definitions
 - `api/.ruff.toml`: Python linting configuration
 - `web/eslint.config.mjs`: TypeScript linting configuration
 - `web/tailwind.config.ts`: Tailwind CSS configuration with theme extensions

@@ -36,7 +36,7 @@ const symbols = {
 
 /**
  * Parse command line arguments
- * Supports: --lang zh-Hans ja-JP --file common auth
+ * Supports: --lang zh-Hans ja-JP --file common auth -v --verbose --fix-extra
  */
 function parseArguments() {
   const args = process.argv.slice(2);
@@ -65,6 +65,19 @@ function parseArguments() {
       } else if (!["lang", "file"].includes(currentFlag)) {
         console.error(
           `${colors.red}${symbols.error} Unknown flag: ${arg}${colors.reset}`
+        );
+        process.exit(1);
+      }
+    } else if (arg.startsWith("-")) {
+      // Handle short flags like -v
+      const shortFlag = arg.substring(1);
+      if (shortFlag === "v") {
+        parsed.verbose = true;
+      } else if (shortFlag === "h") {
+        parsed.help = true;
+      } else {
+        console.error(
+          `${colors.red}${symbols.error} Unknown short flag: ${arg}${colors.reset}`
         );
         process.exit(1);
       }
@@ -564,7 +577,8 @@ async function main() {
   // Display results
   displaySummaryTable(results, config);
 
-  if (args.verbose || hasErrors || hasIssues) {
+  // Show detailed issues only in verbose mode, or when there are errors/issues and not in fix mode
+  if (args.verbose || (!args.fixExtra && (hasErrors || hasIssues))) {
     results.forEach(result => displayDetailedIssues(result));
   }
 

@@ -69,6 +69,23 @@ function parseArguments() {
         );
         process.exit(1);
       }
+    } else if (arg.startsWith("-")) {
+      // Handle short flags like -v, -d, -f
+      const shortFlag = arg.substring(1);
+      if (shortFlag === "v") {
+        parsed.verbose = true;
+      } else if (shortFlag === "d") {
+        parsed.dryRun = true;
+      } else if (shortFlag === "f") {
+        parsed.force = true;
+      } else if (shortFlag === "h") {
+        parsed.help = true;
+      } else {
+        console.error(
+          `${colors.red}${symbols.error} Unknown short flag: ${arg}${colors.reset}`
+        );
+        process.exit(1);
+      }
     } else {
       // Add value to current flag
       if (currentFlag && ["lang", "file"].includes(currentFlag)) {
@@ -124,73 +141,35 @@ async function loadI18nConfig() {
 }
 
 /**
- * Get supported locales from generate.mjs for consistency
- * Extract the same locales that generate.mjs supports
+ * Load supported languages configuration
  */
-function getSupportedLocales() {
-  // Same locale keys as in generate.mjs getLocaleDisplayName function
-  return [
-    "en-US",
-    "en-GB",
-    "zh-Hans",
-    "zh-Hant",
-    "ja-JP",
-    "ko-KR",
-    "fr-FR",
-    "de-DE",
-    "es-ES",
-    "pt-BR",
-    "pt-PT",
-    "ru-RU",
-    "ar-SA",
-    "hi-IN",
-    "it-IT",
-    "nl-NL",
-    "sv-SE",
-    "da-DK",
-    "no-NO",
-    "fi-FI",
-  ];
+function loadLanguagesConfig() {
+  try {
+    const langConfigPath = path.join(__dirname, "../languages.json");
+    const langConfig = JSON.parse(fs.readFileSync(langConfigPath, "utf-8"));
+    return langConfig.supported;
+  } catch (error) {
+    console.error(
+      `${colors.red}${symbols.error} Failed to load languages configuration: ${error.message}${colors.reset}`
+    );
+    process.exit(1);
+  }
 }
 
 /**
- * Map locale codes to translation API language codes
- * Uses the same locale keys as generate.mjs but different mapping purpose
+ * Get translation API language code for a locale
  */
 function getTranslationLanguageCode(locale) {
-  const supportedLocales = getSupportedLocales();
+  const languagesConfig = loadLanguagesConfig();
 
-  // Ensure the locale is supported
-  if (!supportedLocales.includes(locale)) {
+  if (!languagesConfig[locale]) {
     console.warn(
       `${colors.yellow}${symbols.warning} Unsupported locale: ${locale}, using fallback${colors.reset}`
     );
+    return locale.split("-")[0];
   }
 
-  const langMap = {
-    "en-US": "en",
-    "en-GB": "en",
-    "zh-Hans": "zh-CN",
-    "zh-Hant": "zh-TW",
-    "ja-JP": "ja",
-    "ko-KR": "ko",
-    "fr-FR": "fr",
-    "de-DE": "de",
-    "es-ES": "es",
-    "pt-BR": "pt",
-    "pt-PT": "pt",
-    "ru-RU": "ru",
-    "ar-SA": "ar",
-    "hi-IN": "hi",
-    "it-IT": "it",
-    "nl-NL": "nl",
-    "sv-SE": "sv",
-    "da-DK": "da",
-    "no-NO": "no",
-    "fi-FI": "fi",
-  };
-
-  return langMap[locale] || locale.split("-")[0];
+  return languagesConfig[locale].myMemoryCode;
 }
 
 /**
@@ -391,7 +370,8 @@ async function translateMissingKeys(
   targetKeys,
   locale,
   namespace,
-  dryRun = false
+  dryRun = false,
+  verbose = false
 ) {
   const translationCode = getTranslationLanguageCode(locale);
   const missingKeys = sourceKeys.filter(key => !targetKeys.includes(key));
@@ -418,35 +398,43 @@ async function translateMissingKeys(
     const sourceText = getNestedValue(sourceData, keyPath);
 
     if (typeof sourceText !== "string") {
-      console.log(
-        `    ${colors.yellow}${symbols.skip} Skipping non-string key: ${keyPath}${colors.reset}`
-      );
+      if (verbose) {
+        console.log(
+          `    ${colors.yellow}${symbols.skip} Skipping non-string key: ${keyPath}${colors.reset}`
+        );
+      }
       setNestedValue(updatedData, keyPath, sourceText);
       stats.skipped++;
       continue;
     }
 
     if (!isTranslatableText(sourceText)) {
-      console.log(
-        `    ${colors.yellow}${symbols.skip} Skipping non-translatable: ${keyPath}: "${sourceText}"${colors.reset}`
-      );
+      if (verbose) {
+        console.log(
+          `    ${colors.yellow}${symbols.skip} Skipping non-translatable: ${keyPath}: "${sourceText}"${colors.reset}`
+        );
+      }
       setNestedValue(updatedData, keyPath, sourceText);
       stats.skipped++;
       continue;
     }
 
     if (dryRun) {
-      console.log(
-        `    ${colors.cyan}[DRY RUN]${colors.reset} Would translate: ${keyPath}: "${sourceText}"`
-      );
+      if (verbose) {
+        console.log(
+          `    ${colors.cyan}[DRY RUN]${colors.reset} Would translate: ${keyPath}: "${sourceText}"`
+        );
+      }
       stats.translated++;
       continue;
     }
 
     try {
-      console.log(
-        `    ${colors.blue}${symbols.translate} Translating: ${keyPath}: "${sourceText}"${colors.reset}`
-      );
+      if (verbose) {
+        console.log(
+          `    ${colors.blue}${symbols.translate} Translating: ${keyPath}: "${sourceText}"${colors.reset}`
+        );
+      }
 
       const translatedText = await translateWithBackoff(
         sourceText,
@@ -454,7 +442,11 @@ async function translateMissingKeys(
       );
       setNestedValue(updatedData, keyPath, translatedText);
 
-      console.log(`      ${colors.green}→ "${translatedText}"${colors.reset}`);
+      if (verbose) {
+        console.log(
+          `      ${colors.green}→ "${translatedText}"${colors.reset}`
+        );
+      }
       stats.translated++;
 
       // Rate limiting - same as example
@@ -694,7 +686,8 @@ async function main() {
           targetFile.keys,
           locale,
           namespace,
-          args.dryRun
+          args.dryRun,
+          args.verbose
         );
 
         if (!args.dryRun && translationResult.stats.translated > 0) {

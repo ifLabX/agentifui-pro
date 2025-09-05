@@ -1,0 +1,144 @@
+{
+  "supported": {
+    "en-US": {
+      "displayName": "English",
+      "nativeName": "English",
+      "myMemoryCode": "en",
+      "isDefault": true,
+      "isSupported": true
+    },
+    "en-GB": {
+      "displayName": "English (UK)",
+      "nativeName": "English (UK)",
+      "myMemoryCode": "en",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "zh-Hans": {
+      "displayName": "Chinese (Simplified)",
+      "nativeName": "简体中文",
+      "myMemoryCode": "zh-CN",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "zh-Hant": {
+      "displayName": "Chinese (Traditional)",
+      "nativeName": "繁體中文",
+      "myMemoryCode": "zh-TW",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "ja-JP": {
+      "displayName": "Japanese",
+      "nativeName": "日本語",
+      "myMemoryCode": "ja",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "ko-KR": {
+      "displayName": "Korean",
+      "nativeName": "한국어",
+      "myMemoryCode": "ko",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "fr-FR": {
+      "displayName": "French",
+      "nativeName": "Français",
+      "myMemoryCode": "fr",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "de-DE": {
+      "displayName": "German",
+      "nativeName": "Deutsch",
+      "myMemoryCode": "de",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "es-ES": {
+      "displayName": "Spanish",
+      "nativeName": "Español",
+      "myMemoryCode": "es",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "pt-BR": {
+      "displayName": "Portuguese (Brazil)",
+      "nativeName": "Português (Brasil)",
+      "myMemoryCode": "pt",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "pt-PT": {
+      "displayName": "Portuguese",
+      "nativeName": "Português",
+      "myMemoryCode": "pt",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "ru-RU": {
+      "displayName": "Russian",
+      "nativeName": "Русский",
+      "myMemoryCode": "ru",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "ar-SA": {
+      "displayName": "Arabic",
+      "nativeName": "العربية",
+      "myMemoryCode": "ar",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "hi-IN": {
+      "displayName": "Hindi",
+      "nativeName": "हिन्दी",
+      "myMemoryCode": "hi",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "it-IT": {
+      "displayName": "Italian",
+      "nativeName": "Italiano",
+      "myMemoryCode": "it",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "nl-NL": {
+      "displayName": "Dutch",
+      "nativeName": "Nederlands",
+      "myMemoryCode": "nl",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "sv-SE": {
+      "displayName": "Swedish",
+      "nativeName": "Svenska",
+      "myMemoryCode": "sv",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "da-DK": {
+      "displayName": "Danish",
+      "nativeName": "Dansk",
+      "myMemoryCode": "da",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "no-NO": {
+      "displayName": "Norwegian",
+      "nativeName": "Norsk",
+      "myMemoryCode": "no",
+      "isDefault": false,
+      "isSupported": true
+    },
+    "fi-FI": {
+      "displayName": "Finnish",
+      "nativeName": "Suomi",
+      "myMemoryCode": "fi",
+      "isDefault": false,
+      "isSupported": true
+    }
+  }
+}

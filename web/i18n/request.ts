@@ -21,9 +21,11 @@ async function importNamespaceMessages(
         ).default;
         return [namespace, moduleMessages] as const;
       } catch {
-        console.error(
-          `Missing translation file for ${locale}/${namespace}.json`
-        );
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            `Missing translation file for ${locale}/${namespace}.json`
+          );
+        }
         return [namespace, {}] as const;
       }
     })

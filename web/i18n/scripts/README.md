@@ -91,6 +91,33 @@ pnpm i18n:namespace dashboard settings profile
 - Validates namespace naming conventions
 - Updates all related configuration files
 
+### 📝 types.mjs
+
+**Purpose**: Validates and generates TypeScript type definitions for i18n namespaces  
+**Entry point**: `pnpm i18n:types`
+
+```bash
+# Check if types are synchronized with config
+pnpm i18n:types --check
+
+# Generate types based on current config
+pnpm i18n:types --generate
+
+# Check with detailed output
+pnpm i18n:types --check --verbose
+
+# CI-friendly mode (quiet output)
+pnpm i18n:types --check --ci-mode
+```
+
+**Features**:
+
+- Validates type synchronization with config.ts
+- Generates complete type definitions from namespaces
+- Handles manual namespace additions gracefully
+- CI-friendly with proper exit codes
+- Follows same patterns as generate.mjs for consistency
+
 ## Configuration Files
 
 ### 📋 languages.json
@@ -151,6 +178,12 @@ pnpm i18n:check
 # Auto-fix extra keys in CI
 pnpm i18n:check --fix-extra
 
+# Validate type synchronization (fails if out of sync)
+pnpm i18n:types --check --ci-mode
+
+# Auto-generate types if needed
+pnpm i18n:types --generate
+
 # Validate specific changes
 pnpm i18n:check --file common --lang zh-Hans ja-JP
 ```
@@ -169,6 +202,9 @@ pnpm i18n:check --file common --lang zh-Hans ja-JP
 - `--fix-extra` (check): Auto-remove extra keys
 - `--dry-run, -d` (translate): Preview mode only
 - `--force, -f` (translate): Skip confirmations
+- `--check` (types): Validate type synchronization
+- `--generate` (types): Generate types from config
+- `--ci-mode` (types): Quiet output for CI environments
 
 ## Error Handling
 

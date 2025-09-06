@@ -32,6 +32,7 @@
     "i18n:check": "node i18n/scripts/check.mjs",
     "i18n:fix": "node i18n/scripts/check.mjs --fix-extra",
     "i18n:translate": "node i18n/scripts/translate.mjs",
+    "i18n:types": "node i18n/scripts/types.mjs",
     "prepare": "cd ../ && node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky ./web/.husky"
   },
   "dependencies": {

@@ -31,8 +31,13 @@ export async function setLocale(locale: Locale) {
     revalidatePath("/", "layout");
 
     return { success: true };
-  } catch {
-    return { success: false, message: "Failed to set locale" };
+  } catch (error) {
+    console.error("Failed to set locale:", error);
+    return {
+      success: false,
+      message: "Failed to set locale",
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 

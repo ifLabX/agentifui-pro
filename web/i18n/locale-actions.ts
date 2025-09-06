@@ -10,7 +10,7 @@ import { defaultLocale, locales, type Locale } from "./config";
  * Server action to set locale in cookies
  */
 export async function setLocale(locale: Locale) {
-  // Validate locale (redundant with type, but keeps runtime safety)
+  // Runtime validation required as TypeScript types don't exist at runtime
   if (!hasLocale(locales, locale)) {
     return { success: false, message: `Invalid locale: ${locale}` };
   }

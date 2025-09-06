@@ -40,7 +40,7 @@ async function loadMessages(locale: Locale) {
 
   const defaultMessages = await importNamespaceMessages(defaultLocale);
   return deepmerge(defaultMessages, userMessages, {
-    arrayMerge: (_, sourceArray) => sourceArray, // User translations override default arrays
+    arrayMerge: (_, sourceArray) => sourceArray, // Override arrays completely with user translations (no merging)
   });
 }
 

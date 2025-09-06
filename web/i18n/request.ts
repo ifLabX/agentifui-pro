@@ -21,7 +21,7 @@ async function importNamespaceMessages(
         ).default;
         return [namespace, moduleMessages] as const;
       } catch {
-        console.warn(
+        console.error(
           `Missing translation file for ${locale}/${namespace}.json`
         );
         return [namespace, {}] as const;

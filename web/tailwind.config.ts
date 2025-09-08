@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-import { themeVars } from "./themes/tailwind-vars";
+import { fontVars, themeVars } from "./themes/tailwind-vars";
 
 const config: Config = {
   content: [
@@ -50,8 +50,38 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "Menlo", "monospace"],
+        sans: [
+          fontVars["font-sans"],
+          "system-ui",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "PingFang SC",
+          "Microsoft YaHei",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif",
+        ],
+        mono: [
+          fontVars["font-mono"],
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "Consolas",
+          "Monaco",
+          "Courier New",
+          "monospace",
+        ],
+        inter: [fontVars["font-inter"], "system-ui", "sans-serif"],
+        serif: [
+          fontVars["font-serif"],
+          "ui-serif",
+          "Georgia",
+          "Times New Roman",
+          "Times",
+          "serif",
+        ],
       },
       borderRadius: {
         lg: "var(--radius)",

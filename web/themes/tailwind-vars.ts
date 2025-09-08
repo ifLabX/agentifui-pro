@@ -5,3 +5,10 @@ export const themeVars = {
   "text-secondary": "var(--colors-text-secondary)",
   "border-default": "var(--colors-border-default)",
 };
+
+export const fontVars = {
+  "font-sans": "var(--font-geist-sans)",
+  "font-mono": "var(--font-geist-mono)",
+  "font-inter": "var(--font-inter)",
+  "font-serif": "var(--font-serif)",
+};

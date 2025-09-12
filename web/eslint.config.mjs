@@ -24,10 +24,17 @@ const eslintConfig = [
   {
     rules: {
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "error",
-      "no-console": process.env.NODE_ENV === "production" 
-        ? ["error", { allow: ["warn", "error", "info"] }]
-        : "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+      "no-console":
+        process.env.NODE_ENV === "production"
+          ? ["error", { allow: ["warn", "error", "info"] }]
+          : "off",
     },
   },
   {

@@ -40,10 +40,10 @@ export function middleware(_request: NextRequest) {
       const csp = `
         default-src 'self';
         script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        style-src 'self' 'unsafe-inline';
         connect-src ${allowedConnections};
         img-src 'self' data: blob: https:;
-        font-src 'self' https://fonts.gstatic.com;
+        font-src 'self';
         object-src 'none';
         base-uri 'self';
         form-action 'self';
@@ -74,7 +74,7 @@ export function middleware(_request: NextRequest) {
         style-src 'self' 'unsafe-inline';
         connect-src ${devConnections};
         img-src 'self' data: blob: https:;
-        font-src 'self' https://fonts.gstatic.com;
+        font-src 'self';
         object-src 'none';
       `
         .replace(/\s+/g, " ")

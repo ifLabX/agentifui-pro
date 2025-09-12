@@ -1,14 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 export function middleware(_request: NextRequest) {
+  const response = NextResponse.next();
+
+  // Essential security headers for all environments
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
   try {
-    const response = NextResponse.next();
-
-    // Essential security headers for all environments
-    response.headers.set("X-Content-Type-Options", "nosniff");
-    response.headers.set("X-Frame-Options", "DENY");
-    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-
     if (process.env.NODE_ENV === "production") {
       const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
@@ -82,24 +82,19 @@ export function middleware(_request: NextRequest) {
 
       response.headers.set("Content-Security-Policy", devCsp);
     }
-
-    return response;
   } catch (error) {
     // Only log detailed errors in development
     if (process.env.NODE_ENV !== "production") {
-      console.error("Middleware error:", error);
+      console.error("Middleware error while generating CSP:", error);
     }
-    // Fallback: return response with basic security headers and minimal CSP
-    const response = NextResponse.next();
-    response.headers.set("X-Content-Type-Options", "nosniff");
-    response.headers.set("X-Frame-Options", "DENY");
-    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    // Fallback: minimal CSP with basic security headers already set above
     response.headers.set(
       "Content-Security-Policy",
       "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
     );
-    return response;
   }
+
+  return response;
 }
 
 export const config = {

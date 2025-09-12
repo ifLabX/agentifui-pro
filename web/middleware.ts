@@ -89,11 +89,15 @@ export function middleware(_request: NextRequest) {
     if (process.env.NODE_ENV !== "production") {
       console.error("Middleware error:", error);
     }
-    // Fallback: return response with basic security headers only
+    // Fallback: return response with basic security headers and minimal CSP
     const response = NextResponse.next();
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("X-Frame-Options", "DENY");
     response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    response.headers.set(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
+    );
     return response;
   }
 }

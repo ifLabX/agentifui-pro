@@ -16,7 +16,7 @@ jobs:
   translate:
     name: Auto Translation
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'lyzno1/agentifui-pro' }}
+    if: ${{ github.repository == 'ifLabX/agentifui-pro' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -10,8 +10,6 @@
 
 # API Backend (FastAPI/Python) - Backend team responsibility
 /api/ @lyzno1 @zhyongrui
-pyproject.toml @lyzno1 @zhyongrui
-*.toml @lyzno1 @zhyongrui
 
 # Web Frontend (Next.js/TypeScript) - Frontend specialist
 /web/ @zhangxuhe1
@@ -20,7 +18,6 @@ pyproject.toml @lyzno1 @zhyongrui
 /.github/ @lyzno1
 /CLAUDE.md @lyzno1
 /.gitignore @lyzno1
-/package.json @lyzno1
 
 # Documentation - Repository owner maintains standards
 *.md @lyzno1

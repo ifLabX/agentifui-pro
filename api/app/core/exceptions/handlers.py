@@ -55,8 +55,7 @@ async def api_exception_handler(request: Request, exc: APIError) -> JSONResponse
         JSON response with error details
     """
     logger.error(
-        "API Exception: %s - %s (Status: %s, Path: %s)",
-        exc.error_code, exc.detail, exc.status_code, request.url.path
+        "API Exception: %s - %s (Status: %s, Path: %s)", exc.error_code, exc.detail, exc.status_code, request.url.path
     )
 
     return JSONResponse(

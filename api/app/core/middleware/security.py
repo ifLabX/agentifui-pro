@@ -73,12 +73,8 @@ class TrustedHostMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=400,
                 content={
-                    "error": {
-                        "code": "UNTRUSTED_HOST",
-                        "message": "Invalid host header",
-                        "type": "security_error"
-                    }
-                }
+                    "error": {"code": "UNTRUSTED_HOST", "message": "Invalid host header", "type": "security_error"}
+                },
             )
 
         return await call_next(request)

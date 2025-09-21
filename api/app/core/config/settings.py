@@ -45,16 +45,14 @@ class Settings(BaseSettings):
     secret_key: str = Field(
         default="your-secret-key-change-in-production",
         min_length=32,
-        description="Secret key for security operations (must be 32+ chars)"
+        description="Secret key for security operations (must be 32+ chars)",
     )
     access_token_expire_minutes: int = Field(
         default=30, ge=1, le=1440, description="JWT access token expiration time in minutes (max 24h)"
     )
 
     # Security Features
-    enable_security_headers: bool = Field(
-        default=True, description="Enable security headers (HSTS, CSP, etc.)"
-    )
+    enable_security_headers: bool = Field(default=True, description="Enable security headers (HSTS, CSP, etc.)")
     trusted_hosts: list[str] = Field(
         default=["localhost", "127.0.0.1", "testserver"], description="Trusted host names for security"
     )
@@ -75,7 +73,6 @@ class Settings(BaseSettings):
         if upper_v not in valid_levels:
             raise ValueError(f"log_level must be one of: {', '.join(valid_levels)}")
         return upper_v
-
 
     @field_validator("database_url")
     @classmethod
@@ -100,7 +97,7 @@ class Settings(BaseSettings):
         if v == "your-secret-key-change-in-production":
             raise ValueError(
                 "Secret key must be changed from default value. "
-                "Generate a secure key using: python -c \"import secrets; print(secrets.token_urlsafe(32))\""
+                'Generate a secure key using: python -c "import secrets; print(secrets.token_urlsafe(32))"'
             )
 
         # Check for common weak patterns

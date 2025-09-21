@@ -34,13 +34,9 @@ async def lifespan(app: FastAPI):
     get_engine()  # Initialize engine for lazy loading
 
     # Log startup information
-    logger.info(
-        "🚀 Starting %s v%s",
-        settings.project_name,
-        settings.project_version
-    )
+    logger.info("🚀 Starting %s v%s", settings.project_name, settings.project_version)
     logger.info("📊 Debug mode: %s", settings.debug)
-    logger.info("🔗 Database: %s://...", settings.database_url.split('://')[0])
+    logger.info("🔗 Database: %s://...", settings.database_url.split("://")[0])
 
     if settings.debug:
         logger.warning("⚠️  DEBUG mode is enabled - do not use in production!")

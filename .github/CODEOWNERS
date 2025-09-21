@@ -20,7 +20,6 @@ pyproject.toml @lyzno1 @zhyongrui
 /.github/ @lyzno1
 /.github/workflows/ @lyzno1
 /CLAUDE.md @lyzno1
-/README.md @lyzno1
 /.gitignore @lyzno1
 /package.json @lyzno1
 

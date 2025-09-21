@@ -18,7 +18,6 @@ pyproject.toml @lyzno1 @zhyongrui
 
 # Configuration and Infrastructure - Repository owner oversight
 /.github/ @lyzno1
-/.github/workflows/ @lyzno1
 /CLAUDE.md @lyzno1
 /.gitignore @lyzno1
 /package.json @lyzno1

@@ -1,0 +1,39 @@
+openapi: 3.0.3
+info:
+  title: Backend Foundation Info API
+  version: 1.0.0
+  description: Application information and configuration endpoints
+
+paths:
+  /info:
+    get:
+      summary: Application information
+      description: Returns application metadata and version information
+      operationId: get_info
+      responses:
+        '200':
+          description: Application information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "AgentifUI-Pro Backend"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  environment:
+                    type: string
+                    enum: [development, production]
+                  python_version:
+                    type: string
+                    example: "3.12.0"
+                  fastapi_version:
+                    type: string
+                    example: "0.104.1"
+                required:
+                  - name
+                  - version
+                  - environment

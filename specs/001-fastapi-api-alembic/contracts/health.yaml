@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  title: Backend Foundation Health API
+  version: 1.0.0
+  description: Basic health check endpoints for backend foundation
+
+paths:
+  /health:
+    get:
+      summary: Basic health check
+      description: Returns basic application health status
+      operationId: get_health
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+                required:
+                  - status
+                  - timestamp
+
+  /health/ready:
+    get:
+      summary: Readiness check
+      description: Returns readiness status including database connectivity
+      operationId: get_readiness
+      responses:
+        '200':
+          description: Application is ready to serve requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ready]
+                  database:
+                    type: string
+                    enum: [connected, disconnected]
+                  timestamp:
+                    type: string
+                    format: date-time
+                required:
+                  - status
+                  - database
+                  - timestamp
+        '503':
+          description: Application is not ready
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [not_ready]
+                  database:
+                    type: string
+                    enum: [connected, disconnected]
+                  timestamp:
+                    type: string
+                    format: date-time
+                required:
+                  - status
+                  - database
+                  - timestamp

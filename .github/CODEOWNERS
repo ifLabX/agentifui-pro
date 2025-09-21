@@ -15,12 +15,6 @@ pyproject.toml @lyzno1 @zhyongrui
 
 # Web Frontend (Next.js/TypeScript) - Frontend specialist
 /web/ @zhangxuhe1
-/web/**/*.ts @zhangxuhe1
-/web/**/*.tsx @zhangxuhe1
-/web/**/*.js @zhangxuhe1
-/web/**/*.jsx @zhangxuhe1
-/web/package.json @zhangxuhe1
-/web/pnpm-lock.yaml @zhangxuhe1
 
 # Configuration and Infrastructure - Repository owner oversight
 /.github/ @lyzno1

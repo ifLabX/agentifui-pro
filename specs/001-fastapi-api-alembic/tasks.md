@@ -41,30 +41,30 @@
 - Based on plan.md: Backend in api/, frontend in web/
 
 ## Phase 3.1: Setup
-- [ ] T001 Create api/ project structure with app/, tests/, alembic/ directories
-- [ ] T002 Initialize Python project with pyproject.toml and uv configuration in api/
-- [ ] T003 [P] Configure Ruff linting and formatting in api/.ruff.toml
-- [ ] T004 [P] Create environment configuration template in api/.env.example
+- [x] T001 Create api/ project structure with app/, tests/, alembic/ directories
+- [x] T002 Initialize Python project with pyproject.toml and uv configuration in api/
+- [x] T003 [P] Configure Ruff linting and formatting in api/.ruff.toml
+- [x] T004 [P] Create environment configuration template in api/.env.example
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T005 [P] Contract test GET /health in api/tests/contract/test_health.py
-- [ ] T006 [P] Contract test GET /health/ready in api/tests/contract/test_health_ready.py
-- [ ] T007 [P] Contract test GET /info in api/tests/contract/test_info.py
-- [ ] T008 [P] Integration test database connection in api/tests/integration/test_database.py
-- [ ] T009 [P] Integration test application startup in api/tests/integration/test_startup.py
+- [x] T005 [P] Contract test GET /health in api/tests/contract/test_health.py
+- [x] T006 [P] Contract test GET /health/ready in api/tests/contract/test_health_ready.py
+- [x] T007 [P] Contract test GET /info in api/tests/contract/test_info.py
+- [x] T008 [P] Integration test database connection in api/tests/integration/test_database.py
+- [x] T009 [P] Integration test application startup in api/tests/integration/test_startup.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T010 [P] Base model pattern in api/app/db/models/base.py
-- [ ] T011 [P] Application configuration in api/app/core/config/settings.py
-- [ ] T012 [P] Database configuration in api/app/core/config/database.py
-- [ ] T013 [P] Health response schemas in api/app/schemas/health.py
-- [ ] T014 [P] Info response schemas in api/app/schemas/info.py
-- [ ] T015 Main FastAPI application in api/app/main.py
-- [ ] T016 Health endpoints in api/app/api/v1/endpoints/health.py
-- [ ] T017 Info endpoint in api/app/api/v1/endpoints/info.py
-- [ ] T018 API router setup in api/app/api/v1/router.py
-- [ ] T019 Exception handlers in api/app/core/exceptions/handlers.py
+- [x] T010 [P] Base model pattern in api/app/db/models/base.py
+- [x] T011 [P] Application configuration in api/app/core/config/settings.py
+- [x] T012 [P] Database configuration in api/app/core/config/database.py
+- [x] T013 [P] Health response schemas in api/app/schemas/health.py
+- [x] T014 [P] Info response schemas in api/app/schemas/info.py
+- [x] T015 Main FastAPI application in api/app/main.py
+- [x] T016 Health endpoints in api/app/api/v1/endpoints/health.py
+- [x] T017 Info endpoint in api/app/api/v1/endpoints/info.py
+- [x] T018 API router setup in api/app/api/v1/router.py
+- [x] T019 Exception handlers in api/app/core/exceptions/handlers.py
 
 ## Phase 3.4: Integration
 - [ ] T020 Database session management in api/app/db/session.py

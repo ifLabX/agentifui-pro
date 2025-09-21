@@ -10,7 +10,6 @@
 
 # API Backend (FastAPI/Python) - Backend team responsibility
 /api/ @lyzno1 @zhyongrui
-/api/**/*.py @lyzno1 @zhyongrui
 pyproject.toml @lyzno1 @zhyongrui
 *.toml @lyzno1 @zhyongrui
 

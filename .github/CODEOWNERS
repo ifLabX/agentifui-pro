@@ -1,0 +1,25 @@
+# =============================================================================
+# CODEOWNERS - Agentifui Pro Code Review Assignment
+# =============================================================================
+# This file defines code ownership and review requirements for the repository.
+# Each line is a file pattern followed by one or more owners.
+# For more information: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global Default - Repository owner has oversight of all changes
+* @lyzno1
+
+# API Backend (FastAPI/Python) - Backend team responsibility
+/api/ @lyzno1 @zhyongrui
+
+# Web Frontend (Next.js/TypeScript) - Frontend specialist
+/web/ @lyzno1 @zhangxuhe1
+
+# Configuration and Infrastructure - Repository owner oversight
+/.github/ @lyzno1
+/CLAUDE.md @lyzno1
+/.gitignore @lyzno1
+
+# Documentation - Repository owner maintains standards
+*.md @lyzno1
+/AUTHORS @lyzno1
+/CONTRIBUTING.md @lyzno1

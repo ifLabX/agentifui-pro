@@ -1,6 +1,6 @@
 > [!IMPORTANT]
 >
-> - Read [CONTRIBUTING.md](../CONTRIBUTING.md)  
+> - Read [CONTRIBUTING.md](https://github.com/ifLabX/agentifui-pro/blob/main/CONTRIBUTING.md)  
 > - Ensure issue exists and you're assigned  
 > - Link correctly: `Fixes #<issue number>`  
 > - All PRs must be created **in English**  

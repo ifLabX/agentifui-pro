@@ -94,7 +94,7 @@ pnpm test                        # Run Jest tests
 - **Dependencies**: FastAPI, Uvicorn, Pydantic
 
 ### TypeScript/JavaScript (Frontend) 
-- **Manager**: `pnpm@10.15.0`
+- **Manager**: `pnpm@10.17.0`
 - **Runtime**: Node.js >=20.0.0
 - **Framework**: Next.js 15 with App Router
 - **Styling**: Tailwind CSS v4 with custom theme extensions

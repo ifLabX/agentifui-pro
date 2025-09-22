@@ -28,7 +28,7 @@ A modern full-stack monorepo with enterprise-grade tooling and development pract
 ### Prerequisites
 - Node.js ≥20.0.0
 - Python ≥3.12
-- pnpm@10.15.0
+- pnpm@10.17.0
 
 ### Backend
 ```bash

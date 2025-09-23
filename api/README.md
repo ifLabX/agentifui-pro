@@ -29,15 +29,15 @@ git clone <repository-url>
 cd agentifui-pro
 
 # Install dependencies using uv
-uv sync --project api
+uv sync
 
 # Copy environment template
-cp api/.env.example api/.env
+cp .env.example .env
 ```
 
 ### 2. Configure Environment
 
-Edit `api/.env` with your settings:
+Edit `.env` with your settings:
 
 ```bash
 # Application Configuration
@@ -69,11 +69,11 @@ DATABASE_HEALTH_CHECK_TIMEOUT=10
 ### 3. Run the Application
 
 ```bash
-# Development server with hot reload
-uv run --project api dev
+# Development server with hot reload (from api/ directory)
+uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
-# Or run directly with uvicorn
-uv run --project api uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# Or from project root
+uv run --project api uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 The API will be available at:
@@ -86,19 +86,22 @@ The API will be available at:
 ## Running Tests
 
 ```bash
-# Run all tests
+# Run all tests (from api/ directory)
+uv run pytest
+
+# From project root
 uv run --project api pytest
 
 # Run with coverage
-uv run --project api pytest --cov=. --cov-report=html
+uv run pytest --cov=. --cov-report=html
 
 # Run specific test categories
-uv run --project api pytest tests/test_health_endpoint.py
-uv run --project api pytest tests/test_performance.py
-uv run --project api pytest -k "health"
+uv run pytest tests/test_health_endpoint.py
+uv run pytest tests/test_performance.py
+uv run pytest -k "health"
 
 # Run tests in parallel (faster)
-uv run --project api pytest -n auto
+uv run pytest -n auto
 ```
 
 ## Development Workflow
@@ -106,33 +109,33 @@ uv run --project api pytest -n auto
 ### Code Quality
 
 ```bash
-# Format code
-uv run --project api ruff format api/
+# Format code (from api/ directory)
+uv run ruff format
 
 # Lint code
-uv run --project api ruff check api/
+uv run ruff check
 
 # Fix linting issues
-uv run --project api ruff check --fix api/
+uv run ruff check --fix
 
 # Type checking (if mypy is configured)
-uv run --project api mypy api/
+uv run mypy .
 ```
 
 ### Database Operations
 
 ```bash
-# Create a new migration
-uv run --project api alembic revision --autogenerate -m "Description"
+# Create a new migration (from api/ directory)
+uv run alembic revision --autogenerate -m "Description"
 
 # Apply migrations
-uv run --project api alembic upgrade head
+uv run alembic upgrade head
 
 # Rollback migration
-uv run --project api alembic downgrade -1
+uv run alembic downgrade -1
 
 # Show migration history
-uv run --project api alembic history
+uv run alembic history
 ```
 
 ### Pre-commit Hooks

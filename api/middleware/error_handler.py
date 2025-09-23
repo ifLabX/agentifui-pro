@@ -101,7 +101,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
 
         return JSONResponse(
             status_code=exc.status_code,
-            content=error_response.dict(),
+            content=error_response.model_dump(),
         )
 
     async def _handle_validation_error(self, request: Request, exc: PydanticValidationError) -> JSONResponse:
@@ -134,7 +134,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
 
         return JSONResponse(
             status_code=422,
-            content=error_response.dict(),
+            content=error_response.model_dump(),
         )
 
     async def _handle_database_error(
@@ -168,7 +168,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
 
         return JSONResponse(
             status_code=503,
-            content=error_response.dict(),
+            content=error_response.model_dump(),
         )
 
     async def _handle_unexpected_error(self, request: Request, exc: Exception) -> JSONResponse:
@@ -204,7 +204,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
 
         return JSONResponse(
             status_code=500,
-            content=error_response.dict(),
+            content=error_response.model_dump(),
         )
 
     def _get_request_id(self, request: Request) -> str:

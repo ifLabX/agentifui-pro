@@ -1,0 +1,189 @@
+openapi: 3.0.0
+info:
+  title: FastAPI Backend Error Schemas
+  description: Common error response schemas for FastAPI backend architecture
+  version: "0.1.0"
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+        - timestamp
+      properties:
+        error:
+          type: string
+          description: Error type or code
+          example: "DATABASE_CONNECTION_ERROR"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Unable to connect to database"
+        detail:
+          type: string
+          description: Additional error details for debugging
+          example: "Connection timeout after 30 seconds"
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when error occurred
+          example: "2025-09-23T10:30:00Z"
+        request_id:
+          type: string
+          format: uuid
+          description: Unique request identifier for error tracking
+          example: "550e8400-e29b-41d4-a716-446655440000"
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+        - timestamp
+        - validation_errors
+      properties:
+        error:
+          type: string
+          enum: ["VALIDATION_ERROR"]
+          description: Error type indicating validation failure
+        message:
+          type: string
+          description: General validation error message
+          example: "Request validation failed"
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when error occurred
+        validation_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          description: Specific field validation errors
+
+    ValidationError:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+          description: Field name that failed validation
+          example: "database_url"
+        message:
+          type: string
+          description: Validation error message
+          example: "Invalid PostgreSQL connection string format"
+        value:
+          description: The invalid value that was provided
+          example: "invalid-url"
+
+    ServiceUnavailableError:
+      type: object
+      required:
+        - error
+        - message
+        - timestamp
+      properties:
+        error:
+          type: string
+          enum: ["SERVICE_UNAVAILABLE"]
+          description: Error indicating service is temporarily unavailable
+        message:
+          type: string
+          description: Service unavailable message
+          example: "Service temporarily unavailable"
+        retry_after:
+          type: integer
+          minimum: 1
+          description: Suggested retry delay in seconds
+          example: 30
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when error occurred
+
+  responses:
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "INTERNAL_SERVER_ERROR"
+            message: "An unexpected error occurred"
+            timestamp: "2025-09-23T10:30:00Z"
+            request_id: "550e8400-e29b-41d4-a716-446655440000"
+
+    ValidationError:
+      description: Request validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+          example:
+            error: "VALIDATION_ERROR"
+            message: "Request validation failed"
+            timestamp: "2025-09-23T10:30:00Z"
+            validation_errors:
+              - field: "timeout"
+                message: "Value must be between 1 and 300 seconds"
+                value: 500
+
+    ServiceUnavailable:
+      description: Service temporarily unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServiceUnavailableError'
+          example:
+            error: "SERVICE_UNAVAILABLE"
+            message: "Database maintenance in progress"
+            retry_after: 60
+            timestamp: "2025-09-23T10:30:00Z"
+
+    DatabaseConnectionError:
+      description: Database connection failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "DATABASE_CONNECTION_ERROR"
+            message: "Unable to connect to database"
+            detail: "Connection timeout after 30 seconds"
+            timestamp: "2025-09-23T10:30:00Z"
+
+  examples:
+    GenericError:
+      summary: Generic server error
+      value:
+        error: "INTERNAL_SERVER_ERROR"
+        message: "An unexpected error occurred"
+        timestamp: "2025-09-23T10:30:00Z"
+        request_id: "550e8400-e29b-41d4-a716-446655440000"
+
+    DatabaseError:
+      summary: Database connection error
+      value:
+        error: "DATABASE_CONNECTION_ERROR"
+        message: "Unable to connect to database"
+        detail: "PostgreSQL server not responding"
+        timestamp: "2025-09-23T10:30:00Z"
+
+    ConfigurationError:
+      summary: Configuration validation error
+      value:
+        error: "VALIDATION_ERROR"
+        message: "Configuration validation failed"
+        timestamp: "2025-09-23T10:30:00Z"
+        validation_errors:
+          - field: "database_url"
+            message: "Invalid PostgreSQL connection string"
+            value: "invalid-url"
+          - field: "pool_size"
+            message: "Must be a positive integer"
+            value: -1

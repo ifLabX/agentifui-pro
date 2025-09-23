@@ -1,0 +1,201 @@
+openapi: 3.0.0
+info:
+  title: FastAPI Backend Health API
+  description: Health monitoring endpoints for FastAPI backend architecture foundation
+  version: "0.1.0"
+
+paths:
+  /health:
+    get:
+      summary: Application Health Check
+      description: Returns the overall health status of the FastAPI application
+      operationId: get_application_health
+      tags:
+        - health
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "healthy"
+                timestamp: "2025-09-23T10:30:00Z"
+                version: "0.1.0"
+                uptime_seconds: 3600
+        '503':
+          description: Application is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "unhealthy"
+                timestamp: "2025-09-23T10:30:00Z"
+                version: "0.1.0"
+                uptime_seconds: 3600
+                errors:
+                  - "Database connection failed"
+
+  /health/db:
+    get:
+      summary: Database Health Check
+      description: Returns the health status of the PostgreSQL database connection
+      operationId: get_database_health
+      tags:
+        - health
+      responses:
+        '200':
+          description: Database is healthy and accessible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseHealthResponse'
+              example:
+                status: "healthy"
+                timestamp: "2025-09-23T10:30:00Z"
+                database_connected: true
+                connection_pool:
+                  active_connections: 2
+                  pool_size: 10
+                response_time_ms: 15
+                migration_status: "up_to_date"
+        '503':
+          description: Database is unhealthy or inaccessible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseHealthResponse'
+              example:
+                status: "unhealthy"
+                timestamp: "2025-09-23T10:30:00Z"
+                database_connected: false
+                connection_pool:
+                  active_connections: 0
+                  pool_size: 10
+                response_time_ms: null
+                migration_status: "unknown"
+                errors:
+                  - "Connection timeout after 5 seconds"
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - version
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          description: Overall application health status
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the health check
+        version:
+          type: string
+          description: Application version
+        uptime_seconds:
+          type: integer
+          minimum: 0
+          description: Application uptime in seconds
+        errors:
+          type: array
+          items:
+            type: string
+          description: List of error messages if status is not healthy
+
+    DatabaseHealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - database_connected
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          description: Database health status
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of the health check
+        database_connected:
+          type: boolean
+          description: Whether database connection is active
+        connection_pool:
+          type: object
+          properties:
+            active_connections:
+              type: integer
+              minimum: 0
+              description: Number of active connections in the pool
+            pool_size:
+              type: integer
+              minimum: 1
+              description: Maximum size of the connection pool
+        response_time_ms:
+          type: integer
+          minimum: 0
+          nullable: true
+          description: Database response time in milliseconds
+        migration_status:
+          type: string
+          enum: [up_to_date, pending, unknown]
+          description: Alembic migration status
+        errors:
+          type: array
+          items:
+            type: string
+          description: List of error messages if status is not healthy
+
+  examples:
+    HealthyApplication:
+      summary: Healthy application status
+      value:
+        status: "healthy"
+        timestamp: "2025-09-23T10:30:00Z"
+        version: "0.1.0"
+        uptime_seconds: 3600
+
+    UnhealthyApplication:
+      summary: Unhealthy application status
+      value:
+        status: "unhealthy"
+        timestamp: "2025-09-23T10:30:00Z"
+        version: "0.1.0"
+        uptime_seconds: 3600
+        errors:
+          - "Database connection failed"
+          - "Migration status unknown"
+
+    HealthyDatabase:
+      summary: Healthy database status
+      value:
+        status: "healthy"
+        timestamp: "2025-09-23T10:30:00Z"
+        database_connected: true
+        connection_pool:
+          active_connections: 2
+          pool_size: 10
+        response_time_ms: 15
+        migration_status: "up_to_date"
+
+    UnhealthyDatabase:
+      summary: Unhealthy database status
+      value:
+        status: "unhealthy"
+        timestamp: "2025-09-23T10:30:00Z"
+        database_connected: false
+        connection_pool:
+          active_connections: 0
+          pool_size: 10
+        response_time_ms: null
+        migration_status: "unknown"
+        errors:
+          - "Connection timeout after 5 seconds"
+          - "Invalid database credentials"

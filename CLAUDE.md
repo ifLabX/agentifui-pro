@@ -163,3 +163,41 @@ The repository uses Husky with monorepo-aware pre-commit hooks that:
 - **Always read PR template first**: Before using `gh pr create` or GitHub MCP to create PRs, you MUST read `.github/pull_request_template.md` to understand the required format and checklist
 - **Follow template structure**: Use the template's format including summary, type checkboxes, and issue linking
 - **All PRs in English**: Ensure all PR titles, descriptions, and comments are written in English
+
+## Backend Architecture Foundation (Feature 001)
+
+**Status**: In Development | **Branch**: `001-fastapi-pg-orm`
+
+### Database Architecture
+- **ORM**: SQLAlchemy 2.0 with async support and asyncpg driver
+- **Migrations**: Alembic with async environment configuration
+- **Connection Management**: Async session-per-request pattern with connection pooling
+- **Future-Proofing**: PostgreSQL 18 UUIDv7 support with UUID4 fallback strategy
+
+### Key Backend Components
+- `api/database/`: Database connection and session management
+- `api/config/`: Environment-based configuration with Pydantic validation
+- `api/models/`: SQLAlchemy async models with UUID primary keys
+- `api/health/`: Health monitoring endpoints and models
+- `api/middleware/`: Error handling and request processing
+- `api/alembic/`: Migration framework with async support
+- `api/tests/`: FastAPI test client with async database testing
+
+### Health Monitoring
+- `GET /health`: Application health with uptime and version info
+- `GET /health/db`: Database connectivity with connection pool metrics
+- Error responses follow standardized schema in `contracts/errors.yaml`
+
+### Development Commands
+```bash
+cd api
+uv run dev                    # Start with auto-reload
+uv run alembic upgrade head   # Apply migrations
+uv run pytest               # Run async tests
+```
+
+### Architecture Patterns
+- Dependency injection for database sessions via FastAPI
+- Row Level Security (RLS) ready table design
+- Environment-specific configuration management
+- Structured error handling with request tracing

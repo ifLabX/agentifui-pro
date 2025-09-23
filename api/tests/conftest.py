@@ -50,18 +50,22 @@ def mock_settings() -> Settings:
     Returns:
         Settings object configured for testing environment
     """
-    with patch.dict(os.environ, {
-        "APP_NAME": "Test API",
-        "APP_VERSION": "0.1.0-test",
-        "DEBUG": "true",
-        "ENVIRONMENT": "test",
-        "DATABASE_URL": "sqlite+aiosqlite:///:memory:",
-        "SECRET_KEY": "test-secret-key-minimum-32-characters-long",
-        "LOG_LEVEL": "DEBUG",
-        "CORS_ORIGINS": '["http://localhost:3000"]',
-        "HEALTH_CHECK_TIMEOUT": "1",
-        "DATABASE_HEALTH_CHECK_TIMEOUT": "2",
-    }, clear=False):
+    with patch.dict(
+        os.environ,
+        {
+            "APP_NAME": "Test API",
+            "APP_VERSION": "0.1.0-test",
+            "DEBUG": "true",
+            "ENVIRONMENT": "test",
+            "DATABASE_URL": "sqlite+aiosqlite:///:memory:",
+            "SECRET_KEY": "test-secret-key-minimum-32-characters-long",
+            "LOG_LEVEL": "DEBUG",
+            "CORS_ORIGINS": '["http://localhost:3000"]',
+            "HEALTH_CHECK_TIMEOUT": "1",
+            "DATABASE_HEALTH_CHECK_TIMEOUT": "2",
+        },
+        clear=False,
+    ):
         return get_settings()
 
 
@@ -131,6 +135,7 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
         AsyncClient instance for making async HTTP requests
     """
     from httpx import ASGITransport
+
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         yield client
 
@@ -146,6 +151,7 @@ def override_get_db_session(test_session: AsyncSession):
     Returns:
         Dependency override function
     """
+
     async def _override_get_db_session():
         yield test_session
 
@@ -170,10 +176,7 @@ def client_with_db(client: TestClient, override_get_db_session) -> TestClient:
 
 
 @pytest.fixture
-async def async_client_with_db(
-    async_client: AsyncClient,
-    override_get_db_session
-) -> AsyncGenerator[AsyncClient, None]:
+async def async_client_with_db(async_client: AsyncClient, override_get_db_session) -> AsyncGenerator[AsyncClient, None]:
     """
     Create an async client with database session override.
 
@@ -207,15 +210,12 @@ def mock_database_health():
             "overflow_connections": 0,
             "invalid_connections": 0,
         },
-        "database_info": {
-            "version": "PostgreSQL 14.0",
-            "driver": "asyncpg"
-        },
-        "errors": []
+        "database_info": {"version": "PostgreSQL 14.0", "driver": "asyncpg"},
+        "errors": [],
     }
 
-    with patch('database.health.check_database_health', return_value=mock_health):
-        with patch('database.health.check_database_connectivity', return_value=True):
+    with patch("database.health.check_database_health", return_value=mock_health):
+        with patch("database.health.check_database_connectivity", return_value=True):
             yield mock_health
 
 
@@ -232,11 +232,11 @@ def mock_database_unhealthy():
         "response_time_ms": None,
         "connection_pool": None,
         "database_info": None,
-        "errors": ["Connection timeout", "Database unreachable"]
+        "errors": ["Connection timeout", "Database unreachable"],
     }
 
-    with patch('database.health.check_database_health', return_value=mock_health):
-        with patch('database.health.check_database_connectivity', return_value=False):
+    with patch("database.health.check_database_health", return_value=mock_health):
+        with patch("database.health.check_database_connectivity", return_value=False):
             yield mock_health
 
 
@@ -272,7 +272,7 @@ def sample_error_response() -> dict[str, Any]:
         "message": "Test validation error",
         "timestamp": "2025-09-23T10:30:00Z",
         "request_id": "550e8400-e29b-41d4-a716-446655440000",
-        "detail": "Test error details"
+        "detail": "Test error details",
     }
 
 
@@ -292,11 +292,14 @@ def mock_environment_production():
     """
     Mock production environment for testing production-specific behavior.
     """
-    with patch.dict(os.environ, {
-        "ENVIRONMENT": "production",
-        "DEBUG": "false",
-        "LOG_LEVEL": "INFO",
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "ENVIRONMENT": "production",
+            "DEBUG": "false",
+            "LOG_LEVEL": "INFO",
+        },
+    ):
         yield
 
 
@@ -305,11 +308,14 @@ def mock_environment_development():
     """
     Mock development environment for testing development-specific behavior.
     """
-    with patch.dict(os.environ, {
-        "ENVIRONMENT": "development",
-        "DEBUG": "true",
-        "LOG_LEVEL": "DEBUG",
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "ENVIRONMENT": "development",
+            "DEBUG": "true",
+            "LOG_LEVEL": "DEBUG",
+        },
+    ):
         yield
 
 
@@ -423,7 +429,7 @@ def temporary_file():
     """
     import tempfile
 
-    with tempfile.NamedTemporaryFile(mode='w+', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
         temp_path = f.name
         f.write("test content")
 
@@ -471,10 +477,7 @@ class TestDataFactory:
         return default_response
 
     @staticmethod
-    def create_db_health_response(
-        connected: bool = True,
-        **kwargs
-    ) -> dict[str, Any]:
+    def create_db_health_response(connected: bool = True, **kwargs) -> dict[str, Any]:
         """Create a database health response for testing."""
         default_response = {
             "status": "healthy" if connected else "unhealthy",
@@ -483,14 +486,13 @@ class TestDataFactory:
         }
 
         if connected:
-            default_response.update({
-                "response_time_ms": 15.0,
-                "connection_pool": {
-                    "active_connections": 2,
-                    "pool_size": 10
-                },
-                "migration_status": "up_to_date"
-            })
+            default_response.update(
+                {
+                    "response_time_ms": 15.0,
+                    "connection_pool": {"active_connections": 2, "pool_size": 10},
+                    "migration_status": "up_to_date",
+                }
+            )
         else:
             default_response["errors"] = ["Database connection failed"]
 

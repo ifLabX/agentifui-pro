@@ -19,6 +19,7 @@ def test_application_can_be_imported():
     """Test that the main application can be imported without errors."""
     try:
         from main import app
+
         assert isinstance(app, FastAPI)
         assert app is not None
     except ImportError as e:
@@ -155,12 +156,13 @@ def test_dependency_injection_startup():
 @pytest.mark.asyncio
 async def test_database_connection_during_startup():
     """Test database connection behavior during startup."""
-    with patch('database.connection.get_async_engine') as mock_get_engine:
+    with patch("database.connection.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_get_engine.return_value = mock_engine
 
         # Should be able to get engine during startup
         from database.connection import get_async_engine
+
         engine = get_async_engine()
 
         assert engine is not None
@@ -180,7 +182,7 @@ def test_logging_configuration_startup():
     assert logger is not None
 
     # Log level should be configurable
-    assert hasattr(settings, 'log_level')
+    assert hasattr(settings, "log_level")
 
 
 def test_startup_performance():
@@ -189,6 +191,7 @@ def test_startup_performance():
 
     # Import and create client (simulates startup)
     from main import app
+
     client = TestClient(app)
 
     # Make first request (triggers any lazy initialization)
@@ -232,7 +235,7 @@ def test_middleware_stack_startup():
     from main import app
 
     # Check that middleware is configured
-    assert hasattr(app, 'middleware_stack')
+    assert hasattr(app, "middleware_stack")
     assert app.middleware_stack is not None
 
     # Should have at least CORS and error handling middleware
@@ -247,7 +250,7 @@ def test_route_registration_startup():
     # Get all registered routes
     routes = []
     for route in app.routes:
-        if hasattr(route, 'path'):
+        if hasattr(route, "path"):
             routes.append(route.path)
 
     # Should have essential routes
@@ -282,7 +285,7 @@ async def test_graceful_shutdown_capability():
     """Test that application can handle shutdown gracefully."""
     from database.connection import get_async_engine
 
-    with patch('database.connection.get_async_engine') as mock_get_engine:
+    with patch("database.connection.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_engine.dispose = AsyncMock()
         mock_get_engine.return_value = mock_engine
@@ -368,6 +371,7 @@ def test_concurrent_startup_requests():
 
     # Make multiple concurrent requests
     from concurrent.futures import ThreadPoolExecutor
+
     with ThreadPoolExecutor(max_workers=5) as executor:
         futures = [executor.submit(make_request) for _ in range(5)]
         responses = [future.result() for future in futures]

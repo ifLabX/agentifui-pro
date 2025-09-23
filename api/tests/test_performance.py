@@ -72,10 +72,7 @@ def test_health_endpoint_concurrent_requests():
         start_time = time.time()
         response = client.get("/health")
         end_time = time.time()
-        return {
-            "status_code": response.status_code,
-            "response_time_ms": (end_time - start_time) * 1000
-        }
+        return {"status_code": response.status_code, "response_time_ms": (end_time - start_time) * 1000}
 
     # Test with 10 concurrent requests
     num_requests = 10
@@ -109,10 +106,7 @@ def test_health_db_endpoint_concurrent_requests():
         start_time = time.time()
         response = client.get("/health/db")
         end_time = time.time()
-        return {
-            "status_code": response.status_code,
-            "response_time_ms": (end_time - start_time) * 1000
-        }
+        return {"status_code": response.status_code, "response_time_ms": (end_time - start_time) * 1000}
 
     # Test with 5 concurrent requests (lower for database endpoint)
     num_requests = 5
@@ -141,7 +135,6 @@ async def test_async_health_endpoint_performance():
     from main import app
 
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
-
         # Warm up
         await client.get("/health")
 
@@ -166,10 +159,7 @@ async def test_async_concurrent_health_requests():
         start_time = time.time()
         response = await client.get("/health")
         end_time = time.time()
-        return {
-            "status_code": response.status_code,
-            "response_time_ms": (end_time - start_time) * 1000
-        }
+        return {"status_code": response.status_code, "response_time_ms": (end_time - start_time) * 1000}
 
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         # Test with 20 concurrent async requests
@@ -272,14 +262,16 @@ async def test_database_health_performance_with_mock():
     from main import app
 
     # Mock successful database connection
-    with patch('database.connection.check_database_connection') as mock_conn, \
-         patch('database.connection.get_database_info') as mock_info:
+    with (
+        patch("database.connection.check_database_connection") as mock_conn,
+        patch("database.connection.get_database_info") as mock_info,
+    ):
         mock_conn.return_value = True
         mock_info.return_value = {
             "connected": True,
             "pool_size": 10,
             "checked_out_connections": 2,
-            "version": "PostgreSQL 14.0"
+            "version": "PostgreSQL 14.0",
         }
 
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:

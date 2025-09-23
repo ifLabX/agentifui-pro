@@ -52,7 +52,7 @@ class DatabaseHealthMonitor:
             "response_time_ms": None,
             "connection_pool": None,
             "database_info": None,
-            "errors": []
+            "errors": [],
         }
 
         try:
@@ -77,7 +77,7 @@ class DatabaseHealthMonitor:
                     version = version_result.scalar()
                     health_status["database_info"] = {
                         "version": version.split(",")[0] if version else "Unknown",
-                        "driver": "asyncpg"
+                        "driver": "asyncpg",
                     }
                 except Exception as e:
                     logger.warning("Could not retrieve database version: %s", e)
@@ -112,27 +112,27 @@ class DatabaseHealthMonitor:
             "active_connections": None,
             "checked_out_connections": None,
             "overflow_connections": None,
-            "invalid_connections": None
+            "invalid_connections": None,
         }
 
         try:
             pool = self.engine.pool
 
-            if hasattr(pool, 'size'):
+            if hasattr(pool, "size"):
                 pool_info["pool_size"] = pool.size()
-            if hasattr(pool, 'checkedin'):
+            if hasattr(pool, "checkedin"):
                 pool_info["active_connections"] = pool.checkedin()
-            if hasattr(pool, 'checkedout'):
+            if hasattr(pool, "checkedout"):
                 pool_info["checked_out_connections"] = pool.checkedout()
-            if hasattr(pool, 'overflow'):
+            if hasattr(pool, "overflow"):
                 pool_info["overflow_connections"] = pool.overflow()
-            if hasattr(pool, 'invalidated'):
+            if hasattr(pool, "invalidated"):
                 pool_info["invalid_connections"] = pool.invalidated()
 
         except Exception as e:
             logger.warning("Could not retrieve detailed pool metrics: %s", e)
             # Fallback to basic pool information
-            if hasattr(self.engine, 'pool') and hasattr(self.engine.pool, '_creator'):
+            if hasattr(self.engine, "pool") and hasattr(self.engine.pool, "_creator"):
                 pool_info["pool_size"] = "Available"
                 pool_info["active_connections"] = "Monitoring"
 
@@ -193,7 +193,7 @@ class DatabaseHealthMonitor:
             "average_response_time_ms": None,
             "max_response_time_ms": None,
             "min_response_time_ms": None,
-            "errors": []
+            "errors": [],
         }
 
         async def test_single_connection():

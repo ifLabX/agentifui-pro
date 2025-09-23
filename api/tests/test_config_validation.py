@@ -4,6 +4,7 @@ Configuration validation tests.
 These tests validate that configuration management works correctly with Pydantic Settings.
 Tests MUST fail until configuration system is implemented.
 """
+
 import os
 from unittest.mock import patch
 
@@ -14,9 +15,10 @@ def test_config_settings_class_exists():
     """Test that Settings configuration class exists."""
     try:
         from config.settings import Settings
+
         # Verify the class can be instantiated
         assert Settings is not None
-        assert hasattr(Settings, 'model_config')
+        assert hasattr(Settings, "model_config")
     except ImportError:
         pytest.fail("Settings class must exist in config.settings module")
 
@@ -47,16 +49,12 @@ def test_config_database_url_validation():
     from config.settings import Settings
 
     # Test with valid PostgreSQL URL
-    with patch.dict(os.environ, {
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"
-    }):
+    with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
         settings = Settings()
         assert "postgresql+asyncpg" in settings.database_url
 
     # Test with invalid URL should raise validation error
-    with patch.dict(os.environ, {
-        "DATABASE_URL": "invalid-url"
-    }):
+    with patch.dict(os.environ, {"DATABASE_URL": "invalid-url"}):
         with pytest.raises(ValueError):  # Should raise Pydantic validation error
             Settings()
 
@@ -66,18 +64,16 @@ def test_config_pool_size_validation():
     from config.settings import Settings
 
     # Test with valid pool size
-    with patch.dict(os.environ, {
-        "DATABASE_POOL_SIZE": "10",
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"
-    }):
+    with patch.dict(
+        os.environ, {"DATABASE_POOL_SIZE": "10", "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+    ):
         settings = Settings()
         assert settings.database_pool_size == 10
 
     # Test with invalid pool size
-    with patch.dict(os.environ, {
-        "DATABASE_POOL_SIZE": "-1",
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"
-    }):
+    with patch.dict(
+        os.environ, {"DATABASE_POOL_SIZE": "-1", "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+    ):
         with pytest.raises(ValueError):  # Should raise validation error
             Settings()
 
@@ -89,18 +85,16 @@ def test_config_log_level_validation():
     valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
     for level in valid_levels:
-        with patch.dict(os.environ, {
-            "LOG_LEVEL": level,
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"
-        }):
+        with patch.dict(
+            os.environ, {"LOG_LEVEL": level, "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+        ):
             settings = Settings()
             assert settings.log_level == level
 
     # Test with invalid log level
-    with patch.dict(os.environ, {
-        "LOG_LEVEL": "INVALID",
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"
-    }):
+    with patch.dict(
+        os.environ, {"LOG_LEVEL": "INVALID", "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+    ):
         with pytest.raises(ValueError):  # Should raise validation error
             Settings()
 
@@ -110,9 +104,7 @@ def test_config_environment_defaults():
     from config.settings import Settings
 
     # Test with minimal environment
-    with patch.dict(os.environ, {
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"
-    }, clear=True):
+    with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}, clear=True):
         settings = Settings()
 
         # Should have defaults for non-required fields
@@ -127,10 +119,13 @@ def test_config_cors_settings():
     """Test that CORS settings are properly configured."""
     from config.settings import Settings
 
-    with patch.dict(os.environ, {
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
-        "CORS_ORIGINS": '["http://localhost:3000"]'
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "CORS_ORIGINS": '["http://localhost:3000"]',
+        },
+    ):
         settings = Settings()
 
         assert hasattr(settings, "cors_origins")
@@ -142,11 +137,14 @@ def test_config_health_check_settings():
     """Test that health check timeout settings are properly configured."""
     from config.settings import Settings
 
-    with patch.dict(os.environ, {
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
-        "HEALTH_CHECK_TIMEOUT": "5",
-        "DATABASE_HEALTH_CHECK_TIMEOUT": "10"
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "HEALTH_CHECK_TIMEOUT": "5",
+            "DATABASE_HEALTH_CHECK_TIMEOUT": "10",
+        },
+    ):
         settings = Settings()
 
         assert hasattr(settings, "health_check_timeout")
@@ -163,11 +161,14 @@ def test_config_feature_flags():
     """Test that feature flag settings work correctly."""
     from config.settings import Settings
 
-    with patch.dict(os.environ, {
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
-        "USE_UUIDV7": "true",
-        "ENABLE_DOCS": "false"
-    }):
+    with patch.dict(
+        os.environ,
+        {
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "USE_UUIDV7": "true",
+            "ENABLE_DOCS": "false",
+        },
+    ):
         settings = Settings()
 
         # Feature flags should be boolean
@@ -182,9 +183,7 @@ def test_config_settings_immutable():
     """Test that settings are immutable after creation."""
     from config.settings import Settings
 
-    with patch.dict(os.environ, {
-        "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"
-    }):
+    with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
         settings = Settings()
 
         # Attempt to modify should raise error (if using frozen=True)

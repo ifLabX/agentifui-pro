@@ -4,6 +4,7 @@ Health check endpoints for application monitoring.
 This module implements health check endpoints following the OpenAPI
 specification in contracts/health.yaml for container orchestration.
 """
+
 import time
 from typing import Annotated
 

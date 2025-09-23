@@ -4,6 +4,7 @@ Database connection factory with async engine.
 This module provides async SQLAlchemy engine configuration and connection management
 for PostgreSQL using asyncpg driver.
 """
+
 from typing import Optional
 
 from sqlalchemy import text
@@ -135,9 +136,7 @@ async def get_database_info() -> dict:
                 "database_name": database_name,
                 "connection_count": connection_count,
                 "pool_size": engine.pool.size() if engine.pool else None,
-                "checked_out_connections": (
-                    engine.pool.checkedout() if engine.pool else None
-                ),
+                "checked_out_connections": (engine.pool.checkedout() if engine.pool else None),
             }
     except Exception as e:
         return {

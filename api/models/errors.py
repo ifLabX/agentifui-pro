@@ -4,6 +4,7 @@ Error response Pydantic models.
 This module defines the error response models following the schema
 defined in contracts/errors.yaml for consistent error handling.
 """
+
 import uuid
 from datetime import datetime
 from enum import Enum
@@ -35,15 +36,9 @@ class ErrorResponse(BaseModel):
 
     error: str = Field(..., description="Error type or code")
     message: str = Field(..., description="Human-readable error message")
-    detail: Optional[str] = Field(
-        None, description="Additional error details for debugging"
-    )
-    timestamp: str = Field(
-        ..., description="ISO 8601 timestamp when error occurred"
-    )
-    request_id: Optional[str] = Field(
-        None, description="Unique request identifier for error tracking"
-    )
+    detail: Optional[str] = Field(None, description="Additional error details for debugging")
+    timestamp: str = Field(..., description="ISO 8601 timestamp when error occurred")
+    request_id: Optional[str] = Field(None, description="Unique request identifier for error tracking")
 
     class Config:
         """Pydantic configuration."""
@@ -60,9 +55,7 @@ class ValidationError(BaseModel):
 
     field: str = Field(..., description="Field name that failed validation")
     message: str = Field(..., description="Validation error message")
-    value: Optional[Any] = Field(
-        None, description="The invalid value that was provided"
-    )
+    value: Optional[Any] = Field(None, description="The invalid value that was provided")
 
     class Config:
         """Pydantic configuration."""
@@ -78,16 +71,10 @@ class ValidationErrorResponse(BaseModel):
     field-level error information.
     """
 
-    error: str = Field(
-        default="VALIDATION_ERROR", description="Error type indicating validation failure"
-    )
+    error: str = Field(default="VALIDATION_ERROR", description="Error type indicating validation failure")
     message: str = Field(..., description="General validation error message")
-    timestamp: str = Field(
-        ..., description="ISO 8601 timestamp when error occurred"
-    )
-    validation_errors: list[ValidationError] = Field(
-        ..., description="Specific field validation errors"
-    )
+    timestamp: str = Field(..., description="ISO 8601 timestamp when error occurred")
+    validation_errors: list[ValidationError] = Field(..., description="Specific field validation errors")
 
     class Config:
         """Pydantic configuration."""
@@ -107,12 +94,8 @@ class ServiceUnavailableError(BaseModel):
         description="Error indicating service is temporarily unavailable",
     )
     message: str = Field(..., description="Service unavailable message")
-    timestamp: str = Field(
-        ..., description="ISO 8601 timestamp when error occurred"
-    )
-    retry_after: Optional[int] = Field(
-        None, ge=1, description="Suggested retry delay in seconds"
-    )
+    timestamp: str = Field(..., description="ISO 8601 timestamp when error occurred")
+    retry_after: Optional[int] = Field(None, ge=1, description="Suggested retry delay in seconds")
 
     class Config:
         """Pydantic configuration."""

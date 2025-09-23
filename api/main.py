@@ -4,6 +4,7 @@ FastAPI application entry point.
 This module sets up the FastAPI application with middleware, routers,
 and dependency injection for the Agentifui Pro API.
 """
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI

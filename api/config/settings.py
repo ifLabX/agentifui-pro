@@ -4,6 +4,7 @@ Application configuration management with Pydantic Settings.
 This module provides type-safe configuration management using environment variables
 with validation and default values.
 """
+
 from functools import lru_cache
 
 from pydantic import ConfigDict, Field, field_validator
@@ -21,9 +22,7 @@ class Settings(BaseSettings):
     # Application Settings
     app_name: str = Field(default="Agentifui Pro API", env="APP_NAME")
     app_version: str = Field(default="0.1.0", env="APP_VERSION")
-    app_description: str = Field(
-        default="Backend API for Agentifui Pro", env="APP_DESCRIPTION"
-    )
+    app_description: str = Field(default="Backend API for Agentifui Pro", env="APP_DESCRIPTION")
     debug: bool = Field(default=False, env="DEBUG")
 
     # Server Configuration
@@ -33,23 +32,13 @@ class Settings(BaseSettings):
     # Database Configuration
     database_url: str = Field(..., env="DATABASE_URL")
     database_pool_size: int = Field(default=10, env="DATABASE_POOL_SIZE", gt=0, le=100)
-    database_pool_max_overflow: int = Field(
-        default=20, env="DATABASE_POOL_MAX_OVERFLOW", ge=0, le=100
-    )
-    database_pool_timeout: int = Field(
-        default=30, env="DATABASE_POOL_TIMEOUT", gt=0, le=300
-    )
-    database_pool_recycle: int = Field(
-        default=3600, env="DATABASE_POOL_RECYCLE", gt=0
-    )
+    database_pool_max_overflow: int = Field(default=20, env="DATABASE_POOL_MAX_OVERFLOW", ge=0, le=100)
+    database_pool_timeout: int = Field(default=30, env="DATABASE_POOL_TIMEOUT", gt=0, le=300)
+    database_pool_recycle: int = Field(default=3600, env="DATABASE_POOL_RECYCLE", gt=0)
 
     # Health Check Configuration
-    health_check_timeout: int = Field(
-        default=5, env="HEALTH_CHECK_TIMEOUT", gt=0, le=30
-    )
-    database_health_check_timeout: int = Field(
-        default=10, env="DATABASE_HEALTH_CHECK_TIMEOUT", gt=0, le=60
-    )
+    health_check_timeout: int = Field(default=5, env="HEALTH_CHECK_TIMEOUT", gt=0, le=30)
+    database_health_check_timeout: int = Field(default=10, env="DATABASE_HEALTH_CHECK_TIMEOUT", gt=0, le=60)
 
     # Logging Configuration
     log_level: str = Field(default="INFO", env="LOG_LEVEL")
@@ -59,18 +48,12 @@ class Settings(BaseSettings):
     )
 
     # Security Settings (for future use)
-    secret_key: SecretStr = Field(
-        default="your-secret-key-here-change-in-production", env="SECRET_KEY"
-    )
+    secret_key: SecretStr = Field(default="your-secret-key-here-change-in-production", env="SECRET_KEY")
     algorithm: str = Field(default="HS256", env="ALGORITHM")
-    access_token_expire_minutes: int = Field(
-        default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES", gt=0
-    )
+    access_token_expire_minutes: int = Field(default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES", gt=0)
 
     # CORS Settings
-    cors_origins: list[str] = Field(
-        default=["http://localhost:3000"], env="CORS_ORIGINS"
-    )
+    cors_origins: list[str] = Field(default=["http://localhost:3000"], env="CORS_ORIGINS")
     cors_allow_credentials: bool = Field(default=True, env="CORS_ALLOW_CREDENTIALS")
     cors_allow_methods: list[str] = Field(default=["*"], env="CORS_ALLOW_METHODS")
     cors_allow_headers: list[str] = Field(default=["*"], env="CORS_ALLOW_HEADERS")
@@ -116,6 +99,7 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             # Handle JSON string format
             import json
+
             try:
                 return json.loads(v)
             except json.JSONDecodeError:
@@ -129,6 +113,7 @@ class Settings(BaseSettings):
         """Parse CORS methods from string or list."""
         if isinstance(v, str):
             import json
+
             try:
                 return json.loads(v)
             except json.JSONDecodeError:
@@ -141,6 +126,7 @@ class Settings(BaseSettings):
         """Parse CORS headers from string or list."""
         if isinstance(v, str):
             import json
+
             try:
                 return json.loads(v)
             except json.JSONDecodeError:
@@ -163,28 +149,27 @@ class Settings(BaseSettings):
             "changeme",
         ]
 
-        secret_value = v.get_secret_value() if hasattr(v, 'get_secret_value') else str(v)
+        secret_value = v.get_secret_value() if hasattr(v, "get_secret_value") else str(v)
 
         # In production, enforce strong secret key requirements
         if environment == "production":
             if secret_value in insecure_defaults:
                 raise ValueError(
-                    "Production environment requires a secure secret key. "
-                    "Default or common keys are not allowed."
+                    "Production environment requires a secure secret key. Default or common keys are not allowed."
                 )
 
             if len(secret_value) < 32:
-                raise ValueError(
-                    "Production secret key must be at least 32 characters long"
-                )
+                raise ValueError("Production secret key must be at least 32 characters long")
 
         # In development, warn about insecure keys but allow them
         elif environment == "development" and secret_value in insecure_defaults:
             import warnings
+
             warnings.warn(
                 f"Using default secret key in {environment} environment. "
                 "This is acceptable for development but MUST be changed for production.",
-                UserWarning, stacklevel=2
+                UserWarning,
+                stacklevel=2,
             )
 
         return v
@@ -195,7 +180,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
         # Make settings immutable
         frozen=True,
-        extra="ignore"  # Ignore extra fields for now
+        extra="ignore",  # Ignore extra fields for now
     )
 
 

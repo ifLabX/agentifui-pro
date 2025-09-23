@@ -3,6 +3,7 @@ Health check package initialization.
 
 This module provides health monitoring functionality for the FastAPI application.
 """
+
 from health.endpoints import router
 from health.models import (
     ConnectionPoolInfo,

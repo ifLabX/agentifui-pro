@@ -4,6 +4,7 @@ Contract tests for GET /health endpoint.
 These tests validate the health endpoint behavior according to the OpenAPI specification
 in contracts/health.yaml. Tests MUST fail until endpoint is implemented.
 """
+
 from datetime import datetime
 
 import pytest

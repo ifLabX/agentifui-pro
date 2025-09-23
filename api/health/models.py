@@ -4,6 +4,7 @@ Health status Pydantic models.
 This module defines the data models for health check responses
 following the OpenAPI specification in contracts/health.yaml.
 """
+
 from datetime import datetime
 from enum import Enum
 from typing import Optional
@@ -30,12 +31,8 @@ class MigrationStatus(str, Enum):
 class ConnectionPoolInfo(BaseModel):
     """Connection pool information model."""
 
-    active_connections: int = Field(
-        ..., ge=0, description="Number of active connections in the pool"
-    )
-    pool_size: int = Field(
-        ..., ge=1, description="Maximum size of the connection pool"
-    )
+    active_connections: int = Field(..., ge=0, description="Number of active connections in the pool")
+    pool_size: int = Field(..., ge=1, description="Maximum size of the connection pool")
 
     class Config:
         """Pydantic configuration."""
@@ -51,16 +48,10 @@ class HealthResponse(BaseModel):
     """
 
     status: HealthStatus = Field(..., description="Overall application health status")
-    timestamp: str = Field(
-        ..., description="ISO 8601 timestamp of the health check"
-    )
+    timestamp: str = Field(..., description="ISO 8601 timestamp of the health check")
     version: str = Field(..., description="Application version")
-    uptime_seconds: Optional[int] = Field(
-        None, ge=0, description="Application uptime in seconds"
-    )
-    errors: Optional[list[str]] = Field(
-        None, description="List of error messages if status is not healthy"
-    )
+    uptime_seconds: Optional[int] = Field(None, ge=0, description="Application uptime in seconds")
+    errors: Optional[list[str]] = Field(None, description="List of error messages if status is not healthy")
 
     class Config:
         """Pydantic configuration."""
@@ -76,24 +67,12 @@ class DatabaseHealthResponse(BaseModel):
     """
 
     status: HealthStatus = Field(..., description="Database health status")
-    timestamp: str = Field(
-        ..., description="ISO 8601 timestamp of the health check"
-    )
-    database_connected: bool = Field(
-        ..., description="Whether database connection is active"
-    )
-    connection_pool: Optional[ConnectionPoolInfo] = Field(
-        None, description="Connection pool metrics"
-    )
-    response_time_ms: Optional[int] = Field(
-        None, ge=0, description="Database response time in milliseconds"
-    )
-    migration_status: Optional[MigrationStatus] = Field(
-        None, description="Alembic migration status"
-    )
-    errors: Optional[list[str]] = Field(
-        None, description="List of error messages if status is not healthy"
-    )
+    timestamp: str = Field(..., description="ISO 8601 timestamp of the health check")
+    database_connected: bool = Field(..., description="Whether database connection is active")
+    connection_pool: Optional[ConnectionPoolInfo] = Field(None, description="Connection pool metrics")
+    response_time_ms: Optional[int] = Field(None, ge=0, description="Database response time in milliseconds")
+    migration_status: Optional[MigrationStatus] = Field(None, description="Alembic migration status")
+    errors: Optional[list[str]] = Field(None, description="List of error messages if status is not healthy")
 
     class Config:
         """Pydantic configuration."""
@@ -104,9 +83,7 @@ class DatabaseHealthResponse(BaseModel):
 # Utility functions for creating health responses
 
 
-def create_healthy_response(
-    version: str, uptime_seconds: Optional[int] = None
-) -> HealthResponse:
+def create_healthy_response(version: str, uptime_seconds: Optional[int] = None) -> HealthResponse:
     """
     Create a healthy application response.
 
@@ -125,9 +102,7 @@ def create_healthy_response(
     )
 
 
-def create_unhealthy_response(
-    version: str, errors: list[str], uptime_seconds: Optional[int] = None
-) -> HealthResponse:
+def create_unhealthy_response(version: str, errors: list[str], uptime_seconds: Optional[int] = None) -> HealthResponse:
     """
     Create an unhealthy application response.
 

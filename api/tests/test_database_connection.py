@@ -4,6 +4,7 @@ Database connection management tests.
 These tests validate that async database connection and session management work correctly.
 Tests MUST fail until database connection system is implemented.
 """
+
 import asyncio
 from unittest.mock import patch
 
@@ -14,6 +15,7 @@ def test_database_connection_module_exists():
     """Test that database connection module exists."""
     try:
         from database.connection import get_async_engine
+
         # Verify the function exists and is callable
         assert callable(get_async_engine)
     except ImportError:
@@ -24,6 +26,7 @@ def test_database_session_module_exists():
     """Test that database session module exists."""
     try:
         from database.session import get_db_session
+
         # Verify the function exists and is callable
         assert callable(get_db_session)
     except ImportError:
@@ -71,9 +74,7 @@ async def test_database_connection_context_manager():
         # Connection might fail due to no actual database
         # But should fail with database-related error, not structural error
         error_str = str(e).lower()
-        if not any(keyword in error_str for keyword in [
-            "database", "connection", "connect", "postgresql", "asyncpg"
-        ]):
+        if not any(keyword in error_str for keyword in ["database", "connection", "connect", "postgresql", "asyncpg"]):
             pytest.fail(f"Expected database-related error, got: {e}")
     finally:
         await engine.dispose()
@@ -112,9 +113,7 @@ async def test_database_session_lifecycle():
         # Session creation might fail due to no database connection
         # But should fail with database-related error, not structural error
         error_str = str(e).lower()
-        if not any(keyword in error_str for keyword in [
-            "database", "connection", "connect", "postgresql", "asyncpg"
-        ]):
+        if not any(keyword in error_str for keyword in ["database", "connection", "connect", "postgresql", "asyncpg"]):
             pytest.fail(f"Expected database-related error, got: {e}")
 
 
@@ -139,9 +138,9 @@ async def test_connection_error_handling():
     from database.connection import get_async_engine
 
     # Test with invalid database URL
-    with patch.dict("os.environ", {
-        "DATABASE_URL": "postgresql+asyncpg://invalid:invalid@nonexistent:5432/nonexistent"
-    }):
+    with patch.dict(
+        "os.environ", {"DATABASE_URL": "postgresql+asyncpg://invalid:invalid@nonexistent:5432/nonexistent"}
+    ):
         engine = get_async_engine()
 
         # Should handle connection errors gracefully
@@ -151,9 +150,7 @@ async def test_connection_error_handling():
 
         # Error should be connection-related, not structural
         error_str = str(exc_info.value).lower()
-        assert any(keyword in error_str for keyword in [
-            "connect", "connection", "host", "database", "authentication"
-        ])
+        assert any(keyword in error_str for keyword in ["connect", "connection", "host", "database", "authentication"])
 
         await engine.dispose()
 
@@ -167,6 +164,7 @@ def test_database_health_check_function():
         pytest.skip("Database health module not implemented yet")
 
     import inspect
+
     assert inspect.iscoroutinefunction(check_database_health), "Health check must be async"
 
 

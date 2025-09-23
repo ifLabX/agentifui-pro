@@ -4,6 +4,7 @@ Session dependency injection for FastAPI.
 This module provides async session management with dependency injection
 for FastAPI endpoints following session-per-request pattern.
 """
+
 from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker

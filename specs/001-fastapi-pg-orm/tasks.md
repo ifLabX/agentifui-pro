@@ -38,18 +38,18 @@
 - No src/ subdirectory - files directly in api/ with organized subdirectories
 
 ## Phase 3.1: Setup & Dependencies
-- [ ] T001 Create organized directory structure in `api/` with config/, database/, health/, models/, middleware/ subdirectories
-- [ ] T002 Update `api/pyproject.toml` with SQLAlchemy 2.0, asyncpg, Alembic, Pydantic, pytest-asyncio dependencies
-- [ ] T003 [P] Configure `api/alembic.ini` for async PostgreSQL connection (no database creation)
-- [ ] T004 [P] Create `api/.env.example` template with all required environment variables and validation comments
+- [x] T001 Create organized directory structure in `api/` with config/, database/, health/, models/, middleware/ subdirectories
+- [x] T002 Update `api/pyproject.toml` with SQLAlchemy 2.0, asyncpg, Alembic, Pydantic, pytest-asyncio dependencies
+- [x] T003 [P] Configure `api/alembic.ini` for async PostgreSQL connection (no database creation)
+- [x] T004 [P] Create `api/.env.example` template with all required environment variables and validation comments
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
-- [ ] T005 [P] Contract test GET /health endpoint in `api/tests/test_health_endpoint.py`
-- [ ] T006 [P] Contract test GET /health/db endpoint in `api/tests/test_health_db_endpoint.py`
-- [ ] T007 [P] Configuration validation tests in `api/tests/test_config_validation.py`
-- [ ] T008 [P] Database connection management tests in `api/tests/test_database_connection.py`
-- [ ] T009 [P] Error response schema validation tests in `api/tests/test_error_schemas.py`
+- [x] T005 [P] Contract test GET /health endpoint in `api/tests/test_health_endpoint.py`
+- [x] T006 [P] Contract test GET /health/db endpoint in `api/tests/test_health_db_endpoint.py`
+- [x] T007 [P] Configuration validation tests in `api/tests/test_config_validation.py`
+- [x] T008 [P] Database connection management tests in `api/tests/test_database_connection.py`
+- [x] T009 [P] Error response schema validation tests in `api/tests/test_error_schemas.py`
 
 ## Phase 3.3: Core Configuration (ONLY after tests are failing)
 - [ ] T010 [P] Application configuration management with Pydantic Settings in `api/config/settings.py`

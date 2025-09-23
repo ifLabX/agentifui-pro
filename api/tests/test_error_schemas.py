@@ -13,9 +13,10 @@ def test_error_response_model_exists():
     """Test that ErrorResponse model exists."""
     try:
         from models.errors import ErrorResponse
+
         # Verify the model exists and is a Pydantic model
         assert ErrorResponse is not None
-        assert hasattr(ErrorResponse, 'model_fields')
+        assert hasattr(ErrorResponse, "model_fields")
     except ImportError:
         pytest.fail("ErrorResponse model must exist in models.errors module")
 
@@ -25,11 +26,7 @@ def test_error_response_required_fields():
     from models.errors import ErrorResponse
 
     # Test with all required fields
-    error_data = {
-        "error": "TEST_ERROR",
-        "message": "Test error message",
-        "timestamp": "2025-09-23T10:30:00Z"
-    }
+    error_data = {"error": "TEST_ERROR", "message": "Test error message", "timestamp": "2025-09-23T10:30:00Z"}
 
     error_response = ErrorResponse(**error_data)
 
@@ -65,7 +62,7 @@ def test_error_response_optional_fields():
         "message": "Test error message",
         "timestamp": "2025-09-23T10:30:00Z",
         "detail": "Additional error details",
-        "request_id": "550e8400-e29b-41d4-a716-446655440000"
+        "request_id": "550e8400-e29b-41d4-a716-446655440000",
     }
 
     error_response = ErrorResponse(**error_data)
@@ -78,9 +75,10 @@ def test_validation_error_response_model_exists():
     """Test that ValidationErrorResponse model exists."""
     try:
         from models.errors import ValidationErrorResponse
+
         # Verify the model exists and is a Pydantic model
         assert ValidationErrorResponse is not None
-        assert hasattr(ValidationErrorResponse, 'model_fields')
+        assert hasattr(ValidationErrorResponse, "model_fields")
     except ImportError:
         pytest.fail("ValidationErrorResponse model must exist in models.errors module")
 
@@ -91,14 +89,14 @@ def test_validation_error_response_structure():
 
     validation_errors = [
         ValidationError(field="database_url", message="Invalid PostgreSQL connection string"),
-        ValidationError(field="timeout", message="Must be positive integer")
+        ValidationError(field="timeout", message="Must be positive integer"),
     ]
 
     error_data = {
         "error": "VALIDATION_ERROR",
         "message": "Request validation failed",
         "timestamp": "2025-09-23T10:30:00Z",
-        "validation_errors": validation_errors
+        "validation_errors": validation_errors,
     }
 
     validation_response = ValidationErrorResponse(**error_data)
@@ -112,11 +110,7 @@ def test_validation_error_model_structure():
     """Test that ValidationError model has correct structure."""
     from models.errors import ValidationError
 
-    validation_error = ValidationError(
-        field="database_url",
-        message="Invalid format",
-        value="invalid-url"
-    )
+    validation_error = ValidationError(field="database_url", message="Invalid format", value="invalid-url")
 
     assert validation_error.field == "database_url"
     assert validation_error.message == "Invalid format"
@@ -134,7 +128,7 @@ def test_service_unavailable_error_model():
         "error": "SERVICE_UNAVAILABLE",
         "message": "Service temporarily unavailable",
         "timestamp": "2025-09-23T10:30:00Z",
-        "retry_after": 30
+        "retry_after": 30,
     }
 
     service_error = ServiceUnavailableError(**error_data)
@@ -150,10 +144,7 @@ def test_error_enum_validation():
     # Test that error field only accepts VALIDATION_ERROR
     with pytest.raises(ValidationError):
         ValidationErrorResponse(
-            error="INVALID_ERROR_TYPE",
-            message="Test",
-            timestamp="2025-09-23T10:30:00Z",
-            validation_errors=[]
+            error="INVALID_ERROR_TYPE", message="Test", timestamp="2025-09-23T10:30:00Z", validation_errors=[]
         )
 
 
@@ -162,18 +153,10 @@ def test_timestamp_format_validation():
     from models.errors import ErrorResponse
 
     # Test with valid ISO 8601 timestamp
-    valid_timestamps = [
-        "2025-09-23T10:30:00Z",
-        "2025-09-23T10:30:00.123Z",
-        "2025-09-23T10:30:00+00:00"
-    ]
+    valid_timestamps = ["2025-09-23T10:30:00Z", "2025-09-23T10:30:00.123Z", "2025-09-23T10:30:00+00:00"]
 
     for timestamp in valid_timestamps:
-        error_response = ErrorResponse(
-            error="TEST_ERROR",
-            message="Test",
-            timestamp=timestamp
-        )
+        error_response = ErrorResponse(error="TEST_ERROR", message="Test", timestamp=timestamp)
         assert error_response.timestamp == timestamp
 
 
@@ -185,10 +168,7 @@ def test_request_id_uuid_validation():
     valid_uuid = "550e8400-e29b-41d4-a716-446655440000"
 
     error_response = ErrorResponse(
-        error="TEST_ERROR",
-        message="Test",
-        timestamp="2025-09-23T10:30:00Z",
-        request_id=valid_uuid
+        error="TEST_ERROR", message="Test", timestamp="2025-09-23T10:30:00Z", request_id=valid_uuid
     )
 
     assert error_response.request_id == valid_uuid
@@ -202,7 +182,7 @@ def test_error_response_serialization():
         error="DATABASE_CONNECTION_ERROR",
         message="Unable to connect to database",
         timestamp="2025-09-23T10:30:00Z",
-        detail="Connection timeout after 30 seconds"
+        detail="Connection timeout after 30 seconds",
     )
 
     # Should be serializable to dict
@@ -222,14 +202,14 @@ def test_validation_error_nested_structure():
     # Test with multiple validation errors
     validation_errors = [
         ValidationError(field="config.database_url", message="Required field missing"),
-        ValidationError(field="config.pool_size", message="Must be positive", value=-1)
+        ValidationError(field="config.pool_size", message="Must be positive", value=-1),
     ]
 
     validation_response = ValidationErrorResponse(
         error="VALIDATION_ERROR",
         message="Configuration validation failed",
         timestamp="2025-09-23T10:30:00Z",
-        validation_errors=validation_errors
+        validation_errors=validation_errors,
     )
 
     serialized = validation_response.model_dump()
@@ -243,11 +223,7 @@ def test_error_models_immutability():
     """Test that error models are immutable if configured as frozen."""
     from models.errors import ErrorResponse
 
-    error_response = ErrorResponse(
-        error="TEST_ERROR",
-        message="Test",
-        timestamp="2025-09-23T10:30:00Z"
-    )
+    error_response = ErrorResponse(error="TEST_ERROR", message="Test", timestamp="2025-09-23T10:30:00Z")
 
     # If frozen=True is configured, this should raise an error
     try:
@@ -272,8 +248,6 @@ def test_error_response_factory_functions():
     assert "Connection failed" in db_error.message
 
     # Test validation error factory
-    validation_error = create_validation_error([
-        {"field": "test", "message": "invalid"}
-    ])
+    validation_error = create_validation_error([{"field": "test", "message": "invalid"}])
     assert validation_error.error == "VALIDATION_ERROR"
     assert len(validation_error.validation_errors) == 1

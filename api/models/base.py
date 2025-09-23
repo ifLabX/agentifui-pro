@@ -4,6 +4,7 @@ Base database model with UUID primary key support.
 This module provides the base model class for all database entities
 with PostgreSQL UUIDv7 support and common fields.
 """
+
 import uuid
 from datetime import datetime
 from typing import Any
@@ -91,10 +92,7 @@ class Base(DeclarativeBase):
         Returns:
             dict: Model data as dictionary
         """
-        return {
-            column.name: getattr(self, column.name)
-            for column in self.__table__.columns
-        }
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
 # Export the base class for model inheritance

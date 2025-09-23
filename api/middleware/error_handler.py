@@ -4,6 +4,7 @@ Global error handling middleware for FastAPI.
 This module provides structured error handling middleware that catches
 exceptions and returns standardized error responses.
 """
+
 import logging
 import traceback
 from typing import Union
@@ -70,9 +71,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             # Handle all other unexpected exceptions
             return await self._handle_unexpected_error(request, exc)
 
-    async def _handle_http_exception(
-        self, request: Request, exc: HTTPException
-    ) -> JSONResponse:
+    async def _handle_http_exception(self, request: Request, exc: HTTPException) -> JSONResponse:
         """
         Handle FastAPI HTTP exceptions.
 
@@ -92,9 +91,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             503: ErrorType.SERVICE_UNAVAILABLE,
         }
 
-        error_type = error_type_mapping.get(
-            exc.status_code, ErrorType.INTERNAL_SERVER_ERROR
-        )
+        error_type = error_type_mapping.get(exc.status_code, ErrorType.INTERNAL_SERVER_ERROR)
 
         error_response = create_error_response(
             error_type=error_type,
@@ -107,9 +104,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             content=error_response.dict(),
         )
 
-    async def _handle_validation_error(
-        self, request: Request, exc: PydanticValidationError
-    ) -> JSONResponse:
+    async def _handle_validation_error(self, request: Request, exc: PydanticValidationError) -> JSONResponse:
         """
         Handle Pydantic validation errors.
 
@@ -124,11 +119,13 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
         validation_errors = []
         for error in exc.errors():
             field_path = ".".join(str(loc) for loc in error["loc"])
-            validation_errors.append({
-                "field": field_path,
-                "message": error["msg"],
-                "value": error.get("input"),
-            })
+            validation_errors.append(
+                {
+                    "field": field_path,
+                    "message": error["msg"],
+                    "value": error.get("input"),
+                }
+            )
 
         error_response = create_validation_error(
             validation_errors=validation_errors,
@@ -159,8 +156,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
         if isinstance(exc, DisconnectionError):
             error_response = create_database_error(
                 message="Database connection lost",
-                detail="The database connection was lost during the request"
-                if self.settings.debug else None,
+                detail="The database connection was lost during the request" if self.settings.debug else None,
                 request_id=self._get_request_id(request),
             )
         else:
@@ -175,9 +171,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             content=error_response.dict(),
         )
 
-    async def _handle_unexpected_error(
-        self, request: Request, exc: Exception
-    ) -> JSONResponse:
+    async def _handle_unexpected_error(self, request: Request, exc: Exception) -> JSONResponse:
         """
         Handle unexpected exceptions.
 
@@ -191,7 +185,9 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
         # Log the full exception for debugging
         logger.error(
             "Unexpected error processing %s %s: %s",
-            request.method, request.url, exc,
+            request.method,
+            request.url,
+            exc,
             exc_info=True,
         )
 

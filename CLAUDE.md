@@ -36,9 +36,16 @@ feat: add bundle analyzer configuration
 fix: resolve TypeScript compilation errors
 ```
 
-## Internationalization (i18n)
+## Internationalization (i18n) Rules
 
 **Architecture**: Next-intl with automated namespace management and type safety
+
+### Development Rules
+- **Single t() function**: Always use `t('namespace.section.key')` format
+- **Kebab-case keys**: Match component naming (`sign-in`, not `SignIn`)
+- **Server vs Client**: Import from `next-intl/server` for server components
+- **Type safety**: All translation keys are compile-time validated
+- **No hardcoded strings**: All user-facing text must use i18n
 
 ### Quick Commands
 ```bash
@@ -47,71 +54,29 @@ pnpm i18n:locale <locale>     # Add new language (auto-detects common names)
 pnpm i18n:namespace <name>    # Add feature namespace (updates types)
 ```
 
-### Development Notes
-- **Single t() function**: Always use `t('namespace.section.key')` format
-- **Kebab-case keys**: Match component naming (`sign-in`, not `SignIn`)  
-- **Server vs Client**: Import from `next-intl/server` for server components
-- **Type safety**: All translation keys are compile-time validated
-- **Details**: See `web/i18n/README.md` for complete documentation
-
-## Development Commands
-
-### Backend Development (api/)
-```bash
-# Run development server with hot reload
-uv run --project api dev
-
-# Lint and format Python code
-uv run --project api ruff check --fix api/
-uv run --project api ruff format api/
-
-# Check without fixing
-uv run --project api ruff check api/
-```
-
-### Frontend Development (web/)
-```bash
-cd web
-
-# Code quality and analysis
-pnpm lint                        # Comprehensive linting (oxlint + eslint with caching)
-pnpm lint-complexity             # Check code complexity (max: 15)
-pnpm eslint-fix                  # ESLint with auto-fix and caching
-pnpm format                      # Prettier formatting
-pnpm type-check                  # TypeScript checking
-pnpm quality                     # Run all quality checks (type-check + lint + format:check)
-
-# Testing
-pnpm test                        # Run Jest tests
-```
-
-## Package Management & Tooling
+## Code Quality Standards
 
 ### Python (Backend)
-- **Manager**: `uv` (modern Python package manager)
-- **Runtime**: Python >=3.12
 - **Linting**: Ruff with extensive ruleset (120 char line length)
-- **Dependencies**: FastAPI, Uvicorn, Pydantic
+- **Type hints**: Required for all function signatures
+- **Docstrings**: Required for all public functions and classes
+- **Error handling**: Use specific exceptions, never bare `except:`
+- **Async patterns**: Prefer async/await for I/O operations
 
-### TypeScript/JavaScript (Frontend) 
-- **Manager**: `pnpm@10.17.0`
-- **Runtime**: Node.js >=20.0.0
-- **Framework**: Next.js 15 with App Router
-- **Styling**: Tailwind CSS v4 with custom theme extensions
-- **Testing**: Jest with React Testing Library and Happy DOM
-- **Linting**: Dual-layer approach with oxlint (fast) + ESLint (comprehensive)
-- **Formatting**: Prettier with import sorting
-- **Bundle Analysis**: Webpack Bundle Analyzer for performance monitoring
-
-## Code Quality Configuration
-
-### Python Linting (api/.ruff.toml)
+#### Ruff Configuration (api/.ruff.toml)
 - Comprehensive ruleset including security, bugbear, and style rules
 - Line length: 120 characters
 - Excludes migrations, .venv, __pycache__
 - Per-file ignores for __init__.py, configs/, tests/
 
-### TypeScript Linting (web/eslint.config.mjs)
+### TypeScript (Frontend)
+- **Strict mode**: TypeScript strict mode enabled
+- **No `any` types**: Use proper type definitions
+- **Component props**: All props must be typed with interfaces
+- **Event handlers**: Properly typed event parameters
+- **Complexity limit**: Maximum cyclomatic complexity of 15
+
+#### ESLint Configuration (web/eslint.config.mjs)
 - Next.js recommended config + TypeScript
 - Oxlint plugin integration for enhanced performance
 - Caching enabled for faster subsequent runs
@@ -124,80 +89,89 @@ Frontend uses automatic import sorting via Prettier plugin:
 - Internal imports by type (@/types, @/lib, @/components, etc.)
 - Relative imports last
 
-## Pre-commit Hooks
+## Architecture Constraints
+
+### Backend Patterns
+- **Dependency injection**: Use FastAPI's dependency injection for database sessions
+- **Async everywhere**: All database operations must be async
+- **Error handling**: Structured error responses with request tracing
+- **Health monitoring**: All services must expose health endpoints
+- **Environment config**: All settings via Pydantic Settings with validation
+
+### Frontend Patterns
+- **App Router only**: Use Next.js 15 App Router, no Pages Router
+- **Server Components**: Prefer Server Components over Client Components
+- **Type safety**: Full TypeScript coverage with strict mode
+- **Performance**: Use React.memo, useCallback, useMemo appropriately
+- **Accessibility**: All components must meet WCAG 2.1 AA standards
+
+## Testing Requirements
+
+### Backend Testing
+- **Coverage**: Minimum 80% test coverage
+- **Async tests**: Use pytest-asyncio for async code
+- **Test isolation**: Each test must be independent
+- **Database tests**: Use test database with transactions rollback
+
+### Frontend Testing
+- **Jest + RTL**: Jest with React Testing Library
+- **Component testing**: Test behavior, not implementation
+- **Accessibility**: Include accessibility tests
+- **User interaction**: Test user flows, not just rendering
+
+## Security Standards
+
+### General Security
+- **No secrets in code**: Use environment variables only
+- **Input validation**: Validate all inputs with Pydantic/Zod
+- **SQL injection**: Use ORM query builders, never raw SQL with user input
+- **XSS protection**: Sanitize all user-generated content
+
+### API Security
+- **CORS**: Properly configured CORS origins
+- **Rate limiting**: Implement rate limiting for public endpoints
+- **Authentication**: JWT tokens with proper expiration
+- **Authorization**: Role-based access control
+
+## Pre-commit Quality Gates
 
 The repository uses Husky with monorepo-aware pre-commit hooks that:
 - Detect which workspace (api/ or web/) has changes
 - Run appropriate linters only for modified code
 - Apply automatic fixes where possible
 - Enforce code quality before commits
+- Block commits if quality checks fail
 
-## Testing Framework
-
-### Frontend Testing Stack
-- **Jest**: Testing framework with TypeScript support
-- **React Testing Library**: Component testing utilities
-- **Happy DOM**: Lightweight DOM implementation for faster tests
-- **Coverage**: Comprehensive test coverage reporting
-
-### Test Configuration
-- `jest.config.ts`: Jest configuration with Next.js integration
-- `jest.setup.ts`: Global test setup and utilities
-- `__tests__/`: Test files location
-
-## Key Files to Understand
-
-- `api/main.py`: FastAPI application entry point with CORS middleware
-- `web/app/`: Next.js App Router pages and layouts
-- `web/i18n/config.ts`: Single source of truth for i18n configuration
-- `web/types/i18n.d.ts`: Auto-generated i18n type definitions
-- `api/.ruff.toml`: Python linting configuration
-- `web/eslint.config.mjs`: TypeScript linting configuration
-- `web/tailwind.config.ts`: Tailwind CSS configuration with theme extensions
-- `web/jest.config.ts`: Jest testing configuration
-- Root `package.json`: Monorepo scripts and husky configuration
-
-## Pull Request Creation Guidelines
+## Pull Request Guidelines
 
 ### Before Creating PRs
 - **Always read PR template first**: Before using `gh pr create` or GitHub MCP to create PRs, you MUST read `.github/pull_request_template.md` to understand the required format and checklist
 - **Follow template structure**: Use the template's format including summary, type checkboxes, and issue linking
 - **All PRs in English**: Ensure all PR titles, descriptions, and comments are written in English
 
-## Backend Architecture Foundation (Feature 001)
+### Quality Requirements
+- **All checks must pass**: Linting, type checking, tests
+- **No console.log**: Remove all debugging statements
+- **No TODO comments**: Complete implementation or create issues
+- **Documentation updates**: Update docs if changing public APIs
+- **Breaking changes**: Must be explicitly marked and justified
 
-**Status**: In Development | **Branch**: `001-fastapi-pg-orm`
+## Key Files Reference
 
-### Database Architecture
-- **ORM**: SQLAlchemy 2.0 with async support and asyncpg driver
-- **Migrations**: Alembic with async environment configuration
-- **Connection Management**: Async session-per-request pattern with connection pooling
-- **Future-Proofing**: PostgreSQL 18 UUIDv7 support with UUID4 fallback strategy
+### Backend (api/)
+- `main.py`: FastAPI application entry point with CORS middleware
+- `.ruff.toml`: Python linting configuration
+- `pyproject.toml`: Dependencies and project configuration
+- `README.md`: Development setup and commands
 
-### Key Backend Components
-- `api/database/`: Database connection and session management
-- `api/config/`: Environment-based configuration with Pydantic validation
-- `api/models/`: SQLAlchemy async models with UUID primary keys
-- `api/health/`: Health monitoring endpoints and models
-- `api/middleware/`: Error handling and request processing
-- `api/alembic/`: Migration framework with async support
-- `api/tests/`: FastAPI test client with async database testing
+### Frontend (web/)
+- `app/`: Next.js App Router pages and layouts
+- `i18n/config.ts`: Single source of truth for i18n configuration
+- `types/i18n.d.ts`: Auto-generated i18n type definitions
+- `eslint.config.mjs`: TypeScript linting configuration
+- `tailwind.config.ts`: Tailwind CSS configuration with theme extensions
+- `jest.config.ts`: Jest testing configuration
 
-### Health Monitoring
-- `GET /health`: Application health with uptime and version info
-- `GET /health/db`: Database connectivity with connection pool metrics
-- Error responses follow standardized schema in `contracts/errors.yaml`
-
-### Development Commands
-```bash
-cd api
-uv run dev                    # Start with auto-reload
-uv run alembic upgrade head   # Apply migrations
-uv run pytest               # Run async tests
-```
-
-### Architecture Patterns
-- Dependency injection for database sessions via FastAPI
-- Row Level Security (RLS) ready table design
-- Environment-specific configuration management
-- Structured error handling with request tracing
+### Root
+- `package.json`: Monorepo scripts and husky configuration
+- `CONTRIBUTING.md`: Contribution guidelines

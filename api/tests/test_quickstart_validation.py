@@ -35,6 +35,7 @@ def test_quickstart_health_endpoint_response():
 
     # Timestamp should be ISO format
     from datetime import datetime
+
     try:
         datetime.fromisoformat(data["timestamp"])
     except ValueError:
@@ -48,14 +49,16 @@ def test_quickstart_database_health_endpoint():
     client = TestClient(app)
 
     # Mock database health for quickstart validation
-    with patch('database.connection.check_database_connection', new_callable=AsyncMock) as mock_conn, \
-         patch('database.connection.get_database_info', new_callable=AsyncMock) as mock_info:
+    with (
+        patch("database.connection.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("database.connection.get_database_info", new_callable=AsyncMock) as mock_info,
+    ):
         mock_conn.return_value = True
         mock_info.return_value = {
             "connected": True,
             "pool_size": 10,
             "checked_out_connections": 2,
-            "version": "PostgreSQL 14.0"
+            "version": "PostgreSQL 14.0",
         }
 
         response = client.get("/health/db")
@@ -83,7 +86,7 @@ def test_quickstart_database_unhealthy_scenario():
     client = TestClient(app)
 
     # Mock unhealthy database
-    with patch('database.connection.check_database_connection') as mock_conn:
+    with patch("database.connection.check_database_connection") as mock_conn:
         mock_conn.return_value = False
 
         response = client.get("/health/db")
@@ -105,7 +108,7 @@ async def test_quickstart_database_connection_test():
     from database.connection import get_async_engine
 
     # Mock the database engine and connection
-    with patch('database.connection.get_async_engine') as mock_get_engine:
+    with patch("database.connection.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_conn = AsyncMock()
         mock_result = AsyncMock()
@@ -124,7 +127,8 @@ async def test_quickstart_database_connection_test():
 
         async with engine.connect() as conn:
             from sqlalchemy import text
-            result = await conn.execute(text('SELECT 1 as test'))
+
+            result = await conn.execute(text("SELECT 1 as test"))
             test_value = result.scalar()
 
         await engine.dispose()
@@ -227,14 +231,16 @@ async def test_quickstart_async_client_scenario():
         assert health_data["status"] == "healthy"
 
         # Test database health endpoint
-        with patch('database.connection.check_database_connection') as mock_conn, \
-             patch('database.connection.get_database_info') as mock_info:
+        with (
+            patch("database.connection.check_database_connection") as mock_conn,
+            patch("database.connection.get_database_info") as mock_info,
+        ):
             mock_conn.return_value = True
             mock_info.return_value = {
                 "connected": True,
                 "pool_size": 10,
                 "checked_out_connections": 2,
-                "version": "PostgreSQL 14.0"
+                "version": "PostgreSQL 14.0",
             }
 
             db_response = await client.get("/health/db")
@@ -289,8 +295,8 @@ def test_quickstart_development_server_startup():
 
     # Verify app can be created and configured
     assert app is not None
-    assert hasattr(app, 'router')
-    assert hasattr(app, 'middleware_stack')
+    assert hasattr(app, "router")
+    assert hasattr(app, "middleware_stack")
 
     # Verify essential routes are registered
     client = TestClient(app)
@@ -301,6 +307,7 @@ def test_quickstart_development_server_startup():
 
     # Verify app configuration
     from config.settings import get_settings
+
     settings = get_settings()
 
     # Should have required configuration for quickstart
@@ -330,14 +337,16 @@ def test_quickstart_verification_scenarios():
     assert health_data["version"] == "0.1.0"
 
     # Scenario 2: Database health validation (mocked)
-    with patch('database.connection.check_database_connection') as mock_conn, \
-         patch('database.connection.get_database_info') as mock_info:
+    with (
+        patch("database.connection.check_database_connection") as mock_conn,
+        patch("database.connection.get_database_info") as mock_info,
+    ):
         mock_conn.return_value = True
         mock_info.return_value = {
             "connected": True,
             "pool_size": 10,
             "checked_out_connections": 2,
-            "version": "PostgreSQL 14.0"
+            "version": "PostgreSQL 14.0",
         }
 
         db_response = client.get("/health/db")
@@ -360,9 +369,9 @@ def test_quickstart_dependency_validation():
         import sqlalchemy
 
         # Verify versions are recent enough for quickstart
-        assert hasattr(fastapi, '__version__')
-        assert hasattr(sqlalchemy, '__version__')
-        assert hasattr(pydantic, '__version__')
+        assert hasattr(fastapi, "__version__")
+        assert hasattr(sqlalchemy, "__version__")
+        assert hasattr(pydantic, "__version__")
 
     except ImportError as e:
         pytest.fail(f"Required dependency missing: {e}")
@@ -425,7 +434,7 @@ def test_quickstart_logging_configuration():
     logger = logging.getLogger("test_logger")
 
     # Should be able to log at configured level
-    with patch('logging.getLogger') as mock_logger:
+    with patch("logging.getLogger") as mock_logger:
         mock_log = mock_logger.return_value
 
         # Test logging functionality

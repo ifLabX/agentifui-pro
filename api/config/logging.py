@@ -33,6 +33,7 @@ class JSONFormatter(logging.Formatter):
         """Get hostname for log metadata."""
         try:
             import socket
+
             return socket.gethostname()
         except Exception:
             return "unknown"
@@ -73,10 +74,28 @@ class JSONFormatter(logging.Formatter):
         extra_fields = {}
         for key, value in record.__dict__.items():
             if key not in {
-                "name", "msg", "args", "levelname", "levelno", "pathname", "filename",
-                "module", "exc_info", "exc_text", "stack_info", "lineno", "funcName",
-                "created", "msecs", "relativeCreated", "thread", "threadName",
-                "processName", "process", "message", "asctime"
+                "name",
+                "msg",
+                "args",
+                "levelname",
+                "levelno",
+                "pathname",
+                "filename",
+                "module",
+                "exc_info",
+                "exc_text",
+                "stack_info",
+                "lineno",
+                "funcName",
+                "created",
+                "msecs",
+                "relativeCreated",
+                "thread",
+                "threadName",
+                "processName",
+                "process",
+                "message",
+                "asctime",
             }:
                 extra_fields[key] = value
 
@@ -120,12 +139,7 @@ class HealthCheckFilter(logging.Filter):
 
         # Filter out health check endpoint requests
         message = record.getMessage().lower()
-        health_patterns = [
-            "get /health",
-            "get /health/db",
-            "health endpoint",
-            "health check"
-        ]
+        health_patterns = ["get /health", "get /health/db", "health endpoint", "health check"]
 
         return not any(pattern in message for pattern in health_patterns)
 
@@ -135,7 +149,7 @@ def setup_logging(
     log_format: Optional[str] = None,
     enable_json: bool = False,
     log_file: Optional[str] = None,
-    filter_health_checks: bool = True
+    filter_health_checks: bool = True,
 ) -> None:
     """
     Configure application logging.
@@ -206,8 +220,8 @@ def setup_logging(
             "log_level": log_level,
             "json_format": enable_json,
             "environment": settings.environment,
-            "filter_health_checks": filter_health_checks
-        }
+            "filter_health_checks": filter_health_checks,
+        },
     )
 
 

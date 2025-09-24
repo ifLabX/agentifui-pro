@@ -9,6 +9,7 @@ import asyncio
 import os
 import uuid
 from collections.abc import AsyncGenerator, Generator
+from contextlib import contextmanager
 from typing import Any
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -18,7 +19,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.pool import StaticPool
 
-from config.settings import Settings, get_settings
+from configs.settings import Settings, get_settings
 from database.session import get_db_session
 
 # Import application components
@@ -538,3 +539,89 @@ def performance_timer():
             self.stop()
 
     return Timer
+
+
+# Configuration test utilities for enhanced configuration management
+@contextmanager
+def mock_environment_variables(env_vars: dict[str, str]):
+    """
+    Context manager to temporarily set environment variables for testing.
+
+    Args:
+        env_vars: Dictionary of environment variable names and values to set
+
+    Example:
+        with mock_environment_variables({"DB_HOST": "test-host"}):
+            # Test code that uses DB_HOST environment variable
+            pass
+    """
+    original_values = {}
+
+    # Store original values and set new ones
+    for key, value in env_vars.items():
+        original_values[key] = os.environ.get(key)
+        os.environ[key] = value
+
+    try:
+        yield
+    finally:
+        # Restore original values
+        for key, original_value in original_values.items():
+            if original_value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = original_value
+
+
+@pytest.fixture
+def mock_database_config():
+    """Mock database configuration for testing."""
+    return {
+        "DB_HOST": "test-host",
+        "DB_PORT": "5432",
+        "DB_USERNAME": "test-user",
+        "DB_PASSWORD": "test-password",
+        "DB_DATABASE": "test-db",
+        "DB_DRIVER": "postgresql+asyncpg"
+    }
+
+
+@pytest.fixture
+def mock_production_config():
+    """Mock production configuration for testing security validation."""
+    return {
+        "ENVIRONMENT": "production",
+        "DB_HOST": "prod-host.example.com",
+        "DB_PORT": "5432",
+        "DB_USERNAME": "prod-user",
+        "DB_PASSWORD": "super-secure-production-password-32-chars-long",
+        "DB_DATABASE": "prod-db",
+        "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
+        "CORS_ORIGINS": "https://app.example.com,https://admin.example.com"
+    }
+
+
+@pytest.fixture
+def mock_development_config():
+    """Mock development configuration for testing."""
+    return {
+        "ENVIRONMENT": "development",
+        "DB_HOST": "localhost",
+        "DB_PORT": "5432",
+        "DB_USERNAME": "dev-user",
+        "DB_PASSWORD": "dev-password",
+        "DB_DATABASE": "dev-db",
+        "SECRET_KEY": "dev-secret-key",
+        "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001"
+    }
+
+
+@pytest.fixture
+def environment_variable_mocker():
+    """
+    Fixture providing the mock_environment_variables context manager.
+
+    Returns:
+        Function that takes a dict of env vars and returns a context manager
+    """
+    return mock_environment_variables

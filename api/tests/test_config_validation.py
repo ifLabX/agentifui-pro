@@ -14,7 +14,7 @@ import pytest
 def test_config_settings_class_exists():
     """Test that Settings configuration class exists."""
     try:
-        from config.settings import Settings
+        from configs.settings import Settings
 
         # Verify the class can be instantiated
         assert Settings is not None
@@ -25,7 +25,7 @@ def test_config_settings_class_exists():
 
 def test_config_settings_has_required_fields():
     """Test that Settings class has all required configuration fields."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     # Create instance to check fields
     settings = Settings()
@@ -46,7 +46,7 @@ def test_config_settings_has_required_fields():
 
 def test_config_database_url_validation():
     """Test that database URL validation works correctly."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     # Test with valid PostgreSQL URL
     with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
@@ -61,7 +61,7 @@ def test_config_database_url_validation():
 
 def test_config_pool_size_validation():
     """Test that database pool size validation works correctly."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     # Test with valid pool size
     with patch.dict(
@@ -80,7 +80,7 @@ def test_config_pool_size_validation():
 
 def test_config_log_level_validation():
     """Test that log level validation works correctly."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
@@ -101,7 +101,7 @@ def test_config_log_level_validation():
 
 def test_config_environment_defaults():
     """Test that configuration provides sensible defaults."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     # Test with minimal environment
     with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}, clear=True):
@@ -117,7 +117,7 @@ def test_config_environment_defaults():
 
 def test_config_cors_settings():
     """Test that CORS settings are properly configured."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     with patch.dict(
         os.environ,
@@ -135,7 +135,7 @@ def test_config_cors_settings():
 
 def test_config_health_check_settings():
     """Test that health check timeout settings are properly configured."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     with patch.dict(
         os.environ,
@@ -159,7 +159,7 @@ def test_config_health_check_settings():
 
 def test_config_feature_flags():
     """Test that feature flag settings work correctly."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     with patch.dict(
         os.environ,
@@ -181,7 +181,7 @@ def test_config_feature_flags():
 
 def test_config_settings_immutable():
     """Test that settings are immutable after creation."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
         settings = Settings()
@@ -194,7 +194,7 @@ def test_config_settings_immutable():
 def test_config_singleton_pattern():
     """Test that settings follow singleton pattern if implemented."""
     try:
-        from config.settings import get_settings
+        from configs.settings import get_settings
     except ImportError:
         # Singleton pattern not implemented, skip test
         pytest.skip("Singleton pattern not implemented")
@@ -208,7 +208,7 @@ def test_config_singleton_pattern():
 
 def test_config_validation_errors_descriptive():
     """Test that configuration validation errors are descriptive."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     # Test missing required field
     with patch.dict(os.environ, {}, clear=True):

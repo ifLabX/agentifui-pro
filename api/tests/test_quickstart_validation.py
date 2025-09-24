@@ -144,7 +144,7 @@ async def test_quickstart_database_connection_test():
 
 def test_quickstart_environment_configuration():
     """Test that environment configuration works as described in quickstart."""
-    from config.settings import Settings
+    from configs.settings import Settings
 
     # Test with quickstart example configuration
     test_env = {
@@ -269,7 +269,7 @@ def test_quickstart_error_response_format():
 
 def test_quickstart_application_metadata():
     """Test that application metadata matches quickstart expectations."""
-    from config.settings import get_settings
+    from configs.settings import get_settings
     from main import app
 
     settings = get_settings()
@@ -306,7 +306,7 @@ def test_quickstart_development_server_startup():
     assert health_response.status_code == 200
 
     # Verify app configuration
-    from config.settings import get_settings
+    from configs.settings import get_settings
 
     settings = get_settings()
 
@@ -426,7 +426,7 @@ def test_quickstart_logging_configuration():
     """Test that logging works as described in quickstart."""
     import logging
 
-    from config.settings import get_settings
+    from configs.settings import get_settings
 
     settings = get_settings()
 

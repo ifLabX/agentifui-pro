@@ -1,0 +1,520 @@
+openapi: 3.0.3
+info:
+  title: Database Management API
+  description: Enhanced database connection management and health monitoring for Agentifui Pro Backend
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.agentifui.pro
+    description: Production server
+
+paths:
+  /health/db:
+    get:
+      summary: Enhanced Database Health Check
+      description: Comprehensive database health check with detailed connection metrics, pool status, and migration information
+      operationId: getDatabaseHealth
+      tags:
+        - Health
+        - Database
+      responses:
+        '200':
+          description: Database is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnhancedDatabaseHealthResponse'
+        '503':
+          description: Database is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnhancedDatabaseHealthResponse'
+
+  /database/connections:
+    get:
+      summary: Database Connection Status
+      description: Returns detailed information about current database connections and pool status
+      operationId: getDatabaseConnections
+      tags:
+        - Database
+        - Monitoring
+      responses:
+        '200':
+          description: Connection information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseConnectionsResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /database/metrics:
+    get:
+      summary: Database Performance Metrics
+      description: Returns database performance metrics including query statistics, connection metrics, and pool performance
+      operationId: getDatabaseMetrics
+      tags:
+        - Database
+        - Monitoring
+      parameters:
+        - name: timeframe
+          in: query
+          description: Timeframe for metrics collection
+          required: false
+          schema:
+            type: string
+            enum: [1h, 6h, 24h, 7d]
+            default: 1h
+      responses:
+        '200':
+          description: Database metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseMetricsResponse'
+        '400':
+          description: Invalid timeframe parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /database/migration/status:
+    get:
+      summary: Database Migration Status
+      description: Returns current database migration status and schema version information
+      operationId: getMigrationStatus
+      tags:
+        - Database
+        - Migration
+      responses:
+        '200':
+          description: Migration status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationStatusResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    EnhancedDatabaseHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy, degraded]
+          description: Overall database health status
+        timestamp:
+          type: string
+          format: date-time
+          description: When the health check was performed
+        response_time_ms:
+          type: integer
+          description: Database response time in milliseconds
+        connection_info:
+          $ref: '#/components/schemas/DatabaseConnectionInfo'
+        pool_status:
+          $ref: '#/components/schemas/ConnectionPoolStatus'
+        migration_status:
+          $ref: '#/components/schemas/MigrationInfo'
+        performance_metrics:
+          $ref: '#/components/schemas/DatabasePerformanceMetrics'
+        errors:
+          type: array
+          items:
+            type: string
+          description: Any errors or issues detected
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Non-critical warnings
+        configuration_status:
+          $ref: '#/components/schemas/ConfigurationStatus'
+      required:
+        - status
+        - timestamp
+        - response_time_ms
+
+    DatabaseConnectionInfo:
+      type: object
+      properties:
+        connected:
+          type: boolean
+          description: Whether database connection is active
+        server_version:
+          type: string
+          description: PostgreSQL server version
+        database_name:
+          type: string
+          description: Current database name
+        server_encoding:
+          type: string
+          description: Server character encoding
+        client_encoding:
+          type: string
+          description: Client character encoding
+        timezone:
+          type: string
+          description: Database server timezone
+        connection_count:
+          type: integer
+          description: Total active connections to this database
+        max_connections:
+          type: integer
+          description: Maximum allowed connections
+      required:
+        - connected
+
+    ConnectionPoolStatus:
+      type: object
+      properties:
+        pool_size:
+          type: integer
+          description: Configured connection pool size
+        active_connections:
+          type: integer
+          description: Currently active connections
+        checked_out_connections:
+          type: integer
+          description: Connections currently in use
+        overflow_connections:
+          type: integer
+          description: Overflow connections beyond pool size
+        invalid_connections:
+          type: integer
+          description: Invalid connections requiring cleanup
+        pool_utilization_percent:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Pool utilization as percentage
+        wait_time_ms:
+          type: integer
+          description: Average wait time for connections
+      required:
+        - pool_size
+        - active_connections
+        - checked_out_connections
+
+    MigrationInfo:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [current, pending, error, unknown]
+          description: Migration status
+        current_revision:
+          type: string
+          description: Current database schema revision
+        target_revision:
+          type: string
+          description: Target schema revision
+        pending_migrations:
+          type: array
+          items:
+            type: object
+            properties:
+              revision:
+                type: string
+              description:
+                type: string
+              created_at:
+                type: string
+                format: date-time
+          description: Migrations waiting to be applied
+        last_migration:
+          type: object
+          properties:
+            revision:
+              type: string
+            description:
+              type: string
+            applied_at:
+              type: string
+              format: date-time
+          description: Most recently applied migration
+      required:
+        - status
+
+    DatabasePerformanceMetrics:
+      type: object
+      properties:
+        query_count:
+          type: integer
+          description: Total queries executed in timeframe
+        average_query_time_ms:
+          type: number
+          format: float
+          description: Average query execution time
+        slow_queries:
+          type: integer
+          description: Number of slow queries (>1s)
+        connection_acquisition_time_ms:
+          type: number
+          format: float
+          description: Average time to acquire connection
+        lock_wait_time_ms:
+          type: number
+          format: float
+          description: Average lock wait time
+        cache_hit_ratio:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Database cache hit ratio
+      required:
+        - query_count
+        - average_query_time_ms
+
+    ConfigurationStatus:
+      type: object
+      properties:
+        source:
+          type: string
+          enum: [individual_fields, database_url, environment_defaults]
+          description: How database configuration was loaded
+        validation_passed:
+          type: boolean
+          description: Whether configuration validation passed
+        environment_specific_checks:
+          type: object
+          properties:
+            production_requirements_met:
+              type: boolean
+            ssl_configured:
+              type: boolean
+            connection_limits_appropriate:
+              type: boolean
+        backward_compatibility:
+          type: object
+          properties:
+            database_url_supported:
+              type: boolean
+            migration_recommended:
+              type: boolean
+      required:
+        - source
+        - validation_passed
+
+    DatabaseConnectionsResponse:
+      type: object
+      properties:
+        total_connections:
+          type: integer
+          description: Total number of database connections
+        active_connections:
+          type: array
+          items:
+            type: object
+            properties:
+              connection_id:
+                type: string
+              state:
+                type: string
+                enum: [active, idle, idle_in_transaction, waiting]
+              duration_seconds:
+                type: integer
+              query:
+                type: string
+                description: Current or last executed query (truncated for security)
+              application_name:
+                type: string
+              client_addr:
+                type: string
+        pool_statistics:
+          $ref: '#/components/schemas/ConnectionPoolStatus'
+        connection_history:
+          type: object
+          properties:
+            connections_created:
+              type: integer
+            connections_closed:
+              type: integer
+            peak_concurrent_connections:
+              type: integer
+            average_connection_lifetime_seconds:
+              type: number
+              format: float
+      required:
+        - total_connections
+        - active_connections
+        - pool_statistics
+
+    DatabaseMetricsResponse:
+      type: object
+      properties:
+        timeframe:
+          type: string
+          description: Requested timeframe for metrics
+        collected_at:
+          type: string
+          format: date-time
+          description: When metrics were collected
+        performance_metrics:
+          $ref: '#/components/schemas/DatabasePerformanceMetrics'
+        connection_metrics:
+          type: object
+          properties:
+            total_connections_created:
+              type: integer
+            total_connections_closed:
+              type: integer
+            connection_errors:
+              type: integer
+            max_concurrent_connections:
+              type: integer
+            average_connection_duration_seconds:
+              type: number
+              format: float
+        query_metrics:
+          type: object
+          properties:
+            total_queries:
+              type: integer
+            queries_per_second:
+              type: number
+              format: float
+            slow_query_count:
+              type: integer
+            error_count:
+              type: integer
+            most_frequent_queries:
+              type: array
+              items:
+                type: object
+                properties:
+                  query_pattern:
+                    type: string
+                  count:
+                    type: integer
+                  average_duration_ms:
+                    type: number
+                    format: float
+        resource_usage:
+          type: object
+          properties:
+            cpu_usage_percent:
+              type: number
+              format: float
+            memory_usage_mb:
+              type: number
+              format: float
+            disk_usage_percent:
+              type: number
+              format: float
+            network_bytes_in:
+              type: integer
+            network_bytes_out:
+              type: integer
+      required:
+        - timeframe
+        - collected_at
+        - performance_metrics
+
+    MigrationStatusResponse:
+      type: object
+      properties:
+        migration_info:
+          $ref: '#/components/schemas/MigrationInfo'
+        schema_info:
+          type: object
+          properties:
+            tables_count:
+              type: integer
+            indexes_count:
+              type: integer
+            functions_count:
+              type: integer
+            triggers_count:
+              type: integer
+            schema_size_mb:
+              type: number
+              format: float
+        migration_history:
+          type: array
+          items:
+            type: object
+            properties:
+              revision:
+                type: string
+              description:
+                type: string
+              applied_at:
+                type: string
+                format: date-time
+              execution_time_ms:
+                type: integer
+              success:
+                type: boolean
+        recommendations:
+          type: array
+          items:
+            type: string
+          description: Migration-related recommendations
+      required:
+        - migration_info
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type identifier
+        message:
+          type: string
+          description: Human-readable error message
+        request_id:
+          type: string
+          description: Unique request identifier for troubleshooting
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred
+        database_context:
+          type: object
+          properties:
+            connection_available:
+              type: boolean
+            pool_status:
+              type: string
+            last_successful_check:
+              type: string
+              format: date-time
+          description: Database context information for troubleshooting
+      required:
+        - error
+        - message
+        - request_id
+        - timestamp
+
+tags:
+  - name: Health
+    description: Database health monitoring endpoints
+  - name: Database
+    description: Database connection and status management
+  - name: Monitoring
+    description: Database performance and metrics monitoring
+  - name: Migration
+    description: Database schema migration status and management

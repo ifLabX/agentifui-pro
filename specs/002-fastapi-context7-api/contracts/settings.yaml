@@ -1,0 +1,427 @@
+openapi: 3.0.3
+info:
+  title: Configuration Management API
+  description: Enhanced configuration validation and management endpoints for Agentifui Pro Backend
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.agentifui.pro
+    description: Production server
+
+paths:
+  /config/validate:
+    get:
+      summary: Validate Application Configuration
+      description: Validates current application configuration including database settings, CORS configuration, and environment-specific requirements
+      operationId: validateConfiguration
+      tags:
+        - Configuration
+      responses:
+        '200':
+          description: Configuration validation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationValidationResponse'
+        '400':
+          description: Configuration validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error during validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /config/database/status:
+    get:
+      summary: Database Configuration Status
+      description: Returns detailed status of database configuration including connection parameters and validation results
+      operationId: getDatabaseConfigStatus
+      tags:
+        - Configuration
+        - Database
+      responses:
+        '200':
+          description: Database configuration status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseConfigStatusResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /config/database/test:
+    post:
+      summary: Test Database Connection
+      description: Tests database connectivity with current or provided configuration parameters
+      operationId: testDatabaseConnection
+      tags:
+        - Configuration
+        - Database
+      requestBody:
+        description: Optional database configuration to test (uses current config if not provided)
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatabaseTestRequest'
+      responses:
+        '200':
+          description: Database connection test completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseTestResponse'
+        '400':
+          description: Invalid database configuration provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error during test
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ConfigurationValidationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          description: Overall configuration validity
+        environment:
+          type: string
+          description: Current environment (development/staging/production)
+        validation_results:
+          type: object
+          properties:
+            database:
+              $ref: '#/components/schemas/DatabaseValidationResult'
+            cors:
+              $ref: '#/components/schemas/CorsValidationResult'
+            security:
+              $ref: '#/components/schemas/SecurityValidationResult'
+            feature_flags:
+              $ref: '#/components/schemas/FeatureFlagsValidationResult'
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Non-critical configuration warnings
+        recommendations:
+          type: array
+          items:
+            type: string
+          description: Configuration improvement recommendations
+      required:
+        - valid
+        - environment
+        - validation_results
+
+    DatabaseValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        connection_parameters:
+          type: object
+          properties:
+            host_reachable:
+              type: boolean
+            port_accessible:
+              type: boolean
+            credentials_valid:
+              type: boolean
+            database_exists:
+              type: boolean
+        format_validation:
+          type: object
+          properties:
+            individual_fields_valid:
+              type: boolean
+            composed_url_valid:
+              type: boolean
+            backward_compatibility:
+              type: boolean
+        issues:
+          type: array
+          items:
+            type: string
+      required:
+        - valid
+
+    CorsValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        origins_format:
+          type: string
+          enum: [comma_separated, json_array, mixed]
+          description: Detected format of CORS origins configuration
+        origins_validated:
+          type: array
+          items:
+            type: object
+            properties:
+              origin:
+                type: string
+              valid:
+                type: boolean
+              issues:
+                type: array
+                items:
+                  type: string
+        migration_recommended:
+          type: boolean
+          description: Whether migration to comma-separated format is recommended
+      required:
+        - valid
+        - origins_format
+
+    SecurityValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        secret_key:
+          type: object
+          properties:
+            length_adequate:
+              type: boolean
+            entropy_sufficient:
+              type: boolean
+            not_default:
+              type: boolean
+        production_requirements:
+          type: object
+          properties:
+            met:
+              type: boolean
+            missing_requirements:
+              type: array
+              items:
+                type: string
+        recommendations:
+          type: array
+          items:
+            type: string
+      required:
+        - valid
+
+    FeatureFlagsValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        flags:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+              valid:
+                type: boolean
+              dependencies_met:
+                type: boolean
+        conflicts:
+          type: array
+          items:
+            type: string
+      required:
+        - valid
+
+    DatabaseConfigStatusResponse:
+      type: object
+      properties:
+        configuration:
+          type: object
+          properties:
+            host:
+              type: string
+            port:
+              type: integer
+            database:
+              type: string
+            driver:
+              type: string
+            # Note: password and username omitted for security
+        connection_status:
+          type: object
+          properties:
+            connected:
+              type: boolean
+            response_time_ms:
+              type: integer
+            last_check:
+              type: string
+              format: date-time
+        pool_status:
+          type: object
+          properties:
+            size:
+              type: integer
+            active:
+              type: integer
+            checked_out:
+              type: integer
+        configuration_source:
+          type: string
+          enum: [individual_fields, database_url, mixed]
+          description: How database configuration was loaded
+      required:
+        - configuration
+        - connection_status
+
+    DatabaseTestRequest:
+      type: object
+      properties:
+        host:
+          type: string
+          description: Database host to test
+        port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+          description: Database port to test
+        username:
+          type: string
+          description: Username for connection test
+        password:
+          type: string
+          description: Password for connection test
+        database:
+          type: string
+          description: Database name to test
+        driver:
+          type: string
+          default: postgresql+asyncpg
+          description: Database driver to use
+        timeout_seconds:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 60
+          description: Connection timeout for test
+
+    DatabaseTestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether connection test succeeded
+        response_time_ms:
+          type: integer
+          description: Connection response time in milliseconds
+        database_info:
+          type: object
+          properties:
+            version:
+              type: string
+            server_encoding:
+              type: string
+            client_encoding:
+              type: string
+          description: Database server information (if connection successful)
+        error_details:
+          type: object
+          properties:
+            error_type:
+              type: string
+              enum: [connection_failed, authentication_failed, database_not_found, timeout, unknown]
+            message:
+              type: string
+            suggestions:
+              type: array
+              items:
+                type: string
+          description: Error details (if connection failed)
+        tested_configuration:
+          type: object
+          properties:
+            host:
+              type: string
+            port:
+              type: integer
+            database:
+              type: string
+            driver:
+              type: string
+          description: Configuration parameters that were tested
+      required:
+        - success
+        - response_time_ms
+        - tested_configuration
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type identifier
+        message:
+          type: string
+          description: Human-readable error message
+        validation_errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+              value:
+                type: string
+          description: Detailed validation error information
+        suggestions:
+          type: array
+          items:
+            type: string
+          description: Suggestions for fixing validation errors
+      required:
+        - error
+        - message
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type identifier
+        message:
+          type: string
+          description: Human-readable error message
+        request_id:
+          type: string
+          description: Unique request identifier for troubleshooting
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred
+      required:
+        - error
+        - message
+        - request_id
+        - timestamp
+
+tags:
+  - name: Configuration
+    description: Application configuration validation and management
+  - name: Database
+    description: Database configuration and connectivity testing

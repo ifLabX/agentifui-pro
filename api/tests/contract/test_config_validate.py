@@ -83,7 +83,7 @@ class TestConfigValidateContract:
             "DB_PASSWORD": "dev-password",
             "DB_DATABASE": "dev-db",
             "SECRET_KEY": "dev-secret-key",
-            "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001"
+            "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001",
         }
 
         with mock_environment_variables(dev_config):
@@ -104,7 +104,7 @@ class TestConfigValidateContract:
             "DB_PASSWORD": "super-secure-production-password-32-chars-long",
             "DB_DATABASE": "prod-db",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
-            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com"
+            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com",
         }
 
         with mock_environment_variables(prod_config):

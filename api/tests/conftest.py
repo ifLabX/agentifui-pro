@@ -582,7 +582,7 @@ def mock_database_config():
         "DB_USERNAME": "test-user",
         "DB_PASSWORD": "test-password",
         "DB_DATABASE": "test-db",
-        "DB_DRIVER": "postgresql+asyncpg"
+        "DB_DRIVER": "postgresql+asyncpg",
     }
 
 
@@ -597,7 +597,7 @@ def mock_production_config():
         "DB_PASSWORD": "super-secure-production-password-32-chars-long",
         "DB_DATABASE": "prod-db",
         "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
-        "CORS_ORIGINS": "https://app.example.com,https://admin.example.com"
+        "CORS_ORIGINS": "https://app.example.com,https://admin.example.com",
     }
 
 
@@ -612,7 +612,7 @@ def mock_development_config():
         "DB_PASSWORD": "dev-password",
         "DB_DATABASE": "dev-db",
         "SECRET_KEY": "dev-secret-key",
-        "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001"
+        "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001",
     }
 
 

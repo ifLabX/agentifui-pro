@@ -53,7 +53,7 @@ class TestDatabaseConnectionManager:
             driver="postgresql+asyncpg",
             min_pool_size=2,
             max_pool_size=10,
-            timeout_seconds=30
+            timeout_seconds=30,
         )
 
         manager = ConnectionManager(config)
@@ -141,7 +141,7 @@ class TestDatabaseConnectionManager:
     async def test_connection_manager_error_recovery(self, connection_manager):
         """Test connection manager error recovery and resilience."""
         # Simulate connection failure
-        with patch.object(connection_manager, '_create_pool') as mock_create:
+        with patch.object(connection_manager, "_create_pool") as mock_create:
             mock_create.side_effect = ConnectionError("Database unreachable")
 
             # Health check should handle errors gracefully
@@ -158,6 +158,7 @@ class TestDatabaseConnectionManager:
 
     async def test_connection_manager_concurrent_access(self, connection_manager):
         """Test connection manager under concurrent access."""
+
         async def get_and_use_connection():
             async with connection_manager.get_connection() as conn:
                 # Simulate database work
@@ -181,7 +182,7 @@ class TestDatabaseConnectionManager:
             username="test_user",
             password="test_password",
             database="test_db1",
-            max_pool_size=5
+            max_pool_size=5,
         )
 
         manager = ConnectionManager(config1)
@@ -197,7 +198,7 @@ class TestDatabaseConnectionManager:
             username="test_user",
             password="test_password",
             database="test_db2",  # Different database
-            max_pool_size=10      # Different pool size
+            max_pool_size=10,  # Different pool size
         )
 
         await manager.update_configuration(config2)
@@ -216,7 +217,7 @@ class TestDatabaseConnectionManager:
             username="test_user",
             password="test_password",
             database="test_db",
-            timeout_seconds=1  # Short timeout
+            timeout_seconds=1,  # Short timeout
         )
 
         manager = ConnectionManager(config)
@@ -285,7 +286,7 @@ class TestDatabaseConnectionManager:
             username="test_user",
             password="test_password",
             database="test_db",
-            max_pool_size=pool_size
+            max_pool_size=pool_size,
         )
 
         manager = ConnectionManager(config)
@@ -316,7 +317,7 @@ class TestDatabaseConnectionManager:
         initially_connected = health_status.get("connected", False)
 
         # Simulate connection loss (mock database going down)
-        with patch.object(connection_manager.pool, 'acquire', side_effect=ConnectionError):
+        with patch.object(connection_manager.pool, "acquire", side_effect=ConnectionError):
             health_status = await connection_manager.health_check()
             assert health_status["connected"] is False
 

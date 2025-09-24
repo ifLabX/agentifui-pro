@@ -146,15 +146,14 @@ class EnvironmentSettings(BaseSettings):
             "password",
             "changeme",
             "dev-secret",
-            "test-secret"
+            "test-secret",
         ]
 
         # Production requires strong security
         if environment == "production":
             if secret_value in insecure_defaults:
                 raise ValueError(
-                    "Production environment requires a secure secret key. "
-                    "Default or common keys are not allowed."
+                    "Production environment requires a secure secret key. Default or common keys are not allowed."
                 )
             if len(secret_value) < 32:
                 raise ValueError("Production secret key must be at least 32 characters long")
@@ -163,8 +162,7 @@ class EnvironmentSettings(BaseSettings):
         elif environment == "staging":
             if secret_value in insecure_defaults:
                 raise ValueError(
-                    "Staging environment should use a secure secret key. "
-                    "Default or common keys are not recommended."
+                    "Staging environment should use a secure secret key. Default or common keys are not recommended."
                 )
             if len(secret_value) < 16:
                 raise ValueError("Staging secret key should be at least 16 characters long")
@@ -211,8 +209,7 @@ class EnvironmentSettings(BaseSettings):
                 if not origin.startswith(("https://", "http://localhost", "http://127.0.0.1")):
                     if origin.startswith("http://"):
                         raise ValueError(
-                            f"Production environment should use HTTPS origins. "
-                            f"Found HTTP origin: {origin}"
+                            f"Production environment should use HTTPS origins. Found HTTP origin: {origin}"
                         )
 
         return v
@@ -259,13 +256,15 @@ class EnvironmentSettings(BaseSettings):
 
     def _has_individual_database_fields(self) -> bool:
         """Check if any individual database fields are provided."""
-        return any([
-            self.db_host is not None,
-            self.db_port is not None,
-            self.db_username is not None,
-            self.db_password is not None,
-            self.db_database is not None
-        ])
+        return any(
+            [
+                self.db_host is not None,
+                self.db_port is not None,
+                self.db_username is not None,
+                self.db_password is not None,
+                self.db_database is not None,
+            ]
+        )
 
     def _create_database_config_from_fields(self) -> DatabaseConfig:
         """Create DatabaseConfig from individual fields with DATABASE_URL fallback."""
@@ -280,7 +279,7 @@ class EnvironmentSettings(BaseSettings):
                     "username": base_db_config.username,
                     "password": base_db_config.password,
                     "database": base_db_config.database,
-                    "driver": base_db_config.driver
+                    "driver": base_db_config.driver,
                 }
             except Exception:
                 # If DATABASE_URL is invalid, use defaults

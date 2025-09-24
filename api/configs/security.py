@@ -31,22 +31,18 @@ class SecurityValidator:
             "cors": {},
             "production_requirements": {},
             "warnings": [],
-            "recommendations": []
+            "recommendations": [],
         }
 
         # Validate secret key
-        secret_key_result = validate_secret_key_strength(
-            settings.secret_key.get_secret_value(), settings.environment
-        )
+        secret_key_result = validate_secret_key_strength(settings.secret_key.get_secret_value(), settings.environment)
         result["secret_key"] = secret_key_result
         if not secret_key_result["valid"]:
             result["valid"] = False
 
         # Validate database password if available
-        if hasattr(settings.database, 'password'):
-            db_password_result = validate_password_strength(
-                settings.database.password, settings.environment
-            )
+        if hasattr(settings.database, "password"):
+            db_password_result = validate_password_strength(settings.database.password, settings.environment)
             result["database"] = db_password_result
             if not db_password_result["valid"]:
                 result["valid"] = False
@@ -92,7 +88,7 @@ class SecurityValidator:
             "to_environment": to_env,
             "warnings": [],
             "recommendations": [],
-            "checklist": []
+            "checklist": [],
         }
 
         # Direct dev to prod transition warning
@@ -113,15 +109,15 @@ class SecurityValidator:
             checklist = [
                 "secret_key_updated" if env_validation["secret_key"].get("valid") else "secret_key_needs_update",
                 (
-                    "database_password_secured" if env_validation["database"].get("valid")
+                    "database_password_secured"
+                    if env_validation["database"].get("valid")
                     else "database_password_needs_securing"
                 ),
                 "debug_disabled" if not settings.debug else "debug_needs_disabling",
-                "https_enforced" if all(
-                    origin.startswith("https://") or "localhost" in origin
-                    for origin in settings.cors_origins
-                ) else "https_needs_enforcement",
-                "logging_configured" if settings.log_level == "INFO" else "logging_needs_configuration"
+                "https_enforced"
+                if all(origin.startswith("https://") or "localhost" in origin for origin in settings.cors_origins)
+                else "https_needs_enforcement",
+                "logging_configured" if settings.log_level == "INFO" else "logging_needs_configuration",
             ]
             result["checklist"] = checklist
 
@@ -138,10 +134,7 @@ def validate_production_requirements(settings) -> dict[str, Any]:
     Returns:
         Production requirements validation result
     """
-    result = {
-        "met": True,
-        "issues": []
-    }
+    result = {"met": True, "issues": []}
 
     # Debug must be disabled in production
     if settings.debug:
@@ -149,9 +142,7 @@ def validate_production_requirements(settings) -> dict[str, Any]:
         result["issues"].append("Debug mode must be disabled in production")
 
     # Secret key must be strong
-    secret_key_result = validate_secret_key_strength(
-        settings.secret_key.get_secret_value(), "production"
-    )
+    secret_key_result = validate_secret_key_strength(settings.secret_key.get_secret_value(), "production")
     if not secret_key_result["valid"]:
         result["met"] = False
         result["issues"].extend(secret_key_result["issues"])
@@ -176,12 +167,7 @@ def validate_secret_key_strength(key: str, environment: str) -> dict[str, Any]:
     Returns:
         Secret key validation result
     """
-    result = {
-        "valid": True,
-        "issues": [],
-        "warnings": [],
-        "recommendations": []
-    }
+    result = {"valid": True, "issues": [], "warnings": [], "recommendations": []}
 
     # Common weak keys
     weak_keys = [
@@ -191,7 +177,7 @@ def validate_secret_key_strength(key: str, environment: str) -> dict[str, Any]:
         "password",
         "changeme",
         "dev-secret",
-        "test-secret"
+        "test-secret",
     ]
 
     if environment == "production":
@@ -240,12 +226,7 @@ def validate_password_strength(password: str, environment: str) -> dict[str, Any
     Returns:
         Password validation result
     """
-    result = {
-        "valid": True,
-        "issues": [],
-        "warnings": [],
-        "recommendations": []
-    }
+    result = {"valid": True, "issues": [], "warnings": [], "recommendations": []}
 
     if environment == "production":
         # Production requires strong passwords
@@ -288,12 +269,7 @@ def validate_cors_origins(origins: list[str], environment: str) -> dict[str, Any
     Returns:
         CORS validation result
     """
-    result = {
-        "valid": True,
-        "issues": [],
-        "warnings": [],
-        "recommendations": []
-    }
+    result = {"valid": True, "issues": [], "warnings": [], "recommendations": []}
 
     if environment == "production":
         # Production should use HTTPS
@@ -318,10 +294,10 @@ def validate_cors_origins(origins: list[str], environment: str) -> dict[str, Any
 
 def _has_sufficient_complexity(text: str) -> bool:
     """Check if text has sufficient complexity (mixed character types)."""
-    has_lower = bool(re.search(r'[a-z]', text))
-    has_upper = bool(re.search(r'[A-Z]', text))
-    has_digit = bool(re.search(r'\d', text))
-    has_special = bool(re.search(r'[^a-zA-Z0-9]', text))
+    has_lower = bool(re.search(r"[a-z]", text))
+    has_upper = bool(re.search(r"[A-Z]", text))
+    has_digit = bool(re.search(r"\d", text))
+    has_special = bool(re.search(r"[^a-zA-Z0-9]", text))
 
     # At least 3 of 4 character types for sufficient complexity
     complexity_score = sum([has_lower, has_upper, has_digit, has_special])

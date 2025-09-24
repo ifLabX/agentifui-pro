@@ -38,7 +38,7 @@ class TestEnvironmentTransition:
             "SECRET_KEY": "dev-secret-key",
             "DB_PASSWORD": "dev_password",
             "CORS_ORIGINS": "http://localhost:3000",
-            "DEBUG": "true"
+            "DEBUG": "true",
         }
 
         # Staging configuration (intermediate security)
@@ -47,7 +47,7 @@ class TestEnvironmentTransition:
             "SECRET_KEY": "staging-secret-key-with-better-length",
             "DB_PASSWORD": "staging_secure_password_123",
             "CORS_ORIGINS": "https://staging.example.com",
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         # Validate transition requirements
@@ -72,7 +72,7 @@ class TestEnvironmentTransition:
             "SECRET_KEY": "staging-secret-key-with-better-length",
             "DB_PASSWORD": "staging_secure_password_123",
             "CORS_ORIGINS": "https://staging.example.com",
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         # Production configuration (strict security)
@@ -81,7 +81,7 @@ class TestEnvironmentTransition:
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "DB_PASSWORD": "super-secure-production-password-32-chars-long",
             "CORS_ORIGINS": "https://app.example.com,https://admin.example.com",
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         with mock_environment_variables(staging_config):
@@ -90,9 +90,7 @@ class TestEnvironmentTransition:
         with mock_environment_variables(prod_config):
             prod_settings = EnvironmentSettings()
 
-        transition_result = SecurityValidator.validate_environment_transition(
-            "staging", "production", prod_settings
-        )
+        transition_result = SecurityValidator.validate_environment_transition("staging", "production", prod_settings)
 
         assert transition_result["valid"] is True
 
@@ -103,7 +101,7 @@ class TestEnvironmentTransition:
             "ENVIRONMENT": "development",
             "SECRET_KEY": "dev-secret-key",
             "DB_PASSWORD": "dev_password",
-            "DEBUG": "true"
+            "DEBUG": "true",
         }
 
         # Production configuration
@@ -111,7 +109,7 @@ class TestEnvironmentTransition:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "DB_PASSWORD": "super-secure-production-password-32-chars-long",
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         with mock_environment_variables(dev_config):
@@ -135,10 +133,10 @@ class TestEnvironmentTransition:
         # Invalid production configuration (still using dev settings)
         invalid_prod_config = {
             "ENVIRONMENT": "production",  # Claims to be production
-            "SECRET_KEY": "dev-secret",   # But uses dev secret (too short)
-            "DB_PASSWORD": "dev_pass",    # And dev password (too weak)
+            "SECRET_KEY": "dev-secret",  # But uses dev secret (too short)
+            "DB_PASSWORD": "dev_pass",  # And dev password (too weak)
             "CORS_ORIGINS": "http://localhost:3000",  # And dev CORS (HTTP)
-            "DEBUG": "true"               # And still has debug enabled
+            "DEBUG": "true",  # And still has debug enabled
         }
 
         with mock_environment_variables(invalid_prod_config):
@@ -162,7 +160,7 @@ class TestEnvironmentTransition:
             "DATABASE_URL": "postgresql+asyncpg://user:pass@prod-host:5432/prod-db",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "ENVIRONMENT": "production",
-            "CORS_ORIGINS": '["https://app.example.com", "https://admin.example.com"]'  # Legacy JSON
+            "CORS_ORIGINS": '["https://app.example.com", "https://admin.example.com"]',  # Legacy JSON
         }
 
         with mock_environment_variables(legacy_config):
@@ -186,7 +184,7 @@ class TestEnvironmentTransition:
             "SECRET_KEY": "dev-secret-key",
             "FEATURE_EXPERIMENTAL_AUTH": "true",
             "FEATURE_DEBUG_LOGGING": "true",
-            "FEATURE_UNSAFE_OPERATIONS": "true"
+            "FEATURE_UNSAFE_OPERATIONS": "true",
         }
 
         # Production should disable experimental/unsafe features
@@ -194,15 +192,13 @@ class TestEnvironmentTransition:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "FEATURE_EXPERIMENTAL_AUTH": "false",  # Disabled for stability
-            "FEATURE_DEBUG_LOGGING": "false",      # Disabled for security
-            "FEATURE_UNSAFE_OPERATIONS": "false"   # Disabled for safety
+            "FEATURE_DEBUG_LOGGING": "false",  # Disabled for security
+            "FEATURE_UNSAFE_OPERATIONS": "false",  # Disabled for safety
         }
 
         with mock_environment_variables(prod_config):
             settings = EnvironmentSettings()
-            validation_result = SecurityValidator.validate_environment_transition(
-                "development", "production", settings
-            )
+            validation_result = SecurityValidator.validate_environment_transition("development", "production", settings)
 
             assert validation_result["valid"] is True
 
@@ -216,7 +212,7 @@ class TestEnvironmentTransition:
             "DB_USERNAME": "dev_user",
             "DB_PASSWORD": "dev_password",
             "DB_DATABASE": "dev_db",
-            "SECRET_KEY": "dev-secret-key"
+            "SECRET_KEY": "dev-secret-key",
         }
 
         # Production should use secure external database
@@ -227,7 +223,7 @@ class TestEnvironmentTransition:
             "DB_USERNAME": "prod_user",
             "DB_PASSWORD": "super-secure-production-password-32-chars-long",
             "DB_DATABASE": "prod_db",
-            "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security"
+            "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
         }
 
         # Test database connection validation
@@ -242,14 +238,14 @@ class TestEnvironmentTransition:
         dev_cors_config = {
             "ENVIRONMENT": "development",
             "SECRET_KEY": "dev-secret-key",
-            "CORS_ORIGINS": "http://localhost:3000,http://127.0.0.1:3001"
+            "CORS_ORIGINS": "http://localhost:3000,http://127.0.0.1:3001",
         }
 
         # Production requires HTTPS origins
         prod_cors_config = {
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
-            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com"
+            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com",
         }
 
         with mock_environment_variables(prod_cors_config):
@@ -263,17 +259,13 @@ class TestEnvironmentTransition:
     async def test_logging_configuration_transition(self):
         """Test logging configuration changes during environment transitions."""
         # Development with verbose logging
-        dev_config = {
-            "ENVIRONMENT": "development",
-            "SECRET_KEY": "dev-secret-key",
-            "LOG_LEVEL": "DEBUG"
-        }
+        dev_config = {"ENVIRONMENT": "development", "SECRET_KEY": "dev-secret-key", "LOG_LEVEL": "DEBUG"}
 
         # Production with controlled logging
         prod_config = {
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
-            "LOG_LEVEL": "INFO"
+            "LOG_LEVEL": "INFO",
         }
 
         with mock_environment_variables(prod_config):
@@ -291,7 +283,7 @@ class TestEnvironmentTransition:
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "ENABLE_SECURITY_HEADERS": "true",
             "ENABLE_RATE_LIMITING": "true",
-            "ENABLE_REQUEST_TRACING": "true"
+            "ENABLE_REQUEST_TRACING": "true",
         }
 
         with mock_environment_variables(prod_config):
@@ -311,14 +303,12 @@ class TestEnvironmentTransition:
             "DB_PASSWORD": "super-secure-production-password-32-chars-long",
             "DEBUG": "false",
             "CORS_ORIGINS": "https://app.example.com",
-            "LOG_LEVEL": "INFO"
+            "LOG_LEVEL": "INFO",
         }
 
         with mock_environment_variables(prod_config):
             settings = EnvironmentSettings()
-            validation_result = SecurityValidator.validate_environment_transition(
-                "development", "production", settings
-            )
+            validation_result = SecurityValidator.validate_environment_transition("development", "production", settings)
 
             assert validation_result["valid"] is True
 
@@ -330,7 +320,7 @@ class TestEnvironmentTransition:
                     "database_password_secured",
                     "debug_disabled",
                     "https_enforced",
-                    "logging_configured"
+                    "logging_configured",
                 ]
 
                 for item in required_items:
@@ -343,7 +333,7 @@ class TestEnvironmentTransition:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "DB_HOST": "prod-new.example.com",
-            "DB_DATABASE": "prod_v2_db"
+            "DB_DATABASE": "prod_v2_db",
         }
 
         # Rollback configuration (previous version)
@@ -351,7 +341,7 @@ class TestEnvironmentTransition:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "DB_HOST": "prod-old.example.com",
-            "DB_DATABASE": "prod_v1_db"
+            "DB_DATABASE": "prod_v1_db",
         }
 
         # Both configurations should be valid for production

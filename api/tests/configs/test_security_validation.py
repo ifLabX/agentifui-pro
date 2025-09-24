@@ -49,9 +49,9 @@ class TestSecurityValidation:
         dev_config = {
             "ENVIRONMENT": "development",
             "SECRET_KEY": "dev-secret",  # Short key acceptable in dev
-            "DB_PASSWORD": "dev_pass",   # Simple password acceptable in dev
+            "DB_PASSWORD": "dev_pass",  # Simple password acceptable in dev
             "CORS_ORIGINS": "http://localhost:3000",  # HTTP acceptable in dev
-            "DEBUG": "true"
+            "DEBUG": "true",
         }
 
         with mock_environment_variables(dev_config):
@@ -70,7 +70,7 @@ class TestSecurityValidation:
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "DB_PASSWORD": "super-secure-production-password-32-chars-long",
             "CORS_ORIGINS": "https://app.example.com,https://admin.example.com",
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         with mock_environment_variables(secure_prod_config):
@@ -89,7 +89,7 @@ class TestSecurityValidation:
             "SECRET_KEY": "weak",  # Too short
             "DB_PASSWORD": "123",  # Too weak
             "CORS_ORIGINS": "http://insecure.com",  # HTTP not allowed
-            "DEBUG": "true"  # Debug should be false in production
+            "DEBUG": "true",  # Debug should be false in production
         }
 
         with mock_environment_variables(weak_prod_config):
@@ -139,7 +139,7 @@ class TestSecurityValidation:
         dev_config = {
             "ENVIRONMENT": "development",
             "SECRET_KEY": "dev-secret-key",
-            "CORS_ORIGINS": "http://localhost:3000,http://127.0.0.1:3001"
+            "CORS_ORIGINS": "http://localhost:3000,http://127.0.0.1:3001",
         }
 
         with mock_environment_variables(dev_config):
@@ -153,7 +153,7 @@ class TestSecurityValidation:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long",
             "DB_PASSWORD": "production-password-must-be-secure-32-chars",
-            "CORS_ORIGINS": "http://insecure.example.com"  # HTTP not allowed
+            "CORS_ORIGINS": "http://insecure.example.com",  # HTTP not allowed
         }
 
         with pytest.raises(ValidationError):
@@ -165,7 +165,7 @@ class TestSecurityValidation:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long",
             "DB_PASSWORD": "production-password-must-be-secure-32-chars",
-            "CORS_ORIGINS": "https://secure.example.com,https://admin.example.com"
+            "CORS_ORIGINS": "https://secure.example.com,https://admin.example.com",
         }
 
         with mock_environment_variables(prod_https_config):
@@ -180,7 +180,7 @@ class TestSecurityValidation:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long",
             "DB_PASSWORD": "production-password-must-be-secure-32-chars",
-            "DEBUG": "true"  # Debug should be false in production
+            "DEBUG": "true",  # Debug should be false in production
         }
 
         with pytest.raises(ValidationError):
@@ -192,7 +192,7 @@ class TestSecurityValidation:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long",
             "DB_PASSWORD": "production-password-must-be-secure-32-chars",
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         with mock_environment_variables(secure_prod_config):
@@ -205,9 +205,9 @@ class TestSecurityValidation:
         staging_config = {
             "ENVIRONMENT": "staging",
             "SECRET_KEY": "staging-secret-key-moderate-length",  # Medium strength
-            "DB_PASSWORD": "staging_password_123",               # Medium strength
-            "CORS_ORIGINS": "https://staging.example.com",      # HTTPS required
-            "DEBUG": "false"
+            "DB_PASSWORD": "staging_password_123",  # Medium strength
+            "CORS_ORIGINS": "https://staging.example.com",  # HTTPS required
+            "DEBUG": "false",
         }
 
         with mock_environment_variables(staging_config):
@@ -226,7 +226,7 @@ class TestSecurityValidation:
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long",
             "DB_PASSWORD": "production-password-must-be-secure-32-chars",
             "CORS_ORIGINS": "https://app.example.com",
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         with mock_environment_variables(test_config):
@@ -254,7 +254,7 @@ class TestSecurityValidation:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "weak",
             "DB_PASSWORD": "123",
-            "CORS_ORIGINS": "http://insecure.com"
+            "CORS_ORIGINS": "http://insecure.com",
         }
 
         try:
@@ -268,8 +268,9 @@ class TestSecurityValidation:
                 assert "msg" in error
                 assert len(error["msg"]) > 10  # Should be descriptive
                 # Should mention security requirements
-                assert any(keyword in error["msg"].lower()
-                          for keyword in ["security", "production", "required", "minimum"])
+                assert any(
+                    keyword in error["msg"].lower() for keyword in ["security", "production", "required", "minimum"]
+                )
 
     def test_security_validation_recommendations(self):
         """Test security validation recommendations for improvement."""
@@ -277,7 +278,7 @@ class TestSecurityValidation:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-exactly-32-chars-long-minimum-requirement",  # Minimum length
             "DB_PASSWORD": "ProductionPassword123",  # Good but could be better
-            "CORS_ORIGINS": "https://app.example.com"
+            "CORS_ORIGINS": "https://app.example.com",
         }
 
         with mock_environment_variables(borderline_config):
@@ -298,9 +299,9 @@ class TestSecurityValidation:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long",
             "DB_PASSWORD": "production-password-must-be-secure-32-chars",
-            "FEATURE_RATE_LIMITING": "true",     # Security feature
-            "FEATURE_AUDIT_LOGGING": "true",     # Security feature
-            "FEATURE_CSRF_PROTECTION": "false"   # Security risk if disabled
+            "FEATURE_RATE_LIMITING": "true",  # Security feature
+            "FEATURE_AUDIT_LOGGING": "true",  # Security feature
+            "FEATURE_CSRF_PROTECTION": "false",  # Security risk if disabled
         }
 
         with mock_environment_variables(config):
@@ -323,9 +324,9 @@ class TestSecurityValidation:
         # Development config that needs security hardening
         dev_to_prod_config = {
             "ENVIRONMENT": "production",  # Changed to production
-            "SECRET_KEY": "dev-secret",   # Still using dev secret (should fail)
-            "DB_PASSWORD": "dev_pass",    # Still using dev password (should fail)
-            "DEBUG": "true"               # Still has debug enabled (should fail)
+            "SECRET_KEY": "dev-secret",  # Still using dev secret (should fail)
+            "DB_PASSWORD": "dev_pass",  # Still using dev password (should fail)
+            "DEBUG": "true",  # Still has debug enabled (should fail)
         }
 
         with pytest.raises(ValidationError) as exc_info:

@@ -32,7 +32,7 @@ class TestBackwardCompatibility:
         # This test will FAIL until backward compatibility is implemented
         legacy_config = {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/testdb",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(legacy_config):
@@ -59,11 +59,11 @@ class TestBackwardCompatibility:
         """Test precedence when both DATABASE_URL and individual fields are present."""
         mixed_config = {
             "DATABASE_URL": "postgresql+asyncpg://url_user:url_pass@url_host:5433/url_db",
-            "DB_HOST": "field_host",      # Should override URL host
-            "DB_PORT": "5434",            # Should override URL port
-            "DB_USERNAME": "field_user",   # Should override URL username
+            "DB_HOST": "field_host",  # Should override URL host
+            "DB_PORT": "5434",  # Should override URL port
+            "DB_USERNAME": "field_user",  # Should override URL username
             # DB_PASSWORD and DB_DATABASE not set - should use URL values
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(mixed_config):
@@ -84,7 +84,7 @@ class TestBackwardCompatibility:
         """Test backward compatibility with JSON array format for CORS origins."""
         legacy_cors_config = {
             "SECRET_KEY": "test-secret-key",
-            "CORS_ORIGINS": '["http://localhost:3000", "http://localhost:3001", "https://app.example.com"]'
+            "CORS_ORIGINS": '["http://localhost:3000", "http://localhost:3001", "https://app.example.com"]',
         }
 
         with mock_environment_variables(legacy_cors_config):
@@ -108,7 +108,7 @@ class TestBackwardCompatibility:
             "DATABASE_URL": "postgresql+asyncpg://legacy_user:legacy_pass@legacy_host:5432/legacy_db",
             "SECRET_KEY": "legacy-secret-key",
             "DEBUG": "1",  # Legacy boolean format
-            "CORS_ORIGINS": '["http://localhost:3000"]'  # Legacy JSON format
+            "CORS_ORIGINS": '["http://localhost:3000"]',  # Legacy JSON format
         }
 
         with mock_environment_variables(legacy_config):
@@ -130,7 +130,7 @@ class TestBackwardCompatibility:
         # Stage 1: Start with DATABASE_URL only
         stage1_config = {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@old_host:5432/old_db",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(stage1_config):
@@ -143,7 +143,7 @@ class TestBackwardCompatibility:
         stage2_config = {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@old_host:5432/old_db",
             "DB_HOST": "new_host",  # Override host
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(stage2_config):
@@ -160,7 +160,7 @@ class TestBackwardCompatibility:
             "DB_USERNAME": "new_user",
             "DB_PASSWORD": "new_pass",
             "DB_DATABASE": "new_db",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
             # DATABASE_URL removed
         }
 
@@ -175,12 +175,12 @@ class TestBackwardCompatibility:
         legacy_flags_config = {
             "SECRET_KEY": "test-secret-key",
             # Legacy boolean formats
-            "FEATURE_AUTH_V2": "1",      # Numeric boolean
-            "FEATURE_LOGGING": "true",   # String boolean
-            "FEATURE_METRICS": "True",   # Capitalized boolean
-            "FEATURE_DISABLED": "false", # Disabled feature
+            "FEATURE_AUTH_V2": "1",  # Numeric boolean
+            "FEATURE_LOGGING": "true",  # String boolean
+            "FEATURE_METRICS": "True",  # Capitalized boolean
+            "FEATURE_DISABLED": "false",  # Disabled feature
             # Legacy list format (if any features used lists)
-            "FEATURE_ALLOWED_ORIGINS": '["example.com", "test.com"]'
+            "FEATURE_ALLOWED_ORIGINS": '["example.com", "test.com"]',
         }
 
         with mock_environment_variables(legacy_flags_config):
@@ -196,16 +196,13 @@ class TestBackwardCompatibility:
         """Test backward compatibility with different database drivers."""
         # Test different legacy driver formats
         driver_configs = [
-            "postgresql://user:pass@host:5432/db",           # Basic PostgreSQL
+            "postgresql://user:pass@host:5432/db",  # Basic PostgreSQL
             "postgresql+psycopg2://user:pass@host:5432/db",  # Old psycopg2
-            "postgresql+asyncpg://user:pass@host:5432/db",   # Current asyncpg
+            "postgresql+asyncpg://user:pass@host:5432/db",  # Current asyncpg
         ]
 
         for database_url in driver_configs:
-            config = {
-                "DATABASE_URL": database_url,
-                "SECRET_KEY": "test-secret-key"
-            }
+            config = {"DATABASE_URL": database_url, "SECRET_KEY": "test-secret-key"}
 
             with mock_environment_variables(config):
                 # Should parse all driver formats correctly
@@ -224,7 +221,7 @@ class TestBackwardCompatibility:
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
             "ENVIRONMENT": "production",
             "CORS_ORIGINS": '["https://app.example.com", "https://admin.example.com"]',
-            "DEBUG": "false"
+            "DEBUG": "false",
         }
 
         with mock_environment_variables(legacy_production_config):
@@ -238,7 +235,7 @@ class TestBackwardCompatibility:
         """Test that existing API endpoints maintain their contracts."""
         legacy_config = {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/testdb",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(legacy_config):
@@ -257,10 +254,7 @@ class TestBackwardCompatibility:
     async def test_legacy_error_handling(self, async_client: AsyncClient):
         """Test that error handling maintains backward compatibility."""
         # Invalid DATABASE_URL should return helpful error
-        invalid_config = {
-            "DATABASE_URL": "invalid-url-format",
-            "SECRET_KEY": "test-secret-key"
-        }
+        invalid_config = {"DATABASE_URL": "invalid-url-format", "SECRET_KEY": "test-secret-key"}
 
         with mock_environment_variables(invalid_config):
             response = await async_client.get("/config/validate")
@@ -280,10 +274,7 @@ class TestBackwardCompatibility:
 
         configs = [
             # Legacy DATABASE_URL only
-            {
-                "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/testdb",
-                "SECRET_KEY": "test-secret-key"
-            },
+            {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/testdb", "SECRET_KEY": "test-secret-key"},
             # New individual fields
             {
                 "DB_HOST": "localhost",
@@ -291,8 +282,8 @@ class TestBackwardCompatibility:
                 "DB_USERNAME": "user",
                 "DB_PASSWORD": "pass",
                 "DB_DATABASE": "testdb",
-                "SECRET_KEY": "test-secret-key"
-            }
+                "SECRET_KEY": "test-secret-key",
+            },
         ]
 
         response_times = []
@@ -318,7 +309,7 @@ class TestBackwardCompatibility:
         # Same database config in different formats
         database_url_config = {
             "DATABASE_URL": "postgresql+asyncpg://testuser:testpass@testhost:5433/testdb",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         individual_fields_config = {
@@ -328,7 +319,7 @@ class TestBackwardCompatibility:
             "DB_PASSWORD": "testpass",
             "DB_DATABASE": "testdb",
             "DB_DRIVER": "postgresql+asyncpg",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         responses = []

@@ -5,7 +5,6 @@ Tests the enhanced parsing logic that prioritizes comma-separated values
 for DevOps compatibility while maintaining backward compatibility with JSON arrays.
 """
 
-
 from tests.conftest import mock_environment_variables
 
 # These imports will fail until the implementation is complete
@@ -63,11 +62,7 @@ class TestEnvironmentVariableParsing:
         origins_string = "http://localhost:3000,http://localhost:3001,https://app.example.com"
 
         result = parse_cors_origins(origins_string)
-        expected = [
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "https://app.example.com"
-        ]
+        expected = ["http://localhost:3000", "http://localhost:3001", "https://app.example.com"]
         assert result == expected
 
     def test_parse_cors_origins_json_array_backward_compatibility(self):
@@ -75,11 +70,7 @@ class TestEnvironmentVariableParsing:
         origins_json = '["http://localhost:3000", "http://localhost:3001", "https://app.example.com"]'
 
         result = parse_cors_origins(origins_json)
-        expected = [
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "https://app.example.com"
-        ]
+        expected = ["http://localhost:3000", "http://localhost:3001", "https://app.example.com"]
         assert result == expected
 
     def test_parse_cors_origins_mixed_format_handling(self):
@@ -93,7 +84,7 @@ class TestEnvironmentVariableParsing:
         assert len(result) >= 1
 
         # Empty array JSON
-        empty_json = '[]'
+        empty_json = "[]"
         result = parse_cors_origins(empty_json)
         assert result == []
 
@@ -144,7 +135,7 @@ class TestEnvironmentVariableParsing:
             "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001",
             "FEATURE_FLAGS": "auth_v2,enhanced_logging,rate_limiting",
             "DEBUG": "true",
-            "ENABLE_METRICS": "1"
+            "ENABLE_METRICS": "1",
         }
 
         with mock_environment_variables(config):
@@ -261,7 +252,7 @@ class TestEnvironmentVariableParsing:
         # Development environment - more lenient
         dev_config = {
             "ENVIRONMENT": "development",
-            "CORS_ORIGINS": "http://localhost:3000,http://127.0.0.1:3001"  # HTTP allowed in dev
+            "CORS_ORIGINS": "http://localhost:3000,http://127.0.0.1:3001",  # HTTP allowed in dev
         }
 
         with mock_environment_variables(dev_config):
@@ -272,7 +263,7 @@ class TestEnvironmentVariableParsing:
         # Production environment - stricter requirements would be enforced at higher level
         prod_config = {
             "ENVIRONMENT": "production",
-            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com"  # HTTPS required
+            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com",  # HTTPS required
         }
 
         with mock_environment_variables(prod_config):

@@ -20,7 +20,7 @@ class TestDatabaseTestContract:
             "username": "test-user",
             "password": "test-password",
             "database": "test-db",
-            "timeout_seconds": 10
+            "timeout_seconds": 10,
         }
 
         response = await async_client.post("/config/database/test", json=test_config)
@@ -54,8 +54,11 @@ class TestDatabaseTestContract:
             error_details = data["error_details"]
             assert "error_type" in error_details
             assert error_details["error_type"] in [
-                "connection_failed", "authentication_failed",
-                "database_not_found", "timeout", "unknown"
+                "connection_failed",
+                "authentication_failed",
+                "database_not_found",
+                "timeout",
+                "unknown",
             ]
             assert "message" in error_details
             assert isinstance(error_details["message"], str)
@@ -82,7 +85,7 @@ class TestDatabaseTestContract:
             "password": "postgres",
             "database": "postgres",
             "driver": "postgresql+asyncpg",
-            "timeout_seconds": 5
+            "timeout_seconds": 5,
         }
 
         response = await async_client.post("/config/database/test", json=test_config)
@@ -105,7 +108,7 @@ class TestDatabaseTestContract:
             "username": "test-user",
             "password": "test-password",
             "database": "test-db",
-            "timeout_seconds": 5
+            "timeout_seconds": 5,
         }
 
         response = await async_client.post("/config/database/test", json=test_config)
@@ -130,7 +133,7 @@ class TestDatabaseTestContract:
             "username": "invalid-user",
             "password": "wrong-password",
             "database": "test-db",
-            "timeout_seconds": 5
+            "timeout_seconds": 5,
         }
 
         response = await async_client.post("/config/database/test", json=test_config)
@@ -151,7 +154,7 @@ class TestDatabaseTestContract:
             "username": "test-user",
             "password": "test-password",
             "database": "test-db",
-            "timeout_seconds": 1  # Short timeout
+            "timeout_seconds": 1,  # Short timeout
         }
 
         response = await async_client.post("/config/database/test", json=test_config)
@@ -172,7 +175,7 @@ class TestDatabaseTestContract:
             "port": 70000,  # Invalid port
             "username": "test-user",
             "password": "test-password",
-            "database": "test-db"
+            "database": "test-db",
         }
 
         response = await async_client.post("/config/database/test", json=test_config)
@@ -203,9 +206,7 @@ class TestDatabaseTestContract:
     async def test_database_test_malformed_json(self, async_client: AsyncClient):
         """Test database connection test with malformed JSON."""
         response = await async_client.post(
-            "/config/database/test",
-            content="invalid json",
-            headers={"Content-Type": "application/json"}
+            "/config/database/test", content="invalid json", headers={"Content-Type": "application/json"}
         )
 
         assert response.status_code == 422  # Unprocessable Entity
@@ -220,7 +221,7 @@ class TestDatabaseTestContract:
             "username": "test-user",
             "password": "test-password",
             "database": "test-db",
-            "timeout_seconds": 2
+            "timeout_seconds": 2,
         }
 
         start_time = time.time()
@@ -246,7 +247,7 @@ class TestDatabaseTestContract:
             "port": 5432,
             "username": "test-user",
             "password": "secret-password-123",
-            "database": "test-db"
+            "database": "test-db",
         }
 
         response = await async_client.post("/config/database/test", json=test_config)
@@ -259,12 +260,7 @@ class TestDatabaseTestContract:
     async def test_database_test_default_values(self, async_client: AsyncClient):
         """Test database connection test with default values."""
         # Minimal config should use defaults
-        test_config = {
-            "host": "localhost",
-            "username": "test-user",
-            "password": "test-password",
-            "database": "test-db"
-        }
+        test_config = {"host": "localhost", "username": "test-user", "password": "test-password", "database": "test-db"}
 
         response = await async_client.post("/config/database/test", json=test_config)
 

@@ -18,64 +18,27 @@ class DatabaseConfig(BaseModel):
     for maximum flexibility and backward compatibility.
     """
 
-    host: str = Field(
-        default="localhost",
-        description="Database host address",
-        min_length=1,
-        max_length=255
-    )
+    host: str = Field(default="localhost", description="Database host address", min_length=1, max_length=255)
 
-    port: int = Field(
-        default=5432,
-        description="Database port number",
-        ge=1,
-        le=65535
-    )
+    port: int = Field(default=5432, description="Database port number", ge=1, le=65535)
 
-    username: str = Field(
-        description="Database username",
-        min_length=1,
-        max_length=63
-    )
+    username: str = Field(description="Database username", min_length=1, max_length=63)
 
-    password: str = Field(
-        description="Database password",
-        min_length=1,
-        max_length=255
-    )
+    password: str = Field(description="Database password", min_length=1, max_length=255)
 
-    database: str = Field(
-        description="Database name",
-        min_length=1,
-        max_length=63
-    )
+    database: str = Field(description="Database name", min_length=1, max_length=63)
 
     driver: str = Field(
         default="postgresql+asyncpg",
         description="Database driver",
-        pattern=r"^postgresql(\+asyncpg|\+psycopg|\+psycopg2)?$"
+        pattern=r"^postgresql(\+asyncpg|\+psycopg|\+psycopg2)?$",
     )
 
-    timeout_seconds: int = Field(
-        default=30,
-        description="Connection timeout in seconds",
-        ge=1,
-        le=300
-    )
+    timeout_seconds: int = Field(default=30, description="Connection timeout in seconds", ge=1, le=300)
 
-    min_pool_size: int = Field(
-        default=2,
-        description="Minimum connection pool size",
-        ge=1,
-        le=50
-    )
+    min_pool_size: int = Field(default=2, description="Minimum connection pool size", ge=1, le=50)
 
-    max_pool_size: int = Field(
-        default=10,
-        description="Maximum connection pool size",
-        ge=1,
-        le=100
-    )
+    max_pool_size: int = Field(default=10, description="Maximum connection pool size", ge=1, le=100)
 
     @field_validator("host")
     @classmethod
@@ -97,7 +60,7 @@ class DatabaseConfig(BaseModel):
     @classmethod
     def validate_pool_size_relationship(cls, v: int, info) -> int:
         """Validate that max_pool_size >= min_pool_size."""
-        if hasattr(info.data, 'min_pool_size') and v < info.data['min_pool_size']:
+        if hasattr(info.data, "min_pool_size") and v < info.data["min_pool_size"]:
             raise ValueError("max_pool_size must be greater than or equal to min_pool_size")
         return v
 
@@ -108,10 +71,7 @@ class DatabaseConfig(BaseModel):
         # URL-encode the password to handle special characters
         encoded_password = urllib.parse.quote(self.password, safe="")
 
-        return (
-            f"{self.driver}://{self.username}:{encoded_password}"
-            f"@{self.host}:{self.port}/{self.database}"
-        )
+        return f"{self.driver}://{self.username}:{encoded_password}@{self.host}:{self.port}/{self.database}"
 
     @classmethod
     def from_database_url(cls, database_url: str) -> "DatabaseConfig":
@@ -151,7 +111,7 @@ class DatabaseConfig(BaseModel):
             username=parsed.username,
             password=password,
             database=database,
-            driver=parsed.scheme
+            driver=parsed.scheme,
         )
 
     def model_dump(self, **kwargs) -> dict:
@@ -185,5 +145,5 @@ class DatabaseConfig(BaseModel):
             "database": self.database,
             "connect_timeout": self.timeout_seconds,
             "pool_min_size": self.min_pool_size,
-            "pool_max_size": self.max_pool_size
+            "pool_max_size": self.max_pool_size,
         }

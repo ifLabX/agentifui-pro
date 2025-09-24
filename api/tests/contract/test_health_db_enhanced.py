@@ -77,13 +77,15 @@ class TestHealthDbEnhancedContract:
     async def test_health_db_enhanced_connection_failure(self, async_client: AsyncClient):
         """Test enhanced health check when database connection fails."""
         # Mock invalid database configuration
-        with mock_environment_variables({
-            "DB_HOST": "nonexistent-host-12345",
-            "DB_PORT": "5432",
-            "DB_USERNAME": "test-user",
-            "DB_PASSWORD": "test-password",
-            "DB_DATABASE": "test-db"
-        }):
+        with mock_environment_variables(
+            {
+                "DB_HOST": "nonexistent-host-12345",
+                "DB_PORT": "5432",
+                "DB_USERNAME": "test-user",
+                "DB_PASSWORD": "test-password",
+                "DB_DATABASE": "test-db",
+            }
+        ):
             response = await async_client.get("/health/db")
 
             # Should still return 200 but with unhealthy status
@@ -126,13 +128,15 @@ class TestHealthDbEnhancedContract:
     async def test_health_db_enhanced_configuration_sources(self, async_client: AsyncClient):
         """Test enhanced health check with different configuration sources."""
         # Test with individual fields
-        with mock_environment_variables({
-            "DB_HOST": "localhost",
-            "DB_PORT": "5432",
-            "DB_USERNAME": "test-user",
-            "DB_PASSWORD": "test-password",
-            "DB_DATABASE": "test-db"
-        }):
+        with mock_environment_variables(
+            {
+                "DB_HOST": "localhost",
+                "DB_PORT": "5432",
+                "DB_USERNAME": "test-user",
+                "DB_PASSWORD": "test-password",
+                "DB_DATABASE": "test-db",
+            }
+        ):
             response = await async_client.get("/health/db")
             assert response.status_code == 200
             data = response.json()
@@ -143,9 +147,7 @@ class TestHealthDbEnhancedContract:
             assert config_info["database"] == "test-db"
 
         # Test with DATABASE_URL (backward compatibility)
-        with mock_environment_variables({
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@test-host:5433/test-db"
-        }):
+        with mock_environment_variables({"DATABASE_URL": "postgresql+asyncpg://user:pass@test-host:5433/test-db"}):
             response = await async_client.get("/health/db")
             assert response.status_code == 200
             data = response.json()
@@ -176,10 +178,12 @@ class TestHealthDbEnhancedContract:
     async def test_health_db_enhanced_error_handling(self, async_client: AsyncClient):
         """Test enhanced health check error handling for server errors."""
         # Mock extreme configuration that might cause server error
-        with mock_environment_variables({
-            "DB_HOST": "",  # Empty host
-            "DB_PORT": "invalid",  # Invalid port
-        }):
+        with mock_environment_variables(
+            {
+                "DB_HOST": "",  # Empty host
+                "DB_PORT": "invalid",  # Invalid port
+            }
+        ):
             response = await async_client.get("/health/db")
 
             # Could return 500 for server error or 200 with unhealthy status

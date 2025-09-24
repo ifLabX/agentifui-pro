@@ -34,7 +34,7 @@ class TestEnvironmentSettings:
             "DB_PASSWORD": "dev_password",
             "DB_DATABASE": "dev_db",
             "SECRET_KEY": "dev-secret-key",
-            "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001"
+            "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001",
         }
 
         with mock_environment_variables(dev_config):
@@ -56,7 +56,7 @@ class TestEnvironmentSettings:
             "DB_PASSWORD": "super-secure-production-password-32-chars-long",
             "DB_DATABASE": "prod_db",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
-            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com"
+            "CORS_ORIGINS": "https://app.example.com,https://admin.example.com",
         }
 
         with mock_environment_variables(prod_config):
@@ -72,7 +72,7 @@ class TestEnvironmentSettings:
         config = {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@db.example.com:5433/mydb",
             "SECRET_KEY": "test-secret-key",
-            "CORS_ORIGINS": "http://localhost:3000"
+            "CORS_ORIGINS": "http://localhost:3000",
         }
 
         with mock_environment_variables(config):
@@ -88,9 +88,9 @@ class TestEnvironmentSettings:
         config = {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@db.example.com:5433/mydb",
             "DB_HOST": "override-host",  # Should override URL host
-            "DB_PORT": "5434",           # Should override URL port
+            "DB_PORT": "5434",  # Should override URL port
             "SECRET_KEY": "test-secret-key",
-            "CORS_ORIGINS": "http://localhost:3000"
+            "CORS_ORIGINS": "http://localhost:3000",
         }
 
         with mock_environment_variables(config):
@@ -107,25 +107,18 @@ class TestEnvironmentSettings:
         """Test CORS origins parsing from comma-separated values."""
         config = {
             "SECRET_KEY": "test-secret-key",
-            "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001,https://app.example.com"
+            "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001,https://app.example.com",
         }
 
         with mock_environment_variables(config):
             settings = EnvironmentSettings()
 
-            expected_origins = [
-                "http://localhost:3000",
-                "http://localhost:3001",
-                "https://app.example.com"
-            ]
+            expected_origins = ["http://localhost:3000", "http://localhost:3001", "https://app.example.com"]
             assert settings.cors_origins == expected_origins
 
     def test_environment_settings_cors_json_array_backward_compatibility(self):
         """Test backward compatibility with JSON array format for CORS origins."""
-        config = {
-            "SECRET_KEY": "test-secret-key",
-            "CORS_ORIGINS": '["http://localhost:3000", "http://localhost:3001"]'
-        }
+        config = {"SECRET_KEY": "test-secret-key", "CORS_ORIGINS": '["http://localhost:3000", "http://localhost:3001"]'}
 
         with mock_environment_variables(config):
             settings = EnvironmentSettings()
@@ -160,7 +153,7 @@ class TestEnvironmentSettings:
             "ENVIRONMENT": "production",
             "SECRET_KEY": "weak",  # Too short for production
             "DB_PASSWORD": "weak_prod_password",  # Too short for production
-            "CORS_ORIGINS": "http://insecure.com"  # HTTP not allowed in production
+            "CORS_ORIGINS": "http://insecure.com",  # HTTP not allowed in production
         }
 
         with pytest.raises(ValidationError) as exc_info:
@@ -175,9 +168,7 @@ class TestEnvironmentSettings:
 
     def test_environment_settings_default_values(self):
         """Test default values for optional configuration."""
-        minimal_config = {
-            "SECRET_KEY": "test-secret-key-with-sufficient-length"
-        }
+        minimal_config = {"SECRET_KEY": "test-secret-key-with-sufficient-length"}
 
         with mock_environment_variables(minimal_config):
             settings = EnvironmentSettings()
@@ -185,8 +176,8 @@ class TestEnvironmentSettings:
             # Should use default values
             assert settings.environment == "development"  # Default environment
             assert settings.database.host == "localhost"  # Default database host
-            assert settings.database.port == 5432        # Default database port
-            assert settings.debug is True                # Default debug mode for development
+            assert settings.database.port == 5432  # Default database port
+            assert settings.debug is True  # Default debug mode for development
 
     def test_environment_settings_feature_flags(self):
         """Test feature flags configuration."""
@@ -194,7 +185,7 @@ class TestEnvironmentSettings:
             "SECRET_KEY": "test-secret-key",
             "FEATURE_AUTH_V2": "true",
             "FEATURE_ENHANCED_LOGGING": "false",
-            "FEATURE_RATE_LIMITING": "1"  # Truthy value
+            "FEATURE_RATE_LIMITING": "1",  # Truthy value
         }
 
         with mock_environment_variables(config):
@@ -207,10 +198,7 @@ class TestEnvironmentSettings:
     def test_environment_settings_logging_configuration(self):
         """Test logging configuration based on environment."""
         # Development logging
-        dev_config = {
-            "ENVIRONMENT": "development",
-            "SECRET_KEY": "test-secret-key"
-        }
+        dev_config = {"ENVIRONMENT": "development", "SECRET_KEY": "test-secret-key"}
 
         with mock_environment_variables(dev_config):
             settings = EnvironmentSettings()
@@ -221,7 +209,7 @@ class TestEnvironmentSettings:
         prod_config = {
             "ENVIRONMENT": "production",
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long",
-            "DB_PASSWORD": "production-password-must-be-secure-32-chars"
+            "DB_PASSWORD": "production-password-must-be-secure-32-chars",
         }
 
         with mock_environment_variables(prod_config):
@@ -235,7 +223,7 @@ class TestEnvironmentSettings:
             "SECRET_KEY": "test-secret-key",
             "DB_TIMEOUT_SECONDS": "45",
             "DB_MAX_POOL_SIZE": "20",
-            "DB_MIN_POOL_SIZE": "2"
+            "DB_MIN_POOL_SIZE": "2",
         }
 
         with mock_environment_variables(config):
@@ -254,7 +242,7 @@ class TestEnvironmentSettings:
             "DB_USERNAME": "user",
             "DB_PASSWORD": "pass",
             "DB_DATABASE": "db",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(individual_config):
@@ -262,10 +250,7 @@ class TestEnvironmentSettings:
             assert settings.configuration_source == "individual_fields"
 
         # DATABASE_URL only
-        url_config = {
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@host:5432/db",
-            "SECRET_KEY": "test-secret-key"
-        }
+        url_config = {"DATABASE_URL": "postgresql+asyncpg://user:pass@host:5432/db", "SECRET_KEY": "test-secret-key"}
 
         with mock_environment_variables(url_config):
             settings = EnvironmentSettings()
@@ -275,7 +260,7 @@ class TestEnvironmentSettings:
         mixed_config = {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@host:5432/db",
             "DB_HOST": "override-host",
-            "SECRET_KEY": "test-secret-key"
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(mixed_config):
@@ -284,11 +269,7 @@ class TestEnvironmentSettings:
 
     def test_environment_settings_serialization_security(self):
         """Test that sensitive information is excluded from serialization."""
-        config = {
-            "SECRET_KEY": "super-secret-key",
-            "DB_PASSWORD": "database-password",
-            "JWT_SECRET": "jwt-secret"
-        }
+        config = {"SECRET_KEY": "super-secret-key", "DB_PASSWORD": "database-password", "JWT_SECRET": "jwt-secret"}
 
         with mock_environment_variables(config):
             settings = EnvironmentSettings()

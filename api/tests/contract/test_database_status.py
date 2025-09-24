@@ -56,7 +56,7 @@ class TestDatabaseStatusContract:
             "DB_PORT": "5432",
             "DB_USERNAME": "test-user",
             "DB_PASSWORD": "test-password",
-            "DB_DATABASE": "test-db"
+            "DB_DATABASE": "test-db",
         }
 
         with mock_environment_variables(db_config):
@@ -77,9 +77,7 @@ class TestDatabaseStatusContract:
 
     async def test_database_status_with_database_url(self, async_client: AsyncClient):
         """Test database status when using DATABASE_URL configuration."""
-        with mock_environment_variables({
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@test-host:5433/test-db"
-        }):
+        with mock_environment_variables({"DATABASE_URL": "postgresql+asyncpg://user:pass@test-host:5433/test-db"}):
             response = await async_client.get("/config/database/status")
 
             assert response.status_code == 200
@@ -115,13 +113,15 @@ class TestDatabaseStatusContract:
     async def test_database_status_connection_failure(self, async_client: AsyncClient):
         """Test database status when connection fails."""
         # Configure non-existent database host
-        with mock_environment_variables({
-            "DB_HOST": "nonexistent-host-12345",
-            "DB_PORT": "5432",
-            "DB_USERNAME": "test-user",
-            "DB_PASSWORD": "test-password",
-            "DB_DATABASE": "test-db"
-        }):
+        with mock_environment_variables(
+            {
+                "DB_HOST": "nonexistent-host-12345",
+                "DB_PORT": "5432",
+                "DB_USERNAME": "test-user",
+                "DB_PASSWORD": "test-password",
+                "DB_DATABASE": "test-db",
+            }
+        ):
             response = await async_client.get("/config/database/status")
 
             # Should still return 200 but with connection_status.connected = false
@@ -136,10 +136,12 @@ class TestDatabaseStatusContract:
     async def test_database_status_error_handling(self, async_client: AsyncClient):
         """Test error handling for server errors during status check."""
         # Mock extreme configuration that might cause server error
-        with mock_environment_variables({
-            "DB_HOST": "",  # Empty host might cause validation error
-            "DB_PORT": "invalid",  # Invalid port
-        }):
+        with mock_environment_variables(
+            {
+                "DB_HOST": "",  # Empty host might cause validation error
+                "DB_PORT": "invalid",  # Invalid port
+            }
+        ):
             response = await async_client.get("/config/database/status")
 
             if response.status_code == 500:

@@ -30,7 +30,7 @@ class TestDatabaseConfiguration:
             username="test_user",
             password="test_password",
             database="test_db",
-            driver="postgresql+asyncpg"
+            driver="postgresql+asyncpg",
         )
 
         assert config.host == "localhost"
@@ -48,7 +48,7 @@ class TestDatabaseConfiguration:
             username="test_user",
             password="test_password",
             database="test_db",
-            driver="postgresql+asyncpg"
+            driver="postgresql+asyncpg",
         )
 
         expected_url = "postgresql+asyncpg://test_user:test_password@localhost:5432/test_db"
@@ -76,7 +76,7 @@ class TestDatabaseConfiguration:
                 port=70000,  # Invalid port
                 username="test_user",
                 password="test_password",
-                database="test_db"
+                database="test_db",
             )
 
         errors = exc_info.value.errors()
@@ -89,7 +89,7 @@ class TestDatabaseConfiguration:
                 port=5432,
                 username="test_user",
                 password="test_password",
-                database="test_db"
+                database="test_db",
             )
 
         errors = exc_info.value.errors()
@@ -97,12 +97,7 @@ class TestDatabaseConfiguration:
 
     def test_database_config_default_values(self):
         """Test default values for optional fields."""
-        config = DatabaseConfig(
-            host="localhost",
-            username="test_user",
-            password="test_password",
-            database="test_db"
-        )
+        config = DatabaseConfig(host="localhost", username="test_user", password="test_password", database="test_db")
 
         # Should use default values
         assert config.port == 5432  # Default PostgreSQL port
@@ -118,7 +113,7 @@ class TestDatabaseConfiguration:
             username="test_user",
             password="test_password",
             database="test_db",
-            driver="postgresql+asyncpg"
+            driver="postgresql+asyncpg",
         )
         assert config.driver == "postgresql+asyncpg"
 
@@ -130,7 +125,7 @@ class TestDatabaseConfiguration:
                 username="test_user",
                 password="test_password",
                 database="test_db",
-                driver="invalid-driver"
+                driver="invalid-driver",
             )
 
         errors = exc_info.value.errors()
@@ -140,22 +135,14 @@ class TestDatabaseConfiguration:
         """Test timeout field validation."""
         # Valid timeout
         config = DatabaseConfig(
-            host="localhost",
-            username="test_user",
-            password="test_password",
-            database="test_db",
-            timeout_seconds=10
+            host="localhost", username="test_user", password="test_password", database="test_db", timeout_seconds=10
         )
         assert config.timeout_seconds == 10
 
         # Invalid timeout (negative)
         with pytest.raises(ValidationError) as exc_info:
             DatabaseConfig(
-                host="localhost",
-                username="test_user",
-                password="test_password",
-                database="test_db",
-                timeout_seconds=-5
+                host="localhost", username="test_user", password="test_password", database="test_db", timeout_seconds=-5
             )
 
         errors = exc_info.value.errors()
@@ -164,11 +151,7 @@ class TestDatabaseConfiguration:
     def test_database_config_special_characters_in_password(self):
         """Test handling of special characters in password."""
         config = DatabaseConfig(
-            host="localhost",
-            port=5432,
-            username="test_user",
-            password="p@ssw0rd!#$%^&*()",
-            database="test_db"
+            host="localhost", port=5432, username="test_user", password="p@ssw0rd!#$%^&*()", database="test_db"
         )
 
         # Password should be URL-encoded in the composed URL
@@ -195,11 +178,7 @@ class TestDatabaseConfiguration:
     def test_database_config_serialization(self):
         """Test configuration serialization for logging and debugging."""
         config = DatabaseConfig(
-            host="localhost",
-            port=5432,
-            username="test_user",
-            password="sensitive_password",
-            database="test_db"
+            host="localhost", port=5432, username="test_user", password="sensitive_password", database="test_db"
         )
 
         # Serialization should mask sensitive information
@@ -214,11 +193,7 @@ class TestDatabaseConfiguration:
     def test_database_config_connection_string_format(self):
         """Test different connection string formats."""
         # Test with different drivers
-        drivers = [
-            "postgresql+asyncpg",
-            "postgresql+psycopg",
-            "postgresql"
-        ]
+        drivers = ["postgresql+asyncpg", "postgresql+psycopg", "postgresql"]
 
         for driver in drivers:
             config = DatabaseConfig(
@@ -227,7 +202,7 @@ class TestDatabaseConfiguration:
                 username="test_user",
                 password="test_password",
                 database="test_db",
-                driver=driver
+                driver=driver,
             )
 
             assert config.driver == driver
@@ -241,7 +216,7 @@ class TestDatabaseConfiguration:
                 port=70000,  # Invalid port
                 username="test_user",
                 password="test_password",
-                database="test_db"
+                database="test_db",
             )
         except ValidationError as e:
             errors = e.errors()

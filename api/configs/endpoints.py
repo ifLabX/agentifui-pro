@@ -27,6 +27,7 @@ connection_manager_dependency = Depends(get_connection_manager)
 
 class DatabaseTestRequest(BaseModel):
     """Request model for testing custom database configuration."""
+
     host: str = Field(..., description="Database host")
     port: int = Field(..., ge=1, le=65535, description="Database port")
     username: str = Field(..., description="Database username")
@@ -39,6 +40,7 @@ class DatabaseTestRequest(BaseModel):
 
 class ValidationResultSection(BaseModel):
     """Validation result for a specific configuration section."""
+
     valid: bool = Field(..., description="Section validation status")
     issues: list[str] = Field(default_factory=list, description="Issues found")
     warnings: list[str] = Field(default_factory=list, description="Warnings")
@@ -46,22 +48,26 @@ class ValidationResultSection(BaseModel):
 
 class CorsValidationResult(ValidationResultSection):
     """CORS-specific validation result."""
+
     origins_format: str = Field(..., description="Detected format: comma_separated, json_array, or mixed")
 
 
 class ProductionRequirements(BaseModel):
     """Production environment requirements check."""
+
     met: bool = Field(..., description="Whether production requirements are met")
     missing: list[str] = Field(default_factory=list, description="Missing requirements")
 
 
 class SecurityValidationResult(ValidationResultSection):
     """Security-specific validation result."""
+
     production_requirements: Optional[ProductionRequirements] = Field(None, description="Production requirements check")
 
 
 class ValidationResults(BaseModel):
     """Detailed validation results by category."""
+
     database: ValidationResultSection = Field(..., description="Database validation")
     cors: CorsValidationResult = Field(..., description="CORS validation")
     security: SecurityValidationResult = Field(..., description="Security validation")
@@ -70,6 +76,7 @@ class ValidationResults(BaseModel):
 
 class ConfigValidationResponse(BaseModel):
     """Response model for configuration validation."""
+
     valid: bool = Field(..., description="Overall validation status")
     environment: str = Field(..., description="Current environment")
     validation_results: ValidationResults = Field(..., description="Detailed validation results")
@@ -80,6 +87,7 @@ class ConfigValidationResponse(BaseModel):
 
 class ConnectionStatus(BaseModel):
     """Connection status information."""
+
     connected: bool = Field(..., description="Database connection status")
     response_time_ms: int = Field(..., description="Response time in milliseconds")
     last_check: str = Field(..., description="Timestamp of last check")
@@ -90,6 +98,7 @@ class ConnectionStatus(BaseModel):
 
 class DatabaseStatusResponse(BaseModel):
     """Response model for database status information."""
+
     configuration: dict[str, Any] = Field(..., description="Database configuration (secure)")
     connection_status: ConnectionStatus = Field(..., description="Connection status information")
     configuration_source: str = Field(
@@ -100,6 +109,7 @@ class DatabaseStatusResponse(BaseModel):
 
 class TestedConfiguration(BaseModel):
     """Tested database configuration information (secure)."""
+
     host: str = Field(..., description="Database host")
     port: int = Field(..., description="Database port")
     database: str = Field(..., description="Database name")
@@ -108,12 +118,14 @@ class TestedConfiguration(BaseModel):
 
 class DatabaseInfo(BaseModel):
     """Database information for successful connections."""
+
     version: str = Field(..., description="Database version")
     name: Optional[str] = Field(None, description="Database name")
 
 
 class ErrorDetails(BaseModel):
     """Error details for failed connections."""
+
     error_type: str = Field(..., description="Error classification")
     message: str = Field(..., description="Error message")
     suggestions: list[str] = Field(default_factory=list, description="Suggestions for fixing the error")
@@ -121,6 +133,7 @@ class ErrorDetails(BaseModel):
 
 class DatabaseTestResponse(BaseModel):
     """Response model for database test results."""
+
     success: bool = Field(..., description="Test result")
     response_time_ms: int = Field(..., description="Response time in milliseconds")
     tested_configuration: TestedConfiguration = Field(..., description="Configuration that was tested")
@@ -133,7 +146,7 @@ class DatabaseTestResponse(BaseModel):
     "/validate",
     response_model=ConfigValidationResponse,
     summary="Validate Configuration",
-    description="Performs comprehensive validation of current configuration with environment-specific rules"
+    description="Performs comprehensive validation of current configuration with environment-specific rules",
 )
 async def validate_configuration() -> ConfigValidationResponse:
     """
@@ -164,8 +177,8 @@ async def validate_configuration() -> ConfigValidationResponse:
                 content={
                     "error": "Configuration validation failed",
                     "message": "Environment configuration contains validation errors",
-                    "validation_errors": validation_errors
-                }
+                    "validation_errors": validation_errors,
+                },
             )
 
         # Also try to access settings.database to trigger any validation errors
@@ -183,8 +196,8 @@ async def validate_configuration() -> ConfigValidationResponse:
                 content={
                     "error": "Configuration validation failed",
                     "message": "Database configuration contains validation errors",
-                    "validation_errors": validation_errors
-                }
+                    "validation_errors": validation_errors,
+                },
             )
 
         # Perform comprehensive configuration validation
@@ -194,7 +207,7 @@ async def validate_configuration() -> ConfigValidationResponse:
         database_result = ValidationResultSection(
             valid=validation_result.get("database", {}).get("valid", True),
             issues=validation_result.get("database", {}).get("issues", []),
-            warnings=validation_result.get("database", {}).get("warnings", [])
+            warnings=validation_result.get("database", {}).get("warnings", []),
         )
 
         # CORS validation with format detection
@@ -207,7 +220,7 @@ async def validate_configuration() -> ConfigValidationResponse:
             "single_value": "comma_separated",
             "comma_separated": "comma_separated",
             "json_array": "json_array",
-            "malformed_json": "mixed"
+            "malformed_json": "mixed",
         }
         origins_format = format_mapping.get(detected_format, "comma_separated")
 
@@ -215,7 +228,7 @@ async def validate_configuration() -> ConfigValidationResponse:
             valid=validation_result.get("cors", {}).get("valid", True),
             issues=validation_result.get("cors", {}).get("issues", []),
             warnings=validation_result.get("cors", {}).get("warnings", []),
-            origins_format=origins_format
+            origins_format=origins_format,
         )
 
         # Security validation with production requirements
@@ -229,34 +242,28 @@ async def validate_configuration() -> ConfigValidationResponse:
 
             if len(secret_key) < 32:
                 missing_reqs.append("Secret key must be at least 32 characters")
-            if any(origin.startswith("http://") and not origin.startswith("http://localhost")
-                   and not origin.startswith("http://127.0.0.1") for origin in settings.cors_origins):
+            if any(
+                origin.startswith("http://")
+                and not origin.startswith("http://localhost")
+                and not origin.startswith("http://127.0.0.1")
+                for origin in settings.cors_origins
+            ):
                 missing_reqs.append("Production should use HTTPS origins")
 
-            production_reqs = ProductionRequirements(
-                met=len(missing_reqs) == 0,
-                missing=missing_reqs
-            )
+            production_reqs = ProductionRequirements(met=len(missing_reqs) == 0, missing=missing_reqs)
 
         security_result = SecurityValidationResult(
             valid=security_section.get("valid", True),
             issues=security_section.get("issues", []),
             warnings=security_section.get("warnings", []),
-            production_requirements=production_reqs
+            production_requirements=production_reqs,
         )
 
         # Feature flags validation (placeholder for future expansion)
-        feature_flags_result = ValidationResultSection(
-            valid=True,
-            issues=[],
-            warnings=[]
-        )
+        feature_flags_result = ValidationResultSection(valid=True, issues=[], warnings=[])
 
         validation_results = ValidationResults(
-            database=database_result,
-            cors=cors_result,
-            security=security_result,
-            feature_flags=feature_flags_result
+            database=database_result, cors=cors_result, security=security_result, feature_flags=feature_flags_result
         )
 
         # Check for validation errors and return 400 if any critical issues
@@ -267,10 +274,9 @@ async def validate_configuration() -> ConfigValidationResponse:
                     "error": "Configuration validation failed",
                     "message": "One or more configuration sections have validation errors",
                     "validation_errors": [
-                        error.get("message", str(error))
-                        for error in validation_result.get("errors", [])
-                    ]
-                }
+                        error.get("message", str(error)) for error in validation_result.get("errors", [])
+                    ],
+                },
             )
 
         # Generate warnings and recommendations
@@ -296,28 +302,23 @@ async def validate_configuration() -> ConfigValidationResponse:
             validation_results=validation_results,
             warnings=warnings,
             recommendations=recommendations,
-            timestamp=time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())
+            timestamp=time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
         )
 
     except HTTPException:
         # Re-raise HTTP exceptions (like 400 for validation errors)
         raise
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Configuration validation failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Configuration validation failed: {str(e)}")
 
 
 @router.get(
     "/database/status",
     response_model=DatabaseStatusResponse,
     summary="Database Configuration Status",
-    description="Returns current database configuration and connection status with pool metrics"
+    description="Returns current database configuration and connection status with pool metrics",
 )
-async def get_database_status(
-    settings: EnvironmentSettings = settings_dependency
-) -> DatabaseStatusResponse:
+async def get_database_status(settings: EnvironmentSettings = settings_dependency) -> DatabaseStatusResponse:
     """
     Get comprehensive database configuration and connection status.
 
@@ -364,7 +365,7 @@ async def get_database_status(
                 last_check=timestamp,
                 error=str(conn_error),
                 database_version=None,
-                database_name=None
+                database_name=None,
             )
 
             return DatabaseStatusResponse(
@@ -376,8 +377,8 @@ async def get_database_status(
                     "active": 0,
                     "checked_out": 0,
                     "min_size": settings.database.min_pool_size,
-                    "max_size": settings.database.max_pool_size
-                }
+                    "max_size": settings.database.max_pool_size,
+                },
             )
 
         response_time_ms = int((time.time() - start_time) * 1000)
@@ -392,31 +393,28 @@ async def get_database_status(
             last_check=timestamp,
             error=health_result.get("error"),
             database_version=health_result.get("database_version"),
-            database_name=health_result.get("database_name")
+            database_name=health_result.get("database_name"),
         )
 
         return DatabaseStatusResponse(
             configuration=health_result.get("configuration", {}),
             connection_status=connection_status,
             configuration_source=config_source,
-            pool_status=pool_status
+            pool_status=pool_status,
         )
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Database status check failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Database status check failed: {str(e)}")
 
 
 @router.post(
     "/database/test",
     response_model=DatabaseTestResponse,
     summary="Test Database Configuration",
-    description="Tests a custom database configuration without affecting the current connection pool"
+    description="Tests a custom database configuration without affecting the current connection pool",
 )
 async def test_database_configuration(
-    test_config: Annotated[DatabaseTestRequest | None, Body()] = None  # noqa: PT028
+    test_config: Annotated[DatabaseTestRequest | None, Body()] = None,  # noqa: PT028
 ) -> DatabaseTestResponse:
     """
     Test a custom database configuration for connectivity and performance.
@@ -443,7 +441,7 @@ async def test_database_configuration(
                 host=temp_db_config.host,
                 port=temp_db_config.port,
                 database=temp_db_config.database_name,
-                driver=temp_db_config.driver
+                driver=temp_db_config.driver,
             )
         else:
             # Create temporary database configuration
@@ -455,13 +453,13 @@ async def test_database_configuration(
                 database_name=test_config.database,
                 min_pool_size=test_config.min_pool_size,
                 max_pool_size=test_config.max_pool_size,
-                timeout_seconds=test_config.timeout_seconds
+                timeout_seconds=test_config.timeout_seconds,
             )
             tested_config = TestedConfiguration(
                 host=test_config.host,
                 port=test_config.port,
                 database=test_config.database,
-                driver="postgresql+asyncpg"  # Default driver
+                driver="postgresql+asyncpg",  # Default driver
             )
 
         # Create temporary connection manager for testing
@@ -479,8 +477,7 @@ async def test_database_configuration(
 
             if health_result.get("connected", False):
                 database_info = DatabaseInfo(
-                    version=health_result.get("database_version", "Unknown"),
-                    name=health_result.get("database_name")
+                    version=health_result.get("database_version", "Unknown"), name=health_result.get("database_name")
                 )
 
                 return DatabaseTestResponse(
@@ -488,7 +485,7 @@ async def test_database_configuration(
                     response_time_ms=response_time_ms,
                     tested_configuration=tested_config,
                     database_info=database_info,
-                    timestamp=timestamp
+                    timestamp=timestamp,
                 )
             else:
                 # Classify error type based on the health result
@@ -497,7 +494,7 @@ async def test_database_configuration(
                 error_details = ErrorDetails(
                     error_type=error_type,
                     message=health_result.get("error", "Connection failed"),
-                    suggestions=suggestions
+                    suggestions=suggestions,
                 )
 
                 return DatabaseTestResponse(
@@ -505,7 +502,7 @@ async def test_database_configuration(
                     response_time_ms=response_time_ms,
                     tested_configuration=tested_config,
                     error_details=error_details,
-                    timestamp=timestamp
+                    timestamp=timestamp,
                 )
 
         finally:
@@ -519,10 +516,7 @@ async def test_database_configuration(
         # Create tested configuration info even for errors
         if test_config is not None:
             tested_config = TestedConfiguration(
-                host=test_config.host,
-                port=test_config.port,
-                database=test_config.database,
-                driver="postgresql+asyncpg"
+                host=test_config.host, port=test_config.port, database=test_config.database, driver="postgresql+asyncpg"
             )
         else:
             # Use current configuration for testing
@@ -530,18 +524,12 @@ async def test_database_configuration(
                 current_settings = EnvironmentSettings()
                 db_config = current_settings.database
                 tested_config = TestedConfiguration(
-                    host=db_config.host,
-                    port=db_config.port,
-                    database=db_config.database_name,
-                    driver=db_config.driver
+                    host=db_config.host, port=db_config.port, database=db_config.database_name, driver=db_config.driver
                 )
             except Exception:
                 # Fallback if current config is broken
                 tested_config = TestedConfiguration(
-                    host="unknown",
-                    port=5432,
-                    database="unknown",
-                    driver="postgresql+asyncpg"
+                    host="unknown", port=5432, database="unknown", driver="postgresql+asyncpg"
                 )
 
         # Classify error based on exception message
@@ -563,9 +551,7 @@ async def test_database_configuration(
 
         suggestions = _get_error_suggestions(error_type, error_message)
         error_details = ErrorDetails(
-            error_type=error_type,
-            message=f"Database test failed: {str(e)}",
-            suggestions=suggestions
+            error_type=error_type, message=f"Database test failed: {str(e)}", suggestions=suggestions
         )
 
         return DatabaseTestResponse(
@@ -573,7 +559,7 @@ async def test_database_configuration(
             response_time_ms=response_time_ms,
             tested_configuration=tested_config,
             error_details=error_details,
-            timestamp=timestamp
+            timestamp=timestamp,
         )
 
 
@@ -617,29 +603,32 @@ def _get_error_suggestions(error_type: str, error_message: str) -> list[str]:
             "Check if the database host is reachable",
             "Verify network connectivity and firewall settings",
             "Increase the connection timeout value",
-            "Ensure the database server is running"
+            "Ensure the database server is running",
         ],
         "connection_failed": [
             "Verify the database host and port are correct",
             "Check if the database server is running",
             "Ensure network connectivity to the database server",
-            "Verify firewall settings allow database connections"
+            "Verify firewall settings allow database connections",
         ],
         "authentication_failed": [
             "Check the database username and password",
             "Verify the user has permission to connect",
             "Ensure the database user exists",
-            "Check authentication method configuration"
+            "Check authentication method configuration",
         ],
         "database_not_found": [
             "Verify the database name is correct",
             "Check if the database exists on the server",
-            "Ensure the user has access to the specified database"
-        ]
+            "Ensure the user has access to the specified database",
+        ],
     }
 
-    return suggestions_map.get(error_type, [
-        "Check all database connection parameters",
-        "Verify the database server is accessible",
-        "Review the error message for specific details"
-    ])
+    return suggestions_map.get(
+        error_type,
+        [
+            "Check all database connection parameters",
+            "Verify the database server is accessible",
+            "Review the error message for specific details",
+        ],
+    )

@@ -62,10 +62,10 @@ class TestConfigurationErrorHandling:
         # Configuration with invalid values
         invalid_config = {
             "SECRET_KEY": "valid-secret-key",
-            "DB_PORT": "invalid_port",      # Should be integer
-            "ENVIRONMENT": "invalid_env",    # Should be dev/staging/prod
-            "CORS_ORIGINS": "not-a-url",    # Should be valid URL
-            "DEBUG": "maybe"                # Should be boolean
+            "DB_PORT": "invalid_port",  # Should be integer
+            "ENVIRONMENT": "invalid_env",  # Should be dev/staging/prod
+            "CORS_ORIGINS": "not-a-url",  # Should be valid URL
+            "DEBUG": "maybe",  # Should be boolean
         }
 
         with mock_environment_variables(invalid_config):
@@ -88,11 +88,11 @@ class TestConfigurationErrorHandling:
         """Test detailed error messages and suggestions."""
         # Configuration that triggers multiple validation errors
         problematic_config = {
-            "SECRET_KEY": "short",           # Too short for production
-            "DB_PASSWORD": "123",            # Too weak
+            "SECRET_KEY": "short",  # Too short for production
+            "DB_PASSWORD": "123",  # Too weak
             "CORS_ORIGINS": "http://prod.example.com",  # HTTP in production
             "ENVIRONMENT": "production",
-            "DEBUG": "true"                  # Debug enabled in production
+            "DEBUG": "true",  # Debug enabled in production
         }
 
         with mock_environment_variables(problematic_config):
@@ -123,7 +123,7 @@ class TestConfigurationErrorHandling:
             "DB_PORT": "5432",
             "DB_USERNAME": "test_user",
             "DB_PASSWORD": "test_password",
-            "DB_DATABASE": "test_db"
+            "DB_DATABASE": "test_db",
         }
 
         with mock_environment_variables(unreachable_db_config):
@@ -153,7 +153,7 @@ class TestConfigurationErrorHandling:
             "DB_USERNAME": "test_user",
             "DB_PASSWORD": "test_password",
             "DB_DATABASE": "test_db",
-            "DB_TIMEOUT_SECONDS": "1"   # Short timeout
+            "DB_TIMEOUT_SECONDS": "1",  # Short timeout
         }
 
         with mock_environment_variables(timeout_config):
@@ -200,7 +200,7 @@ class TestConfigurationErrorHandling:
         # Configuration with validation errors
         error_config = {
             "SECRET_KEY": "",  # Empty secret key should trigger error
-            "ENVIRONMENT": "production"
+            "ENVIRONMENT": "production",
         }
 
         with mock_environment_variables(error_config):
@@ -220,10 +220,7 @@ class TestConfigurationErrorHandling:
     async def test_validation_error_recovery(self, async_client: AsyncClient):
         """Test recovery from validation errors after configuration fix."""
         # First: Invalid configuration
-        invalid_config = {
-            "SECRET_KEY": "short",
-            "ENVIRONMENT": "production"
-        }
+        invalid_config = {"SECRET_KEY": "short", "ENVIRONMENT": "production"}
 
         with mock_environment_variables(invalid_config):
             response = await async_client.get("/config/validate")
@@ -232,7 +229,7 @@ class TestConfigurationErrorHandling:
         # Then: Fixed configuration
         fixed_config = {
             "SECRET_KEY": "production-secret-key-must-be-at-least-32-characters-long-for-security",
-            "ENVIRONMENT": "production"
+            "ENVIRONMENT": "production",
         }
 
         with mock_environment_variables(fixed_config):
@@ -244,9 +241,7 @@ class TestConfigurationErrorHandling:
     async def test_partial_configuration_validation(self, async_client: AsyncClient):
         """Test validation of partial configurations."""
         # Minimal configuration should work with defaults
-        minimal_config = {
-            "SECRET_KEY": "minimal-but-sufficient-secret-key-for-testing"
-        }
+        minimal_config = {"SECRET_KEY": "minimal-but-sufficient-secret-key-for-testing"}
 
         with mock_environment_variables(minimal_config):
             response = await async_client.get("/config/validate")
@@ -262,9 +257,9 @@ class TestConfigurationErrorHandling:
         # Configuration with conflicting values
         conflict_config = {
             "DATABASE_URL": "postgresql+asyncpg://url_user:url_pass@url_host:5433/url_db",
-            "DB_HOST": "field_host",        # Conflicts with DATABASE_URL host
-            "DB_PORT": "5434",              # Conflicts with DATABASE_URL port
-            "SECRET_KEY": "test-secret-key"
+            "DB_HOST": "field_host",  # Conflicts with DATABASE_URL host
+            "DB_PORT": "5434",  # Conflicts with DATABASE_URL port
+            "SECRET_KEY": "test-secret-key",
         }
 
         with mock_environment_variables(conflict_config):
@@ -306,11 +301,7 @@ class TestConfigurationErrorHandling:
     async def test_validation_error_internationalization(self, async_client: AsyncClient):
         """Test error message format and consistency."""
         # Configuration that triggers various types of errors
-        error_config = {
-            "SECRET_KEY": "short",
-            "DB_PORT": "invalid",
-            "ENVIRONMENT": "unknown"
-        }
+        error_config = {"SECRET_KEY": "short", "DB_PORT": "invalid", "ENVIRONMENT": "unknown"}
 
         with mock_environment_variables(error_config):
             response = await async_client.get("/config/validate")
@@ -334,11 +325,7 @@ class TestConfigurationErrorHandling:
         import time
 
         # Configuration that will trigger validation errors
-        error_config = {
-            "SECRET_KEY": "invalid-key",
-            "DB_PORT": "invalid-port",
-            "ENVIRONMENT": "invalid-env"
-        }
+        error_config = {"SECRET_KEY": "invalid-key", "DB_PORT": "invalid-port", "ENVIRONMENT": "invalid-env"}
 
         with mock_environment_variables(error_config):
             start_time = time.time()
@@ -358,16 +345,12 @@ class TestConfigurationErrorHandling:
             "SECRET_KEY": "",  # Missing secret key affects many systems
             "DB_HOST": "localhost",
             "DB_PORT": "5432",
-            "CORS_ORIGINS": "http://localhost:3000"
+            "CORS_ORIGINS": "http://localhost:3000",
         }
 
         with mock_environment_variables(cascading_error_config):
             # Each endpoint should handle errors independently
-            endpoints_to_test = [
-                "/config/validate",
-                "/config/database/status",
-                "/health"
-            ]
+            endpoints_to_test = ["/config/validate", "/config/database/status", "/health"]
 
             for endpoint in endpoints_to_test:
                 response = await async_client.get(endpoint)
@@ -378,10 +361,10 @@ class TestConfigurationErrorHandling:
         """Test that error responses include actionable recovery suggestions."""
         # Configuration with common mistakes
         mistake_config = {
-            "SECRET_KEY": "dev-key",        # Too short for production
+            "SECRET_KEY": "dev-key",  # Too short for production
             "ENVIRONMENT": "production",
-            "DB_PASSWORD": "123",           # Too weak for production
-            "CORS_ORIGINS": "localhost:3000"  # Missing protocol
+            "DB_PASSWORD": "123",  # Too weak for production
+            "CORS_ORIGINS": "localhost:3000",  # Missing protocol
         }
 
         with mock_environment_variables(mistake_config):

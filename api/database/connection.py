@@ -24,6 +24,7 @@ from configs.settings import get_settings
 @dataclass
 class ConnectionMetrics:
     """Connection pool metrics tracking."""
+
     total_connections_created: int = 0
     total_connections_closed: int = 0
     active_connections: int = 0
@@ -140,8 +141,8 @@ class ConnectionManager:
             if len(self.metrics.connection_times) > 100:
                 self.metrics.connection_times = self.metrics.connection_times[-100:]
 
-            self.metrics.average_connection_time_ms = (
-                sum(self.metrics.connection_times) / len(self.metrics.connection_times)
+            self.metrics.average_connection_time_ms = sum(self.metrics.connection_times) / len(
+                self.metrics.connection_times
             )
 
             yield connection
@@ -188,7 +189,7 @@ class ConnectionManager:
                 return {
                     "connected": False,
                     "error": "Connection manager not initialized or closed",
-                    "response_time_ms": int((time.time() - start_time) * 1000)
+                    "response_time_ms": int((time.time() - start_time) * 1000),
                 }
 
             async with self.get_connection() as conn:
@@ -211,7 +212,7 @@ class ConnectionManager:
                 "database_version": version,
                 "database_name": database_name,
                 "pool_status": await self.get_pool_status(),
-                "configuration": self.config.model_dump_secure()
+                "configuration": self.config.model_dump_secure(),
             }
 
         except Exception as e:
@@ -220,7 +221,7 @@ class ConnectionManager:
                 "connected": False,
                 "error": str(e),
                 "error_type": self._classify_error(e),
-                "response_time_ms": response_time
+                "response_time_ms": response_time,
             }
 
     async def get_pool_status(self) -> dict[str, int]:
@@ -236,7 +237,7 @@ class ConnectionManager:
                 "active": 0,
                 "checked_out": 0,
                 "min_size": self.config.min_pool_size,
-                "max_size": self.config.max_pool_size
+                "max_size": self.config.max_pool_size,
             }
 
         pool = self.pool.pool
@@ -245,7 +246,7 @@ class ConnectionManager:
             "active": len(self._active_connections),
             "checked_out": pool.checkedout() if pool else 0,
             "min_size": self.config.min_pool_size,
-            "max_size": self.config.max_pool_size
+            "max_size": self.config.max_pool_size,
         }
 
     async def get_metrics(self) -> dict[str, Any]:
@@ -262,9 +263,8 @@ class ConnectionManager:
             "failed_connections": self.metrics.failed_connections,
             "average_connection_time_ms": round(self.metrics.average_connection_time_ms, 2),
             "pool_utilization": (
-                self.metrics.active_connections / self.config.max_pool_size
-                if self.config.max_pool_size > 0 else 0
-            )
+                self.metrics.active_connections / self.config.max_pool_size if self.config.max_pool_size > 0 else 0
+            ),
         }
 
     async def reconnect(self) -> None:
@@ -328,7 +328,7 @@ def get_async_engine() -> AsyncEngine:
         settings = get_settings()
 
         # Use DATABASE_URL if available, otherwise construct from individual fields
-        if hasattr(settings, 'database_url') and settings.database_url:
+        if hasattr(settings, "database_url") and settings.database_url:
             database_url = settings.database_url
         else:
             # Construct from database config
@@ -336,10 +336,10 @@ def get_async_engine() -> AsyncEngine:
 
         _engine = create_async_engine(
             database_url,
-            pool_size=getattr(settings, 'database_pool_size', 10),
-            max_overflow=getattr(settings, 'database_pool_max_overflow', 20),
-            pool_timeout=getattr(settings, 'database_pool_timeout', 30),
-            pool_recycle=getattr(settings, 'database_pool_recycle', 3600),
+            pool_size=getattr(settings, "database_pool_size", 10),
+            max_overflow=getattr(settings, "database_pool_max_overflow", 20),
+            pool_timeout=getattr(settings, "database_pool_timeout", 30),
+            pool_recycle=getattr(settings, "database_pool_recycle", 3600),
             echo=settings.debug,
             future=True,
             connect_args={
@@ -386,7 +386,7 @@ def get_async_engine_for_testing() -> AsyncEngine:
     """Get async engine configured for testing (backward compatibility)."""
     settings = get_settings()
 
-    if hasattr(settings, 'database_url') and settings.database_url:
+    if hasattr(settings, "database_url") and settings.database_url:
         database_url = settings.database_url
     else:
         database_url = settings.database.database_url

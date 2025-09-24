@@ -87,9 +87,14 @@ ignore = [
 ]
 "configs/*" = [
     "N802", # invalid-function-name
+    "S101", # assert-used
 ]
+
 "tests/*" = [
     "F811", # redefined-while-unused
+    "S101", # assert-used - allow asserts in tests
+    "S106", # hardcoded-password-func-arg - allow test passwords
+    "S105", # hardcoded-password-string - allow test passwords
 ]
 
 [lint.pyflakes]

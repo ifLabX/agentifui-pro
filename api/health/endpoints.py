@@ -11,7 +11,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config.settings import get_settings
+from configs.settings import get_settings
 from database.connection import check_database_connection, get_database_info
 from database.session import get_db_session
 from health.models import (

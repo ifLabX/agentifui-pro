@@ -10,7 +10,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from config.settings import get_settings
+from configs.endpoints import router as configs_router
+from configs.settings import get_settings
 from database.connection import dispose_engine
 from health.endpoints import router as health_router
 from middleware.error_handler import setup_error_handling
@@ -66,6 +67,7 @@ def create_app() -> FastAPI:
 
     # Include routers
     app.include_router(health_router)
+    app.include_router(configs_router)
 
     return app
 

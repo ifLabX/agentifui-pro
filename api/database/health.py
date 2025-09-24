@@ -14,7 +14,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from config.settings import get_settings
+from configs.settings import get_settings
 from database.connection import get_async_engine
 
 logger = logging.getLogger(__name__)

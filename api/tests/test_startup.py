@@ -30,7 +30,7 @@ def test_application_can_be_imported():
 
 def test_application_basic_configuration():
     """Test that application has basic configuration set up correctly."""
-    from config.settings import get_settings
+    from configs.settings import get_settings
     from main import app
 
     settings = get_settings()
@@ -48,7 +48,7 @@ def test_application_basic_configuration():
 
 def test_settings_configuration_startup():
     """Test that settings can be loaded during startup."""
-    from config.settings import get_settings
+    from configs.settings import get_settings
 
     # Should be able to get settings without errors
     settings = get_settings()
@@ -173,7 +173,7 @@ def test_logging_configuration_startup():
     """Test that logging is configured during startup."""
     import logging
 
-    from config.settings import get_settings
+    from configs.settings import get_settings
 
     settings = get_settings()
 
@@ -218,7 +218,7 @@ def test_environment_variable_handling_startup():
     }
 
     with patch.dict(os.environ, test_env, clear=False):
-        from config.settings import get_settings
+        from configs.settings import get_settings
 
         settings = get_settings()
 
@@ -309,7 +309,7 @@ def test_production_configuration_validation():
     }
 
     with patch.dict(os.environ, production_env, clear=False):
-        from config.settings import get_settings
+        from configs.settings import get_settings
 
         settings = get_settings()
 
@@ -331,7 +331,7 @@ def test_development_configuration_startup():
     }
 
     with patch.dict(os.environ, dev_env, clear=False):
-        from config.settings import get_settings
+        from configs.settings import get_settings
 
         settings = get_settings()
 
@@ -349,7 +349,7 @@ def test_startup_with_missing_optional_config():
     }
 
     with patch.dict(os.environ, minimal_env, clear=True):
-        from config.settings import get_settings
+        from configs.settings import get_settings
 
         # Should still work with minimal configuration
         settings = get_settings()

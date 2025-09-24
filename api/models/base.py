@@ -13,7 +13,7 @@ from sqlalchemy import DateTime, MetaData, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-from config.settings import get_settings
+from configs.settings import get_settings
 
 
 def generate_uuid() -> str:

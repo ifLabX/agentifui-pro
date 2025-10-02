@@ -55,7 +55,5 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/agentifui_pro_test
-          SECRET_KEY: test-secret-key-min-32-chars-long-for-testing
-          ENVIRONMENT: test
           DEBUG: false
         run: uv run --frozen pytest -v

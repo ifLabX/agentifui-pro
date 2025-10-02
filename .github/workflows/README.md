@@ -185,53 +185,49 @@ jobs:
     secrets: inherit
 ```
 
-## 🔧 Individual Workflows
+## 🔧 Workflows
 
-### Workflows Overview
+### `ci-pipeline.yml` - Main Quality Pipeline
 
-| Workflow | Trigger | Paths | Implementation |
-|----------|---------|-------|----------------|
-| `backend-quality.yml` | Push/PR to `main` | `api/**` | Delegates to `_reusable-quality-backend.yml` |
-| `frontend-quality.yml` | Push/PR to `main` | `web/**` | Delegates to `_reusable-quality-frontend.yml` |
-| `auto-i18n.yml` | Push to `main` | `web/messages/en-US/**` | Uses `setup-pnpm` composite action |
-| `autofix.yml` | Push/PR to `main` | All | Auto-fixes code formatting |
-| `ci-pipeline.yml` | Push/PR to `main` | All | Main orchestration pipeline |
+**Purpose**: Intelligent orchestration pipeline with change detection and parallel execution.
 
-### `backend-quality.yml`
+**Trigger**: All pushes and pull requests to `main` branch
 
-Standalone backend quality checks triggered by `api/**` changes.
+**Features**:
+- Smart change detection (only runs affected jobs)
+- Parallel quality checks (backend + frontend simultaneously)
+- Conditional builds (only if quality passes)
+- Aggregated status reporting
 
-- **Trigger**: Push/PR to `main` with `api/**` changes
-- **Implementation**: Delegates to `_reusable-quality-backend.yml`
+**GitHub Status Checks**:
+- `CI Pipeline / Backend Quality` - Backend linting, formatting, tests
+- `CI Pipeline / Frontend Quality` - Frontend linting, formatting, TypeScript
+- `CI Pipeline / Pipeline Status` - Overall pipeline result
 
-### `frontend-quality.yml`
+### `auto-i18n.yml` - Automated Translation
 
-Standalone frontend quality checks triggered by `web/**` changes.
+**Purpose**: Auto-translate i18n messages when English source changes.
 
-- **Trigger**: Push/PR to `main` with `web/**` changes
-- **Implementation**: Delegates to `_reusable-quality-frontend.yml`
+**Trigger**: Push to `main` with `web/messages/en-US/**` changes
 
-### `auto-i18n.yml`
+**Features**:
+- Cleans extra translation keys
+- Translates missing keys via MyMemory API
+- Updates TypeScript type definitions
+- Creates PR with automated translations
 
-Automated translation updates for internationalization.
+**Implementation**: Uses `setup-pnpm` composite action
 
-- **Trigger**: Push to `main` with `web/messages/en-US/**` changes
-- **Features**:
-  - Cleans extra translation keys
-  - Translates missing keys via MyMemory API
-  - Updates TypeScript type definitions
-  - Creates PR with automated translations
-- **Reuse**: Uses `setup-pnpm` composite action
+### `autofix.yml` - Code Formatting
 
-### `autofix.yml`
+**Purpose**: Automatically fix code formatting issues.
 
-Automated code formatting fixes.
+**Trigger**: Push/PR to `main`
 
-- **Trigger**: Push/PR to `main`
-- **Features**:
-  - Auto-fixes Ruff violations in backend
-  - Auto-fixes ESLint violations in frontend
-  - Commits fixes automatically
+**Features**:
+- Auto-fixes Ruff violations (backend)
+- Auto-fixes ESLint violations (frontend)
+- Commits fixes automatically
 
 ## 🚀 Best Practices Applied
 

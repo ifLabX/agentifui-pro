@@ -22,7 +22,6 @@ on:
 
 jobs:
   quality-check:
-    name: Backend Quality
     runs-on: ubuntu-latest
 
     defaults:

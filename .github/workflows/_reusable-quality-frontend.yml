@@ -18,7 +18,6 @@ on:
 
 jobs:
   quality-check:
-    name: Frontend Quality
     runs-on: ubuntu-latest
 
     defaults:

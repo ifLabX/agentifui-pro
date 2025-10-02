@@ -199,10 +199,12 @@ jobs:
 - Conditional builds (only if quality passes)
 - Aggregated status reporting
 
-**GitHub Status Checks**:
-- `CI Pipeline / Backend Quality` - Backend linting, formatting, tests
-- `CI Pipeline / Frontend Quality` - Frontend linting, formatting, TypeScript
-- `CI Pipeline / Pipeline Status` - Overall pipeline result
+**GitHub Status Checks** (2-tier structure):
+```
+CI Pipeline / Backend Quality     ← Only 2 layers
+CI Pipeline / Frontend Quality    ← Workflow / Job Name
+CI Pipeline / Pipeline Status
+```
 
 ### `auto-i18n.yml` - Automated Translation
 

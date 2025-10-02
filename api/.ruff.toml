@@ -1,5 +1,6 @@
 exclude = ["migrations/*", ".venv/*", "__pycache__/*"]
 line-length = 120
+src = ["src"]
 
 [format]
 quote-style = "double"
@@ -77,7 +78,6 @@ ignore = [
     "SIM113",  # enumerate-for-loop
     "SIM117",  # multiple-with-statements
     "SIM210",  # if-expr-with-true-false
-    "UP038",   # deprecated and not recommended by Ruff, https://docs.astral.sh/ruff/rules/non-pep604-isinstance/
 ]
 
 [lint.per-file-ignores]

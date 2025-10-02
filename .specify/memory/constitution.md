@@ -1,13 +1,15 @@
 <!--
 Sync Impact Report:
-Version change: [TEMPLATE] → 1.0.0
-Modified principles: Initial creation with 5 core principles
-Added sections: Core Principles, Development Standards, Quality Assurance, Governance
-Removed sections: None (initial creation)
+Version change: 1.0.0 → 1.0.1
+Modified principles: None (maintenance update)
+Added sections: None
+Removed sections: None
 Templates requiring updates:
 ✅ plan-template.md (Constitution Check section compatible)
 ✅ spec-template.md (aligned with quality requirements)
 ✅ tasks-template.md (aligned with testing and development flow)
+✅ specify.md (feature creation workflow compatible)
+✅ clarify.md (ambiguity detection workflow compatible)
 Follow-up TODOs: None
 -->
 
@@ -42,16 +44,23 @@ All naming conventions MUST be consistently applied: kebab-case for files/direct
 
 ## Development Standards
 
-All development MUST follow the established patterns documented in CLAUDE.md. Technology choices are constrained to the approved stack: Python 3.12+ with uv, Node.js 20+ with pnpm, established testing frameworks. New dependencies require architecture review and documentation updates.
+All development MUST follow the established patterns documented in agent-specific context files (e.g., CLAUDE.md for Claude Code, GEMINI.md for Gemini CLI). Technology choices are constrained to the approved stack: Python 3.12+ with uv, Node.js 20+ with pnpm, established testing frameworks. New dependencies require architecture review and documentation updates.
 
 ## Quality Assurance
 
-Code review is mandatory for all changes. Quality gates include: type checking (TypeScript + mypy), linting (Ruff + ESLint/oxlint), formatting (Prettier + Ruff), testing (Jest + pytest), and pre-commit hook validation. Performance monitoring via bundle analysis is required for frontend changes.
+Code review is mandatory for all changes. Quality gates include: type checking (TypeScript strict mode + Python type hints), linting (Ruff + ESLint/oxlint), formatting (Prettier + Ruff), testing (Jest + pytest), and pre-commit hook validation. Performance monitoring via bundle analysis is required for frontend changes.
 
 ## Governance
 
 This constitution supersedes all other development practices. Amendments require documentation updates, team approval, and migration plan for existing code. All Pull Requests must verify compliance with these principles. Complexity that violates simplicity principles must be explicitly justified.
 
-Use CLAUDE.md for runtime development guidance and tool-specific instructions.
+Use agent-specific context files for runtime development guidance and tool-specific instructions:
+- Claude Code: CLAUDE.md
+- Gemini CLI: GEMINI.md
+- GitHub Copilot: .github/copilot-instructions.md
+- Cursor IDE: .cursor/rules/specify-rules.mdc
+- Qwen Code: QWEN.md
+- opencode/Codex: AGENTS.md
+- Windsurf: .windsurf/rules/specify-rules.md
 
-**Version**: 1.0.0 | **Ratified**: 2025-09-21 | **Last Amended**: 2025-09-21
+**Version**: 1.0.1 | **Ratified**: 2025-09-21 | **Last Amended**: 2025-10-02

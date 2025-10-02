@@ -159,7 +159,7 @@ The repository uses Husky with monorepo-aware pre-commit hooks that:
 ## Key Files Reference
 
 ### Backend (api/)
-- `main.py`: FastAPI application entry point with CORS middleware
+- `src/main.py`: FastAPI application entry point with CORS middleware
 - `.ruff.toml`: Python linting configuration
 - `pyproject.toml`: Dependencies and project configuration
 - `README.md`: Development setup and commands

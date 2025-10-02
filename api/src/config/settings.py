@@ -8,7 +8,6 @@ with validation and default values.
 from functools import lru_cache
 
 from pydantic import ConfigDict, Field, field_validator
-from pydantic.types import SecretStr
 from pydantic_settings import BaseSettings
 
 

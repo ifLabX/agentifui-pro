@@ -218,7 +218,7 @@ def test_environment_variable_handling_startup():
     }
 
     with patch.dict(os.environ, test_env, clear=False):
-        from config.settings import Settings, get_settings
+        from config.settings import get_settings
 
         # Clear the cache to allow new settings
         get_settings.cache_clear()

@@ -2,40 +2,15 @@
 Base database model with UUID primary key support.
 
 This module provides the base model class for all database entities
-with PostgreSQL UUIDv7 support and common fields.
+with PostgreSQL 18 UUIDv7 support and common fields.
 """
 
-import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import DateTime, MetaData, func
+from sqlalchemy import DateTime, MetaData, func, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-
-from config.settings import get_settings
-
-
-def generate_uuid() -> str:
-    """
-    Generate UUID for primary keys.
-
-    Uses UUID4 as fallback until PostgreSQL 18 UUIDv7 is available.
-    This function will be updated to use UUIDv7 when supported.
-
-    Returns:
-        str: UUID string for database storage
-    """
-    settings = get_settings()
-
-    if settings.use_uuidv7:
-        # Placeholder for PostgreSQL 18 UUIDv7 support
-        # When PostgreSQL 18 is available, this will use:
-        # SELECT gen_uuid_v7() from the database
-        # For now, fall back to UUID4
-        pass
-
-    return str(uuid.uuid4())
 
 
 # Database naming convention for consistent constraint names
@@ -54,8 +29,8 @@ class Base(DeclarativeBase):
     """
     Base model class for all database entities.
 
-    Provides common fields and UUID primary key support with
-    preparation for PostgreSQL 18 UUIDv7 integration.
+    Provides common fields and UUID primary key support using
+    PostgreSQL 18 native uuidv7() function for time-ordered UUIDs.
     """
 
     metadata = metadata
@@ -64,8 +39,8 @@ class Base(DeclarativeBase):
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=False),
         primary_key=True,
-        default=generate_uuid,
-        comment="Primary key using UUID",
+        server_default=text("uuidv7()"),
+        comment="Primary key using PostgreSQL 18 uuidv7()",
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -96,4 +71,4 @@ class Base(DeclarativeBase):
 
 
 # Export the base class for model inheritance
-__all__ = ["Base", "generate_uuid"]
+__all__ = ["Base"]

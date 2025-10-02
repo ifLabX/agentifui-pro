@@ -178,7 +178,3 @@ The repository uses Husky with monorepo-aware pre-commit hooks that:
 - `eslint.config.mjs`: TypeScript linting configuration
 - `tailwind.config.ts`: Tailwind CSS configuration with theme extensions
 - `jest.config.ts`: Jest testing configuration
-
-### Root
-- `package.json`: Monorepo scripts and husky configuration
-- `CONTRIBUTING.md`: Contribution guidelines

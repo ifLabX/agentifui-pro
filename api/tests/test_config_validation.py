@@ -213,7 +213,7 @@ def test_config_validation_errors_descriptive():
     # Test missing required field
     with patch.dict(os.environ, {}, clear=True):
         try:
-            Settings()
+            Settings(_env_file=None)
             pytest.fail("Should raise validation error for missing DATABASE_URL")
         except Exception as e:
             # Error message should mention the missing field

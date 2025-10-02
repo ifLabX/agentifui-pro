@@ -39,8 +39,8 @@ def test_application_basic_configuration():
     assert app.title == settings.app_name
     assert app.version == settings.app_version
 
-    # Verify essential middleware is configured
-    assert len(app.middleware_stack.middleware) > 0
+    # Verify essential middleware is configured (using user_middleware for FastAPI 0.100+)
+    assert len(app.user_middleware) > 0
 
     # Verify routes are registered
     assert len(app.routes) > 0
@@ -57,7 +57,8 @@ def test_settings_configuration_startup():
     assert settings.app_name is not None
     assert settings.app_version is not None
     assert settings.database_url is not None
-    assert settings.secret_key is not None
+    assert settings.host is not None
+    assert settings.port > 0
 
 
 def test_database_components_initialization():
@@ -211,22 +212,23 @@ def test_environment_variable_handling_startup():
         "APP_NAME": "Test Startup App",
         "APP_VERSION": "0.1.0-startup-test",
         "DEBUG": "true",
-        "ENVIRONMENT": "test",
+        "ENVIRONMENT": "development",  # Must be one of: development, staging, production
         "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test",
-        "SECRET_KEY": "test-secret-key-for-startup-testing-32-chars",
         "LOG_LEVEL": "DEBUG",
     }
 
     with patch.dict(os.environ, test_env, clear=False):
-        from config.settings import get_settings
+        from config.settings import Settings, get_settings
 
+        # Clear the cache to allow new settings
+        get_settings.cache_clear()
         settings = get_settings()
 
         # Settings should reflect environment variables
         assert settings.app_name == "Test Startup App"
         assert settings.app_version == "0.1.0-startup-test"
         assert settings.debug is True
-        assert settings.environment == "test"
+        assert settings.environment == "development"
         assert settings.log_level == "DEBUG"
 
 
@@ -234,12 +236,12 @@ def test_middleware_stack_startup():
     """Test that middleware stack is properly configured during startup."""
     from main import app
 
-    # Check that middleware is configured
-    assert hasattr(app, "middleware_stack")
-    assert app.middleware_stack is not None
+    # Check that middleware is configured (using user_middleware for FastAPI 0.100+)
+    assert hasattr(app, "user_middleware")
+    assert app.user_middleware is not None
 
     # Should have at least CORS and error handling middleware
-    middleware_count = len(app.middleware_stack.middleware)
+    middleware_count = len(app.user_middleware)
     assert middleware_count > 0, "No middleware configured"
 
 
@@ -283,12 +285,13 @@ def test_openapi_schema_generation_startup():
 @pytest.mark.asyncio
 async def test_graceful_shutdown_capability():
     """Test that application can handle shutdown gracefully."""
-    from database.connection import get_async_engine
-
     with patch("database.connection.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_engine.dispose = AsyncMock()
         mock_get_engine.return_value = mock_engine
+
+        # Import inside patch to get the mocked version
+        from database.connection import get_async_engine
 
         # Get engine
         engine = get_async_engine()
@@ -303,7 +306,6 @@ def test_production_configuration_validation():
     production_env = {
         "ENVIRONMENT": "production",
         "DEBUG": "false",
-        "SECRET_KEY": "production-secret-key-minimum-32-characters-long-secure",
         "DATABASE_URL": "postgresql+asyncpg://user:pass@db.example.com:5432/prod",
         "LOG_LEVEL": "INFO",
     }
@@ -311,12 +313,14 @@ def test_production_configuration_validation():
     with patch.dict(os.environ, production_env, clear=False):
         from config.settings import get_settings
 
+        # Clear the cache to allow new settings
+        get_settings.cache_clear()
         settings = get_settings()
 
         # Production settings should be validated
         assert settings.environment == "production"
         assert settings.debug is False
-        assert len(settings.secret_key) >= 32
+        assert settings.database_url is not None
         assert settings.log_level == "INFO"
 
 
@@ -325,7 +329,6 @@ def test_development_configuration_startup():
     dev_env = {
         "ENVIRONMENT": "development",
         "DEBUG": "true",
-        "SECRET_KEY": "development-secret-key-minimum-32-chars",
         "DATABASE_URL": "postgresql+asyncpg://dev:dev@localhost:5432/dev",
         "LOG_LEVEL": "DEBUG",
     }
@@ -333,6 +336,8 @@ def test_development_configuration_startup():
     with patch.dict(os.environ, dev_env, clear=False):
         from config.settings import get_settings
 
+        # Clear the cache to allow new settings
+        get_settings.cache_clear()
         settings = get_settings()
 
         # Development settings should work
@@ -345,17 +350,16 @@ def test_startup_with_missing_optional_config():
     """Test that startup works even with missing optional configuration."""
     minimal_env = {
         "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
-        "SECRET_KEY": "test-secret-key-minimum-32-characters",
     }
 
     with patch.dict(os.environ, minimal_env, clear=True):
-        from config.settings import get_settings
+        from config.settings import Settings
 
         # Should still work with minimal configuration
-        settings = get_settings()
+        settings = Settings(_env_file=None)
 
         assert settings.database_url is not None
-        assert settings.secret_key is not None
+        assert settings.app_name is not None  # Should have default values
         # Optional fields should have defaults
         assert settings.app_name is not None
         assert settings.app_version is not None

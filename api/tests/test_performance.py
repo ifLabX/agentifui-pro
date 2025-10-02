@@ -259,12 +259,14 @@ def test_error_response_performance():
 @pytest.mark.asyncio
 async def test_database_health_performance_with_mock():
     """Test database health endpoint performance with mocked database."""
+    from unittest.mock import AsyncMock
+
     from main import app
 
     # Mock successful database connection
     with (
-        patch("database.connection.check_database_connection") as mock_conn,
-        patch("database.connection.get_database_info") as mock_info,
+        patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {

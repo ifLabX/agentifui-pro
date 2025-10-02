@@ -20,51 +20,42 @@ class Settings(BaseSettings):
     """
 
     # Application Settings
-    app_name: str = Field(default="Agentifui Pro API", env="APP_NAME")
-    app_version: str = Field(default="0.1.0", env="APP_VERSION")
-    app_description: str = Field(default="Backend API for Agentifui Pro", env="APP_DESCRIPTION")
-    debug: bool = Field(default=False, env="DEBUG")
+    app_name: str = Field(default="Agentifui Pro API")
+    app_version: str = Field(default="0.1.0")
+    app_description: str = Field(default="Backend API for Agentifui Pro")
+    debug: bool = Field(default=False)
 
     # Server Configuration
-    host: str = Field(default="0.0.0.0", env="HOST")
-    port: int = Field(default=8000, env="PORT", gt=0, le=65535)
+    host: str = Field(default="0.0.0.0")
+    port: int = Field(default=8000, gt=0, le=65535)
 
     # Database Configuration
-    database_url: str = Field(..., env="DATABASE_URL")
-    database_pool_size: int = Field(default=10, env="DATABASE_POOL_SIZE", gt=0, le=100)
-    database_pool_max_overflow: int = Field(default=20, env="DATABASE_POOL_MAX_OVERFLOW", ge=0, le=100)
-    database_pool_timeout: int = Field(default=30, env="DATABASE_POOL_TIMEOUT", gt=0, le=300)
-    database_pool_recycle: int = Field(default=3600, env="DATABASE_POOL_RECYCLE", gt=0)
+    database_url: str = Field(...)
+    database_pool_size: int = Field(default=10, gt=0, le=100)
+    database_pool_max_overflow: int = Field(default=20, ge=0, le=100)
+    database_pool_timeout: int = Field(default=30, gt=0, le=300)
+    database_pool_recycle: int = Field(default=3600, gt=0)
 
     # Health Check Configuration
-    health_check_timeout: int = Field(default=5, env="HEALTH_CHECK_TIMEOUT", gt=0, le=30)
-    database_health_check_timeout: int = Field(default=10, env="DATABASE_HEALTH_CHECK_TIMEOUT", gt=0, le=60)
+    health_check_timeout: int = Field(default=5, gt=0, le=30)
+    database_health_check_timeout: int = Field(default=10, gt=0, le=60)
 
     # Logging Configuration
-    log_level: str = Field(default="INFO", env="LOG_LEVEL")
-    log_format: str = Field(
-        default="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        env="LOG_FORMAT",
-    )
-
-    # Security Settings (for future use)
-    secret_key: SecretStr = Field(default="your-secret-key-here-change-in-production", env="SECRET_KEY")
-    algorithm: str = Field(default="HS256", env="ALGORITHM")
-    access_token_expire_minutes: int = Field(default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES", gt=0)
+    log_level: str = Field(default="INFO")
+    log_format: str = Field(default="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     # CORS Settings
-    cors_origins: list[str] = Field(default=["http://localhost:3000"], env="CORS_ORIGINS")
-    cors_allow_credentials: bool = Field(default=True, env="CORS_ALLOW_CREDENTIALS")
-    cors_allow_methods: list[str] = Field(default=["*"], env="CORS_ALLOW_METHODS")
-    cors_allow_headers: list[str] = Field(default=["*"], env="CORS_ALLOW_HEADERS")
+    cors_origins: list[str] = Field(default=["http://localhost:3000"])
+    cors_allow_credentials: bool = Field(default=True)
+    cors_allow_methods: list[str] = Field(default=["*"])
+    cors_allow_headers: list[str] = Field(default=["*"])
 
     # Environment
-    environment: str = Field(default="development", env="ENVIRONMENT")
+    environment: str = Field(default="development")
 
     # Feature Flags
-    enable_docs: bool = Field(default=True, env="ENABLE_DOCS")
-    enable_redoc: bool = Field(default=True, env="ENABLE_REDOC")
-    use_uuidv7: bool = Field(default=False, env="USE_UUIDV7")
+    enable_docs: bool = Field(default=True)
+    enable_redoc: bool = Field(default=True)
 
     @field_validator("database_url")
     @classmethod
@@ -131,47 +122,6 @@ class Settings(BaseSettings):
                 return json.loads(v)
             except json.JSONDecodeError:
                 return [header.strip() for header in v.split(",")]
-        return v
-
-    @field_validator("secret_key")
-    @classmethod
-    def validate_secret_key(cls, v, info):
-        """Validate secret key security in production environment."""
-        # Get environment from context
-        environment = info.data.get("environment", "development")
-
-        # Default insecure keys that should never be used in production
-        insecure_defaults = [
-            "your-secret-key-here-change-in-production",
-            "dev-secure-string-for-development-only-change-in-production-32",
-            "secret",
-            "password",
-            "changeme",
-        ]
-
-        secret_value = v.get_secret_value() if hasattr(v, "get_secret_value") else str(v)
-
-        # In production, enforce strong secret key requirements
-        if environment == "production":
-            if secret_value in insecure_defaults:
-                raise ValueError(
-                    "Production environment requires a secure secret key. Default or common keys are not allowed."
-                )
-
-            if len(secret_value) < 32:
-                raise ValueError("Production secret key must be at least 32 characters long")
-
-        # In development, warn about insecure keys but allow them
-        elif environment == "development" and secret_value in insecure_defaults:
-            import warnings
-
-            warnings.warn(
-                f"Using default secret key in {environment} environment. "
-                "This is acceptable for development but MUST be changed for production.",
-                UserWarning,
-                stacklevel=2,
-            )
-
         return v
 
     model_config = ConfigDict(

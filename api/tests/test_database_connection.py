@@ -150,9 +150,9 @@ async def test_connection_error_handling():
 
         engine = get_async_engine()
 
-        # Should raise DBAPIError for connection failures
-        # Error message format may vary across different environments (macOS vs Linux)
-        with pytest.raises(DBAPIError):
+        # Should raise OSError (for DNS/socket errors) or DBAPIError (for database errors)
+        # The specific error type varies by environment and failure mode
+        with pytest.raises((OSError, DBAPIError)):
             async with engine.connect() as conn:
                 await conn.execute("SELECT 1")
 

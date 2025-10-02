@@ -92,11 +92,13 @@ Frontend uses automatic import sorting via Prettier plugin:
 ## Architecture Constraints
 
 ### Backend Patterns
+- **PostgreSQL 18+**: Required for native `uuidv7()` function support
 - **Dependency injection**: Use FastAPI's dependency injection for database sessions
 - **Async everywhere**: All database operations must be async
 - **Error handling**: Structured error responses with request tracing
 - **Health monitoring**: All services must expose health endpoints
 - **Environment config**: All settings via Pydantic Settings with validation
+- **Database migrations**: Use Alembic for all schema changes
 
 ### Frontend Patterns
 - **App Router only**: Use Next.js 15 App Router, no Pages Router
@@ -110,8 +112,9 @@ Frontend uses automatic import sorting via Prettier plugin:
 ### Backend Testing
 - **Coverage**: Minimum 80% test coverage
 - **Async tests**: Use pytest-asyncio for async code
-- **Test isolation**: Each test must be independent
-- **Database tests**: Use test database with transactions rollback
+- **Test isolation**: Each test must be independent with automatic cache reset
+- **Database tests**: Use PostgreSQL 18+ (real database, not SQLite mocks)
+- **Fixtures**: Auto-reset settings and session factory between tests
 
 ### Frontend Testing
 - **Jest + RTL**: Jest with React Testing Library
@@ -160,9 +163,13 @@ The repository uses Husky with monorepo-aware pre-commit hooks that:
 
 ### Backend (api/)
 - `src/main.py`: FastAPI application entry point with CORS middleware
+- `src/database/`: Database connection, session management, and health checks
+- `src/models/base.py`: Base model with PostgreSQL 18 uuidv7() support
+- `migrations/`: Alembic migration files (never edit after applying)
+- `alembic.ini`: Alembic configuration (script_location = migrations)
 - `.ruff.toml`: Python linting configuration
 - `pyproject.toml`: Dependencies and project configuration
-- `README.md`: Development setup and commands
+- `README.md`: Development setup, Alembic workflow, and commands
 
 ### Frontend (web/)
 - `app/`: Next.js App Router pages and layouts

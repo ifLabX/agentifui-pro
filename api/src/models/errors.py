@@ -8,7 +8,7 @@ defined in contracts/errors.yaml for consistent error handling.
 import uuid
 from datetime import datetime
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -71,7 +71,9 @@ class ValidationErrorResponse(BaseModel):
     field-level error information.
     """
 
-    error: str = Field(default="VALIDATION_ERROR", description="Error type indicating validation failure")
+    error: Literal["VALIDATION_ERROR"] = Field(
+        default="VALIDATION_ERROR", description="Error type indicating validation failure"
+    )
     message: str = Field(..., description="General validation error message")
     timestamp: str = Field(..., description="ISO 8601 timestamp when error occurred")
     validation_errors: list[ValidationError] = Field(..., description="Specific field validation errors")
@@ -89,7 +91,7 @@ class ServiceUnavailableError(BaseModel):
     Used when service is temporarily unavailable with optional retry information.
     """
 
-    error: str = Field(
+    error: Literal["SERVICE_UNAVAILABLE"] = Field(
         default="SERVICE_UNAVAILABLE",
         description="Error indicating service is temporarily unavailable",
     )

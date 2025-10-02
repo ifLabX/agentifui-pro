@@ -9,6 +9,7 @@ import time
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.settings import get_settings
@@ -41,7 +42,7 @@ APP_START_TIME = time.time()
     summary="Application Health Check",
     description="Returns the overall health status of the FastAPI application",
 )
-async def get_application_health() -> HealthResponse:
+async def get_application_health():
     """
     Get application health status.
 
@@ -68,25 +69,34 @@ async def get_application_health() -> HealthResponse:
 
         # Return healthy or unhealthy based on checks
         if errors:
-            return create_unhealthy_response(
+            response = create_unhealthy_response(
                 version=settings.app_version,
                 errors=errors,
                 uptime_seconds=uptime_seconds,
             )
+            return JSONResponse(status_code=503, content=response.model_dump())
 
-        return create_healthy_response(
+        response = create_healthy_response(
             version=settings.app_version,
             uptime_seconds=uptime_seconds,
         )
+        return JSONResponse(status_code=200, content=response.model_dump())
 
     except Exception as e:
         # Return unhealthy status for any unexpected errors
-        settings = get_settings()
-        return create_unhealthy_response(
-            version=getattr(settings, "app_version", "unknown"),
+        # Safely get version without failing if settings are unavailable
+        version = "unknown"
+        try:
+            version = get_settings().app_version
+        except Exception:
+            pass  # Use 'unknown' if settings fail to load
+
+        response = create_unhealthy_response(
+            version=version,
             errors=[f"Health check failed: {str(e)}"],
             uptime_seconds=int(time.time() - APP_START_TIME),
         )
+        return JSONResponse(status_code=503, content=response.model_dump())
 
 
 @router.get(
@@ -104,7 +114,7 @@ async def get_application_health() -> HealthResponse:
 )
 async def get_database_health(
     db: Annotated[AsyncSession, Depends(get_db_session)],
-) -> DatabaseHealthResponse:
+):
     """
     Get database health status.
 
@@ -125,9 +135,10 @@ async def get_database_health(
         is_connected = await check_database_connection()
 
         if not is_connected:
-            return create_unhealthy_database_response(
+            response = create_unhealthy_database_response(
                 errors=["Database connection failed"],
             )
+            return JSONResponse(status_code=503, content=response.model_dump())
 
         # Get detailed database information
         db_info = await get_database_info()
@@ -135,10 +146,11 @@ async def get_database_health(
 
         if not db_info.get("connected", False):
             error_msg = db_info.get("error", "Unknown database error")
-            return create_unhealthy_database_response(
+            response = create_unhealthy_database_response(
                 errors=[f"Database error: {error_msg}"],
                 response_time_ms=response_time_ms,
             )
+            return JSONResponse(status_code=503, content=response.model_dump())
 
         # Create connection pool info if available
         connection_pool = None
@@ -152,17 +164,19 @@ async def get_database_health(
         migration_status = MigrationStatus.UNKNOWN
 
         # Return healthy database response
-        return create_healthy_database_response(
+        response = create_healthy_database_response(
             connection_pool=connection_pool,
             response_time_ms=response_time_ms,
             migration_status=migration_status,
         )
+        return JSONResponse(status_code=200, content=response.model_dump())
 
     except Exception as e:
         # Calculate response time even for errors
         response_time_ms = int((time.time() - start_time) * 1000)
 
-        return create_unhealthy_database_response(
+        response = create_unhealthy_database_response(
             errors=[f"Database health check failed: {str(e)}"],
             response_time_ms=response_time_ms,
         )
+        return JSONResponse(status_code=503, content=response.model_dump())

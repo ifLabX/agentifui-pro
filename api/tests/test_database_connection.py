@@ -135,6 +135,8 @@ def test_connection_pool_configuration():
 @pytest.mark.asyncio
 async def test_connection_error_handling():
     """Test that connection errors are handled gracefully."""
+    from sqlalchemy.exc import DBAPIError
+
     from config.settings import reset_settings
     from database.connection import get_async_engine, reset_engine
 
@@ -148,17 +150,11 @@ async def test_connection_error_handling():
 
         engine = get_async_engine()
 
-        # Should handle connection errors gracefully
-        with pytest.raises(Exception) as exc_info:
+        # Should raise DBAPIError for connection failures
+        # Error message format may vary across different environments (macOS vs Linux)
+        with pytest.raises(DBAPIError):
             async with engine.connect() as conn:
                 await conn.execute("SELECT 1")
-
-        # Error should be connection-related, not structural
-        error_str = str(exc_info.value).lower()
-        assert any(
-            keyword in error_str
-            for keyword in ["connect", "connection", "host", "database", "authentication", "nodename", "servname"]
-        )
 
         await engine.dispose()
 

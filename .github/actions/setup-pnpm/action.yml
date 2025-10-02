@@ -1,0 +1,35 @@
+name: 'Setup pnpm with Node.js'
+description: 'Install and configure pnpm with dependency caching'
+author: 'Agentifui Pro Team'
+
+inputs:
+  working-directory:
+    description: 'Working directory containing package.json'
+    required: false
+    default: 'web'
+  node-version:
+    description: 'Node.js version (auto-detected from package.json if not specified)'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        package_json_file: ${{ inputs.working-directory }}/package.json
+        run_install: false
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version == '' && format('{0}/package.json', inputs.working-directory) || '' }}
+        cache: 'pnpm'
+        cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm install --frozen-lockfile

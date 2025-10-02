@@ -1,0 +1,51 @@
+name: Reusable Frontend Quality Check
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        type: string
+        default: 'web'
+        description: 'Frontend working directory'
+      node-version:
+        type: string
+        default: ''
+        description: 'Node.js version (empty for auto-detect)'
+      run-build:
+        type: boolean
+        default: false
+        description: 'Run build step'
+
+jobs:
+  quality-check:
+    name: Frontend Quality
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm and Node.js
+        uses: ./.github/actions/setup-pnpm
+        with:
+          working-directory: ${{ inputs.working-directory }}
+          node-version: ${{ inputs.node-version }}
+
+      - name: Quality check
+        run: pnpm quality
+
+      - name: Build
+        if: inputs.run-build
+        run: pnpm build
+
+      - name: Upload build artifacts
+        if: inputs.run-build && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: ${{ inputs.working-directory }}/.next
+          retention-days: 7

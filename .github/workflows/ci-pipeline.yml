@@ -1,0 +1,136 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ════════════════════════════════════════════════════════════
+  # Stage 0: Change Detection
+  # ════════════════════════════════════════════════════════════
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      workflows: ${{ steps.filter.outputs.workflows }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'api/**'
+              - 'pyproject.toml'
+              - 'uv.lock'
+            frontend:
+              - 'web/**'
+              - '!web/messages/**'
+            workflows:
+              - '.github/workflows/**'
+              - '.github/actions/**'
+
+  # ════════════════════════════════════════════════════════════
+  # Stage 1: Quality Gate (Parallel)
+  # ════════════════════════════════════════════════════════════
+  backend-quality:
+    name: Backend Quality
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true'
+    uses: ./.github/workflows/_reusable-quality-backend.yml
+    secrets: inherit
+
+  frontend-quality:
+    name: Frontend Quality
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true'
+    uses: ./.github/workflows/_reusable-quality-frontend.yml
+    secrets: inherit
+
+  # ════════════════════════════════════════════════════════════
+  # Stage 2: Build (Conditional, Parallel)
+  # ════════════════════════════════════════════════════════════
+  build-backend:
+    name: Build Backend
+    needs: [detect-changes, backend-quality]
+    if: |
+      always() &&
+      needs.detect-changes.outputs.backend == 'true' &&
+      (needs.backend-quality.result == 'success' || needs.backend-quality.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-uv
+        with:
+          working-directory: api
+      - name: Build package
+        run: echo "Backend build placeholder (add Docker/package build here)"
+        working-directory: api
+
+  build-frontend:
+    name: Build Frontend
+    needs: [detect-changes, frontend-quality]
+    if: |
+      always() &&
+      needs.detect-changes.outputs.frontend == 'true' &&
+      (needs.frontend-quality.result == 'success' || needs.frontend-quality.result == 'skipped')
+    uses: ./.github/workflows/_reusable-quality-frontend.yml
+    with:
+      run-build: true
+    secrets: inherit
+
+  # ════════════════════════════════════════════════════════════
+  # Stage 3: Integration Tests (Future)
+  # ════════════════════════════════════════════════════════════
+  integration-tests:
+    name: Integration Tests
+    needs: [build-backend, build-frontend]
+    if: |
+      always() &&
+      (needs.build-backend.result == 'success' || needs.build-backend.result == 'skipped') &&
+      (needs.build-frontend.result == 'success' || needs.build-frontend.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder for E2E tests
+        run: echo "Integration tests placeholder (add Playwright/Cypress here)"
+
+  # ════════════════════════════════════════════════════════════
+  # Final: Status Report
+  # ════════════════════════════════════════════════════════════
+  pipeline-status:
+    name: Pipeline Status
+    needs: [detect-changes, backend-quality, frontend-quality, build-backend, build-frontend, integration-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check pipeline status
+        run: |
+          echo "## Pipeline Status Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Quality | ${{ needs.backend-quality.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Quality | ${{ needs.frontend-quality.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Build | ${{ needs.build-backend.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Build | ${{ needs.build-frontend.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+
+          # Fail if any required job failed
+          if [[ "${{ needs.backend-quality.result }}" == "failure" ]] || \
+             [[ "${{ needs.frontend-quality.result }}" == "failure" ]] || \
+             [[ "${{ needs.build-backend.result }}" == "failure" ]] || \
+             [[ "${{ needs.build-frontend.result }}" == "failure" ]]; then
+            echo "❌ Pipeline failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ Pipeline passed" >> $GITHUB_STEP_SUMMARY
+          fi

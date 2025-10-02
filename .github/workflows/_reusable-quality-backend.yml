@@ -1,0 +1,76 @@
+name: Reusable Backend Quality Check
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        type: string
+        default: 'api'
+        description: 'Backend working directory'
+      python-version:
+        type: string
+        default: ''
+        description: 'Python version (empty for auto-detect)'
+      postgres-version:
+        type: string
+        default: '18'
+        description: 'PostgreSQL version'
+      run-tests:
+        type: boolean
+        default: true
+        description: 'Run test suite'
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    services:
+      postgres:
+        image: postgres:${{ inputs.postgres-version }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: agentifui_pro_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup uv and Python
+        uses: ./.github/actions/setup-uv
+        with:
+          working-directory: ${{ inputs.working-directory }}
+          python-version: ${{ inputs.python-version }}
+
+      - name: Lint check
+        run: uv run ruff check .
+
+      - name: Format check
+        run: uv run ruff format --check .
+
+      - name: Run tests
+        if: inputs.run-tests
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/agentifui_pro_test
+          DEBUG: false
+        run: uv run --frozen pytest -v
+
+      - name: Upload coverage
+        if: inputs.run-tests && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: ${{ inputs.working-directory }}/coverage.xml
+          retention-days: 7
+          if-no-files-found: ignore

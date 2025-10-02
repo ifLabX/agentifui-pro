@@ -1,0 +1,29 @@
+"""
+Models package initialization.
+
+Import all SQLAlchemy models here to register them with Base.metadata
+for Alembic autogenerate support.
+"""
+
+from models.base import Base
+from models.errors import (
+    ErrorResponse,
+    ErrorType,
+    ServiceUnavailableError,
+    ValidationError,
+    ValidationErrorResponse,
+)
+
+# Import new database models here:
+# from models.user import User
+
+__all__ = [
+    "Base",
+    "ErrorResponse",
+    "ErrorType",
+    "ServiceUnavailableError",
+    "ValidationError",
+    "ValidationErrorResponse",
+    # Add new models to exports:
+    # "User",
+]

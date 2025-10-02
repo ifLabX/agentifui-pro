@@ -1,0 +1,41 @@
+name: 'Setup uv with Python'
+description: 'Install and configure uv with dependency caching'
+author: 'Agentifui Pro Team'
+
+inputs:
+  working-directory:
+    description: 'Working directory containing pyproject.toml'
+    required: false
+    default: 'api'
+  python-version:
+    description: 'Python version (auto-installed via uv if not specified)'
+    required: false
+    default: ''
+  enable-cache:
+    description: 'Enable dependency caching'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: ${{ inputs.enable-cache }}
+        cache-dependency-glob: ${{ inputs.working-directory }}/uv.lock
+
+    - name: Set up Python
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        if [ -n "${{ inputs.python-version }}" ]; then
+          uv python install ${{ inputs.python-version }}
+        else
+          uv python install
+        fi
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: uv sync --frozen

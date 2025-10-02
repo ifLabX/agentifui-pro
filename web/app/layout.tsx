@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 
 import { ThemeProvider } from "@/app/components/theme-provider";
 
@@ -19,6 +19,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
     <html
@@ -28,7 +29,9 @@ export default async function RootLayout({
     >
       <body className="font-sans antialiased">
         <ThemeProvider>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

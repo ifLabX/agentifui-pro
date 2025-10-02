@@ -6,36 +6,63 @@ for FastAPI endpoints following session-per-request pattern.
 """
 
 from collections.abc import AsyncGenerator
+from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from database.connection import get_async_engine
+from database.connection import get_async_engine, reset_engine
 
 
-# Create session factory
+# Global session factory (lazy initialization)
+_session_local: Optional[async_sessionmaker[AsyncSession]] = None
+
+
 def get_session_factory() -> async_sessionmaker[AsyncSession]:
     """
-    Get async session factory.
+    Get or create async session factory.
 
     Creates a session factory bound to the async engine with proper
-    configuration for request-scoped sessions.
+    configuration for request-scoped sessions. Uses lazy initialization
+    to allow settings changes in tests.
 
     Returns:
         async_sessionmaker: Session factory for creating async sessions
     """
-    engine = get_async_engine()
+    global _session_local
 
-    return async_sessionmaker(
-        engine,
-        class_=AsyncSession,
-        expire_on_commit=False,  # Keep objects usable after commit
-        autoflush=True,  # Auto-flush changes before queries
-        autocommit=False,  # Explicit transaction control
-    )
+    if _session_local is None:
+        engine = get_async_engine()
+        _session_local = async_sessionmaker(
+            engine,
+            class_=AsyncSession,
+            expire_on_commit=False,  # Keep objects usable after commit
+            autoflush=True,  # Auto-flush changes before queries
+            autocommit=False,  # Explicit transaction control
+        )
+
+    return _session_local
 
 
-# Global session factory instance
-SessionLocal = get_session_factory()
+def reset_session_factory() -> None:
+    """
+    Reset session factory and engine for testing or configuration reload.
+
+    This resets both the session factory and the underlying engine,
+    ensuring that the next session will use a fresh engine with
+    new settings (e.g., after calling reset_settings()).
+
+    Use this in tests when switching database connections.
+    Must be called after reset_settings() from config module.
+
+    Example:
+        >>> from config.settings import reset_settings
+        >>> from database.session import reset_session_factory
+        >>> reset_settings()  # Clear settings cache first
+        >>> reset_session_factory()  # Reset both factory and engine
+    """
+    global _session_local
+    _session_local = None
+    reset_engine()  # Also reset the cached engine
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
@@ -54,7 +81,8 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
             result = await db.execute(select(User))
             return result.scalars().all()
     """
-    async with SessionLocal() as session:
+    session_factory = get_session_factory()  # Get factory dynamically
+    async with session_factory() as session:
         try:
             yield session
             # Commit is handled explicitly by the endpoint if needed

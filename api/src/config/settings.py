@@ -147,5 +147,22 @@ def get_settings() -> Settings:
     return Settings()
 
 
+def reset_settings() -> None:
+    """
+    Clear settings cache for testing or environment reloading.
+
+    Use this in tests when you need to reload settings with new environment
+    variables or when switching between different configurations.
+
+    Example:
+        >>> from unittest.mock import patch
+        >>> import os
+        >>> with patch.dict(os.environ, {"DATABASE_URL": "postgresql://..."}):
+        ...     reset_settings()
+        ...     settings = get_settings()  # Gets fresh settings with new URL
+    """
+    get_settings.cache_clear()
+
+
 # Export settings instance for convenience
 settings = get_settings()

@@ -1,8 +1,8 @@
 """
 Test configuration and fixtures for FastAPI backend tests.
 
-This module provides shared test fixtures, database mocking utilities,
-and async test configuration for the test suite.
+This module provides shared test fixtures and async test configuration.
+Database tests use mocks or the actual PostgreSQL 18 database.
 """
 
 import asyncio
@@ -15,18 +15,13 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
-from sqlalchemy.pool import StaticPool
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from config.settings import Settings, get_settings
-from database.session import get_db_session
+from config.settings import get_settings, reset_settings
+from database.session import get_db_session, reset_session_factory
 
 # Import application components
 from main import app
-from models.base import Base
-
-# Configure pytest-asyncio (older version compatibility)
-# pytest_asyncio.Config.default_fixture_loop_scope = "function"
 
 
 @pytest.fixture(scope="session")
@@ -42,77 +37,18 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
     loop.close()
 
 
-@pytest.fixture
-def mock_settings() -> Settings:
+@pytest.fixture(autouse=True)
+def reset_caches():
     """
-    Mock settings for testing with safe defaults.
+    Auto-reset settings and session factory caches between tests.
 
-    Returns:
-        Settings object configured for testing environment
+    This ensures each test starts with clean state and doesn't inherit
+    cached settings or database connections from previous tests.
     """
-    with patch.dict(
-        os.environ,
-        {
-            "APP_NAME": "Test API",
-            "APP_VERSION": "0.1.0-test",
-            "DEBUG": "true",
-            "ENVIRONMENT": "test",
-            "DATABASE_URL": "sqlite+aiosqlite:///:memory:",
-            "SECRET_KEY": "test-secret-key-minimum-32-characters-long",
-            "LOG_LEVEL": "DEBUG",
-            "CORS_ORIGINS": '["http://localhost:3000"]',
-            "HEALTH_CHECK_TIMEOUT": "1",
-            "DATABASE_HEALTH_CHECK_TIMEOUT": "2",
-        },
-        clear=False,
-    ):
-        return get_settings()
-
-
-@pytest.fixture
-async def test_engine(mock_settings: Settings) -> AsyncGenerator[AsyncEngine, None]:
-    """
-    Create a test database engine using SQLite in-memory database.
-
-    Args:
-        mock_settings: Test settings fixture
-
-    Yields:
-        Async SQLAlchemy engine for testing
-    """
-    # Create in-memory SQLite database for testing
-    engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:",
-        poolclass=StaticPool,
-        connect_args={
-            "check_same_thread": False,
-        },
-        echo=mock_settings.debug,
-    )
-
-    # Create all tables
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-    yield engine
-
-    # Cleanup
-    await engine.dispose()
-
-
-@pytest.fixture
-async def test_session(test_engine: AsyncEngine) -> AsyncGenerator[AsyncSession, None]:
-    """
-    Create a test database session.
-
-    Args:
-        test_engine: Test database engine
-
-    Yields:
-        Async SQLAlchemy session for testing
-    """
-    async with AsyncSession(test_engine, expire_on_commit=False) as session:
-        yield session
+    yield
+    # Cleanup after each test
+    reset_settings()
+    reset_session_factory()
 
 
 @pytest.fixture
@@ -141,58 +77,6 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest.fixture
-def override_get_db_session(test_session: AsyncSession):
-    """
-    Override the database session dependency for testing.
-
-    Args:
-        test_session: Test database session
-
-    Returns:
-        Dependency override function
-    """
-
-    async def _override_get_db_session():
-        yield test_session
-
-    return _override_get_db_session
-
-
-@pytest.fixture
-def client_with_db(client: TestClient, override_get_db_session) -> TestClient:
-    """
-    Create a test client with database session override.
-
-    Args:
-        client: FastAPI test client
-        override_get_db_session: Database session override
-
-    Returns:
-        TestClient with mocked database session
-    """
-    app.dependency_overrides[get_db_session] = override_get_db_session
-    yield client
-    app.dependency_overrides.clear()
-
-
-@pytest.fixture
-async def async_client_with_db(async_client: AsyncClient, override_get_db_session) -> AsyncGenerator[AsyncClient, None]:
-    """
-    Create an async client with database session override.
-
-    Args:
-        async_client: Async HTTP client
-        override_get_db_session: Database session override
-
-    Yields:
-        AsyncClient with mocked database session
-    """
-    app.dependency_overrides[get_db_session] = override_get_db_session
-    yield async_client
-    app.dependency_overrides.clear()
-
-
-@pytest.fixture
 def mock_database_health():
     """
     Mock database health check for testing endpoints without database.
@@ -210,7 +94,7 @@ def mock_database_health():
             "overflow_connections": 0,
             "invalid_connections": 0,
         },
-        "database_info": {"version": "PostgreSQL 14.0", "driver": "asyncpg"},
+        "database_info": {"version": "PostgreSQL 18.0", "driver": "asyncpg"},
         "errors": [],
     }
 

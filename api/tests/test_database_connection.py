@@ -135,12 +135,17 @@ def test_connection_pool_configuration():
 @pytest.mark.asyncio
 async def test_connection_error_handling():
     """Test that connection errors are handled gracefully."""
-    from database.connection import get_async_engine
+    from config.settings import reset_settings
+    from database.connection import get_async_engine, reset_engine
 
     # Test with invalid database URL
     with patch.dict(
         "os.environ", {"DATABASE_URL": "postgresql+asyncpg://invalid:invalid@nonexistent:5432/nonexistent"}
     ):
+        # Reset settings and engine to pick up new DATABASE_URL
+        reset_settings()
+        reset_engine()
+
         engine = get_async_engine()
 
         # Should handle connection errors gracefully
@@ -150,7 +155,10 @@ async def test_connection_error_handling():
 
         # Error should be connection-related, not structural
         error_str = str(exc_info.value).lower()
-        assert any(keyword in error_str for keyword in ["connect", "connection", "host", "database", "authentication"])
+        assert any(
+            keyword in error_str
+            for keyword in ["connect", "connection", "host", "database", "authentication", "nodename", "servname"]
+        )
 
         await engine.dispose()
 

@@ -54,12 +54,25 @@ def get_async_engine() -> AsyncEngine:
     return _engine
 
 
+def reset_engine() -> None:
+    """
+    Reset the global engine instance without disposing.
+
+    Use this in tests when switching database connections.
+    The engine will be recreated on next get_async_engine() call.
+
+    For proper cleanup (e.g., shutdown), use dispose_engine() instead.
+    """
+    global _engine
+    _engine = None
+
+
 async def dispose_engine() -> None:
     """
-    Dispose of the global engine instance.
+    Dispose of the global engine instance and close all connections.
 
     This should be called during application shutdown to properly
-    close all database connections.
+    close all database connections and clean up resources.
     """
     global _engine
 

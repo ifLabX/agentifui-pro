@@ -4,38 +4,42 @@ Modern CI/CD pipeline architecture with reusable components and intelligent chan
 
 ## 📋 Architecture Overview
 
+**2-Tier Reusable Architecture**
+
 ```
 ┌─────────────────────────────────────────────────────────┐
-│              Main Workflows (Entry Points)              │
+│              Active Workflows (Triggers)                │
 ├─────────────────────────────────────────────────────────┤
-│  ci-pipeline.yml         → Main orchestration pipeline  │
-│  backend-quality.yml     → Backend quality checks       │
-│  frontend-quality.yml    → Frontend quality checks      │
+│  ci-pipeline.yml         → Main quality gate            │
 │  auto-i18n.yml           → Automated translation        │
 │  autofix.yml             → Auto-fix formatting          │
 └─────────────────────────────────────────────────────────┘
                         ↓ uses
 ┌─────────────────────────────────────────────────────────┐
-│         Reusable Workflows (Job-level Reuse)            │
+│         Reusable Workflows (Implementation)             │
 ├─────────────────────────────────────────────────────────┤
 │  _reusable-quality-backend.yml                          │
 │  _reusable-quality-frontend.yml                         │
 └─────────────────────────────────────────────────────────┘
                         ↓ uses
 ┌─────────────────────────────────────────────────────────┐
-│        Composite Actions (Step-level Reuse)             │
+│        Composite Actions (Shared Steps)                 │
 ├─────────────────────────────────────────────────────────┤
 │  .github/actions/                                        │
-│    ├─ setup-pnpm/        → pnpm + Node.js setup        │
-│    └─ setup-uv/          → uv + Python setup           │
+│    ├─ setup-pnpm/        → pnpm + Node.js + deps       │
+│    └─ setup-uv/          → uv + Python + deps          │
 └─────────────────────────────────────────────────────────┘
 ```
+
+**Key Design Principle**: Single entry point (`ci-pipeline.yml`) for all quality checks, ensuring consistent PR status checks without duplication.
 
 ## 🎯 CI Pipeline Flow
 
 ### Main Pipeline (`ci-pipeline.yml`)
 
-**Trigger**: Push to `main` or Pull Request
+**Single entry point for all quality checks**
+
+**Trigger**: All pushes and pull requests to `main` branch
 
 ```mermaid
 graph TB
@@ -72,7 +76,11 @@ graph TB
 
 ## 📦 Reusable Components
 
+Components designed for DRY (Don't Repeat Yourself) and maintainability.
+
 ### Composite Actions
+
+**Purpose**: Encapsulate common setup steps with consistent configuration.
 
 #### `setup-pnpm`
 
@@ -115,9 +123,11 @@ Setup uv with Python and dependency caching.
 
 ### Reusable Workflows
 
+**Purpose**: Job-level reuse across workflows, called via `workflow_call`.
+
 #### `_reusable-quality-backend.yml`
 
-Complete backend quality checks with PostgreSQL service.
+Complete backend quality checks with PostgreSQL 18 service.
 
 **Inputs:**
 

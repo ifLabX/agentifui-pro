@@ -6,12 +6,11 @@ support for auto-generation and PostgreSQL-specific features.
 """
 import asyncio
 from logging.config import fileConfig
+
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
-
-from alembic import context
-
 from src.config.settings import get_settings
 
 # Get application settings
@@ -31,12 +30,10 @@ config.set_main_option("sqlalchemy.url", settings.database_url)
 
 # Add your model's MetaData object here for 'autogenerate' support
 # Import base model to register metadata
+# Import all models through models package __init__.py
+# When new models are added, add them to src/models/__init__.py
+import src.models  # noqa: F401
 from src.models.base import Base
-
-# Import all models here to ensure they are registered with metadata
-# When new models are added, import them here:
-# from models.user import User
-# from models.organization import Organization
 
 target_metadata = Base.metadata
 

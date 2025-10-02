@@ -1,18 +1,21 @@
 """
 Models package initialization.
 
-This module imports all model classes to ensure they are registered
-with SQLAlchemy metadata for proper migration generation.
+Import all SQLAlchemy models here to register them with Base.metadata
+for Alembic autogenerate support.
 """
 
-from models.base import Base
-from models.errors import (
+from src.models.base import Base
+from src.models.errors import (
     ErrorResponse,
     ErrorType,
     ServiceUnavailableError,
     ValidationError,
     ValidationErrorResponse,
 )
+
+# Import new database models here:
+# from src.models.user import User
 
 __all__ = [
     "Base",
@@ -21,4 +24,6 @@ __all__ = [
     "ServiceUnavailableError",
     "ValidationError",
     "ValidationErrorResponse",
+    # Add new models to exports:
+    # "User",
 ]

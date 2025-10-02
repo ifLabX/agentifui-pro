@@ -70,10 +70,10 @@ DATABASE_HEALTH_CHECK_TIMEOUT=10
 
 ```bash
 # Development server with hot reload (from api/ directory)
-uv run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uv run uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 
 # Or from project root
-uv run --project api uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uv run --project api uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 The API will be available at:
@@ -225,25 +225,28 @@ All endpoints return structured error responses:
 
 ```
 api/
-  config/           # Configuration management
-    settings.py     # Pydantic Settings with validation
-    logging.py      # Structured logging setup
+  src/              # Application source code
+    config/         # Configuration management
+      settings.py   # Pydantic Settings with validation
+      logging.py    # Structured logging setup
 
-  database/         # Database layer
-    connection.py   # Async engine and connection factory
-    session.py      # Session management and dependency injection
-    health.py       # Database health monitoring utilities
+    database/       # Database layer
+      connection.py # Async engine and connection factory
+      session.py    # Session management and dependency injection
+      health.py     # Database health monitoring utilities
 
-  health/           # Health monitoring
-    endpoints.py    # Health check endpoints
-    models.py       # Health response models
+    health/         # Health monitoring
+      endpoints.py  # Health check endpoints
+      models.py     # Health response models
 
-  middleware/       # HTTP middleware
-    error_handler.py # Global error handling
+    middleware/     # HTTP middleware
+      error_handler.py # Global error handling
 
-  models/           # Data models
-    base.py         # Base model with UUID support
-    errors.py       # Error response models
+    models/         # Data models
+      base.py       # Base model with UUID support
+      errors.py     # Error response models
+
+    main.py         # FastAPI application entry point
 
   migrations/       # Alembic migration files
     env.py          # Async migration environment
@@ -252,8 +255,6 @@ api/
   tests/            # Test suite
     test_*.py       # Test modules
     conftest.py     # Test fixtures and configuration
-
-  main.py           # FastAPI application entry point
 
   .env.example      # Environment template
   pyproject.toml    # Dependencies and project config
@@ -345,7 +346,7 @@ COPY . .
 EXPOSE 8000
 
 # Run with uvicorn
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 ## Monitoring and Observability

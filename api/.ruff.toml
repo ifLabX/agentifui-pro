@@ -1,5 +1,6 @@
 exclude = ["migrations/*", ".venv/*", "__pycache__/*"]
 line-length = 120
+src = ["src"]
 
 [format]
 quote-style = "double"

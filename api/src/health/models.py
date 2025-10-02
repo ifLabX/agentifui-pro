@@ -5,11 +5,11 @@ This module defines the data models for health check responses
 following the OpenAPI specification in contracts/health.yaml.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HealthStatus(str, Enum):
@@ -34,10 +34,7 @@ class ConnectionPoolInfo(BaseModel):
     active_connections: int = Field(..., ge=0, description="Number of active connections in the pool")
     pool_size: int = Field(..., ge=1, description="Maximum size of the connection pool")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
 
 class HealthResponse(BaseModel):
@@ -53,10 +50,7 @@ class HealthResponse(BaseModel):
     uptime_seconds: Optional[int] = Field(None, ge=0, description="Application uptime in seconds")
     errors: Optional[list[str]] = Field(None, description="List of error messages if status is not healthy")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
 
 class DatabaseHealthResponse(BaseModel):
@@ -74,10 +68,7 @@ class DatabaseHealthResponse(BaseModel):
     migration_status: Optional[MigrationStatus] = Field(None, description="Alembic migration status")
     errors: Optional[list[str]] = Field(None, description="List of error messages if status is not healthy")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
 
 # Utility functions for creating health responses
@@ -96,7 +87,7 @@ def create_healthy_response(version: str, uptime_seconds: Optional[int] = None) 
     """
     return HealthResponse(
         status=HealthStatus.HEALTHY,
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         version=version,
         uptime_seconds=uptime_seconds,
     )
@@ -116,7 +107,7 @@ def create_unhealthy_response(version: str, errors: list[str], uptime_seconds: O
     """
     return HealthResponse(
         status=HealthStatus.UNHEALTHY,
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         version=version,
         uptime_seconds=uptime_seconds,
         errors=errors,
@@ -141,7 +132,7 @@ def create_healthy_database_response(
     """
     return DatabaseHealthResponse(
         status=HealthStatus.HEALTHY,
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         database_connected=True,
         connection_pool=connection_pool,
         response_time_ms=response_time_ms,
@@ -165,7 +156,7 @@ def create_unhealthy_database_response(
     """
     return DatabaseHealthResponse(
         status=HealthStatus.UNHEALTHY,
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         database_connected=False,
         response_time_ms=response_time_ms,
         errors=errors,

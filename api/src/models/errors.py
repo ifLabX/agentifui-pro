@@ -6,11 +6,11 @@ defined in contracts/errors.yaml for consistent error handling.
 """
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ErrorType(str, Enum):
@@ -40,10 +40,7 @@ class ErrorResponse(BaseModel):
     timestamp: str = Field(..., description="ISO 8601 timestamp when error occurred")
     request_id: Optional[str] = Field(None, description="Unique request identifier for error tracking")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
 
 class ValidationError(BaseModel):
@@ -57,10 +54,7 @@ class ValidationError(BaseModel):
     message: str = Field(..., description="Validation error message")
     value: Optional[Any] = Field(None, description="The invalid value that was provided")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
 
 class ValidationErrorResponse(BaseModel):
@@ -78,10 +72,7 @@ class ValidationErrorResponse(BaseModel):
     timestamp: str = Field(..., description="ISO 8601 timestamp when error occurred")
     validation_errors: list[ValidationError] = Field(..., description="Specific field validation errors")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
 
 class ServiceUnavailableError(BaseModel):
@@ -99,10 +90,7 @@ class ServiceUnavailableError(BaseModel):
     timestamp: str = Field(..., description="ISO 8601 timestamp when error occurred")
     retry_after: Optional[int] = Field(None, ge=1, description="Suggested retry delay in seconds")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(frozen=True)
 
 
 # Utility functions for creating error responses
@@ -133,7 +121,7 @@ def create_error_response(
         error=error_type,
         message=message,
         detail=detail,
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         request_id=request_id,
     )
 
@@ -187,7 +175,7 @@ def create_validation_error(
 
     return ValidationErrorResponse(
         message=message,
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         validation_errors=errors,
     )
 
@@ -208,7 +196,7 @@ def create_service_unavailable_error(
     """
     return ServiceUnavailableError(
         message=message,
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         retry_after=retry_after,
     )
 

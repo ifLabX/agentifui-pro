@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from database.connection import get_async_engine, reset_engine
 
-
 # Global session factory (lazy initialization)
 _session_local: Optional[async_sessionmaker[AsyncSession]] = None
 

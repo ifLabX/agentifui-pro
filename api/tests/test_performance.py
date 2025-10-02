@@ -99,6 +99,7 @@ def test_health_endpoint_concurrent_requests():
 def test_health_db_endpoint_concurrent_requests():
     """Test database health endpoint performance under concurrent load."""
     from concurrent.futures import TimeoutError as FuturesTimeoutError
+
     from main import app
 
     client = TestClient(app)

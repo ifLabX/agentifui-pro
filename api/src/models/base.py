@@ -12,7 +12,6 @@ from sqlalchemy import DateTime, MetaData, func, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-
 # Database naming convention for consistent constraint names
 convention = {
     "ix": "ix_%(column_0_label)s",

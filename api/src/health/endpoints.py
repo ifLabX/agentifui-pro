@@ -84,9 +84,15 @@ async def get_application_health():
 
     except Exception as e:
         # Return unhealthy status for any unexpected errors
-        settings = get_settings()
+        # Safely get version without failing if settings are unavailable
+        version = "unknown"
+        try:
+            version = get_settings().app_version
+        except Exception:
+            pass  # Use 'unknown' if settings fail to load
+
         response = create_unhealthy_response(
-            version=getattr(settings, "app_version", "unknown"),
+            version=version,
             errors=[f"Health check failed: {str(e)}"],
             uptime_seconds=int(time.time() - APP_START_TIME),
         )

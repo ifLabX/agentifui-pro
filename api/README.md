@@ -94,9 +94,6 @@ DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/agentifui_pro
 DEBUG=true
 ENVIRONMENT=development
 
-# Security
-SECRET_KEY=your-secret-key-min-32-chars
-
 # CORS
 CORS_ORIGINS=["http://localhost:3000"]
 ```
@@ -180,7 +177,6 @@ CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0"]
 ```
 
 **Production checklist**:
-- Set secure `SECRET_KEY` (32+ chars)
 - Configure DATABASE_URL with SSL
 - Set `ENVIRONMENT=production`
 - Restrict `CORS_ORIGINS`

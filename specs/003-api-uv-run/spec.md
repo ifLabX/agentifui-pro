@@ -3,7 +3,7 @@
 **Feature Branch**: `003-api-uv-run`
 **Created**: 2025-10-02
 **Status**: Draft
-**Input**: User description: "当前情况需要确保在api目录下 uv run pytest 全部通过而且clear一些死代码和多余的代码或者环境变量等。确保一切符合fastapi最佳实践。重点是当前你需要探索 @api/ 目录并分析当前pytest相关的结果为什么有很多失败，进行尝试之后编写文档"
+**Input**: User description: "The current situation requires ensuring that running `uv run pytest` under the `api` directory passes all tests, while also cleaning up dead code, redundant code, or unnecessary environment variables. Everything must comply with FastAPI best practices. The main focus right now is to explore the `@api/` directory, analyze why many pytest tests are failing, attempt solutions, and then write documentation based on the findings."
 
 ## Execution Flow (main)
 ```

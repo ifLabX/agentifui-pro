@@ -1,57 +1,107 @@
 <!--
 Sync Impact Report:
-Version change: 1.0.1 → 1.1.0
-Modified principles:
-- I. Dual-Stack Excellence (enhanced with OpenAPI automation and type generation details)
-- II. Quality-First Development (expanded with detailed quality gate requirements)
-- III. Test-Driven Implementation (added specific coverage targets and accessibility standards)
-- IV. Internationalization by Design (enhanced with type safety and namespace requirements)
-- V. Convention Consistency (expanded with commit, comment, and import organization policies)
-Added sections:
-- Spec-Kit Workflow integration in Development Standards
-- Enhanced PR requirements in Quality Assurance
-Removed sections: None
-Templates requiring updates:
-✅ plan-template.md (Constitution Check section aligned)
-✅ spec-template.md (quality requirements aligned)
-✅ tasks-template.md (testing and TDD workflow aligned)
-✅ agent-file-template.md (update-agent-context.sh compatible)
-✅ CLAUDE.md (runtime guidance synchronized)
-✅ .specify/README.md (spec-kit workflow documented)
-Follow-up TODOs: None
+- Version: 1.1.0 → 2.0.0 (MAJOR: spec-kit v0.0.57 integration, command system overhaul)
+- Created: 2025-10-07
+- Modified principles:
+  * Replaced technical layer organization with user-story-driven principles
+  * Added spec-kit workflow phases (Phase 0/1/2/3)
+  * Changed from mandatory testing to test-optional pragmatism
+  * Enhanced quality gates with checklist validation
+- Context: Full migration to spec-kit v0.0.57 workflow
+- Templates status:
+  ✅ .specify/templates/spec-template.md - Updated for user-story-driven specs
+  ✅ .specify/templates/plan-template.md - Updated for Phase 0/1 workflow
+  ✅ .specify/templates/tasks-template.md - Updated for priority-based organization
+  ✅ .specify/templates/checklist-template.md - New template added
+- Commands status:
+  ✅ All speckit.* commands created and aligned with principles
+  ✅ Legacy commands removed for clarity
+- Preserved from v1.1.0:
+  ✅ Dual-stack architecture requirements
+  ✅ Quality standards (Ruff, ESLint/oxlint, type safety)
+  ✅ i18n requirements (next-intl, kebab-case)
+  ✅ Security and testing standards
+  ✅ PR requirements and pre-commit hooks
 -->
 
 # Agentifui Pro Constitution
 
 ## Core Principles
 
-### I. Dual-Stack Excellence
-Every feature MUST maintain consistency across both frontend (Next.js/TypeScript) and backend (FastAPI/Python) stacks. All APIs must be properly typed with Pydantic models on the backend and corresponding TypeScript interfaces on the frontend. Cross-stack communication follows OpenAPI standards with automatic type generation.
+### I. Specification-First Development
+
+**Rule**: All features MUST begin with a complete specification before any implementation.
+
+**Requirements**:
+- Feature specifications MUST define WHAT and WHY, never HOW (implementation details)
+- Specifications MUST be technology-agnostic and understandable by non-technical stakeholders
+- Success criteria MUST be measurable and verifiable without knowing implementation
+- User stories MUST be prioritized (P1, P2, P3) and independently testable
+- Maximum 3 NEEDS CLARIFICATION markers allowed per specification
+
+**Rationale**: Specifications provide a shared understanding between stakeholders and developers, reducing rework and misalignment. Technology-agnostic specs allow for flexible implementation choices.
+
+### II. User-Story-Driven Organization
+
+**Rule**: Features MUST be organized by user stories with clear priorities, not technical layers.
+
+**Requirements**:
+- Each user story MUST be independently implementable and testable
+- Stories MUST be prioritized by value (P1 = MVP, P2/P3 = enhancements)
+- Implementation tasks MUST be grouped by story, not by technical concern
+- Each story MUST deliver standalone value that can be demonstrated
+
+**Rationale**: User-story organization enables incremental delivery, early feedback, and MVP-first development. It aligns technical work with business value.
+
+### III. Dual-Stack Excellence
+
+**Rule**: Every feature MUST maintain consistency across both frontend (Next.js/TypeScript) and backend (FastAPI/Python) stacks.
+
+**Requirements**:
+- All APIs must be properly typed with Pydantic models on the backend
+- Corresponding TypeScript interfaces required on the frontend
+- Cross-stack communication follows OpenAPI standards
+- Automatic type generation where possible
 
 **Rationale**: Ensures type safety, reduces integration bugs, and maintains development velocity across the full stack.
 
-### II. Quality-First Development
-Code quality is non-negotiable. All code MUST pass automated quality gates before entering the main branch:
-- Python: Ruff linting and formatting (120 character line length)
-- TypeScript: Dual-layer linting (oxlint + ESLint) with strict mode
-- Pre-commit hooks: Automated quality validation on all commits
-- Type hints: Required for all Python function signatures
-- Type safety: No `any` types in TypeScript, full type coverage required
+### IV. Quality Validation Gates
 
-**Rationale**: Prevents technical debt accumulation and ensures consistent, maintainable codebase across team members.
+**Rule**: Each phase MUST pass quality checks before proceeding to the next.
 
-### III. Test-Driven Implementation
-All new features MUST follow test-first development with mandatory coverage requirements:
-- Frontend: Jest + React Testing Library for component testing
-- Backend: FastAPI test client for endpoint validation (minimum 80% coverage)
-- Integration: Cross-stack communication validation tests required
-- Accessibility: WCAG 2.1 AA compliance testing for all UI components
-- Tests must pass before implementation is considered complete
+**Requirements**:
+- Specifications MUST pass quality checklist before planning (completeness, clarity, testability)
+- Plans MUST pass constitution check before task generation (compliance with principles)
+- Checklists MUST be reviewed before implementation starts
+- All clarifications MUST be resolved before planning
+- Code MUST pass automated quality gates:
+  * Python: Ruff linting and formatting (120 character line length)
+  * TypeScript: Dual-layer linting (oxlint + ESLint) with strict mode
+  * Type hints required for all Python function signatures
+  * No `any` types in TypeScript, full type coverage required
 
-**Rationale**: Ensures reliability, enables safe refactoring, catches regressions early in development cycle, and maintains high code quality standards.
+**Rationale**: Early quality gates catch issues when they're cheapest to fix, reducing downstream rework and ensuring alignment with project standards.
 
-### IV. Internationalization by Design
-All user-facing text MUST use the next-intl translation system with strict naming conventions:
+### V. Test-Driven Pragmatism
+
+**Rule**: Tests are included when explicitly required or for critical functionality.
+
+**Requirements**:
+- Tests MUST be explicitly requested in specification or feature requirements
+- When included, tests MUST be written before implementation (TDD)
+- **Backend**: 80% minimum coverage when tests are included
+- **Frontend**: Jest + React Testing Library for behavior testing
+- **Integration**: Required for API contracts, inter-service communication, shared schemas
+- **Accessibility**: WCAG 2.1 AA compliance testing for all UI components
+- Contract tests MUST be included for API changes affecting external consumers
+
+**Rationale**: Pragmatic test strategy allocates testing effort where it adds most value while maintaining high quality standards for critical functionality.
+
+### VI. Internationalization by Design
+
+**Rule**: All user-facing text MUST use the next-intl translation system with strict naming conventions.
+
+**Requirements**:
 - Translation keys: kebab-case matching component naming (`sign-in`, not `SignIn`)
 - Single function: Always use `t('namespace.section.key')` format
 - Type safety: All translation keys are compile-time validated
@@ -60,8 +110,25 @@ All user-facing text MUST use the next-intl translation system with strict namin
 
 **Rationale**: Enables global reach, maintains consistency, ensures type safety, and prevents costly retrofitting of internationalization.
 
-### V. Convention Consistency
-All naming conventions MUST be consistently applied across the monorepo:
+### VII. Phase-Structured Workflow
+
+**Rule**: Implementation planning MUST follow structured phases with clear outputs.
+
+**Requirements**:
+- **Phase 0 (Research)**: Resolve all NEEDS CLARIFICATION, document decisions
+- **Phase 1 (Design)**: Generate data-model.md, contracts/, quickstart.md
+- **Phase 2 (Tasks)**: Create dependency-ordered, priority-grouped task list
+- **Phase 3 (Implementation)**: Execute tasks with progress tracking and validation
+
+Each phase MUST produce artifacts before the next phase begins.
+
+**Rationale**: Structured phases ensure thorough planning before coding, reducing technical debt and architectural rework.
+
+### VIII. Convention Consistency
+
+**Rule**: All naming conventions MUST be consistently applied across the monorepo.
+
+**Requirements**:
 - Files/directories: kebab-case for all frontend files and directories
 - Translation keys: kebab-case matching component naming
 - Commit messages: Conventional commit format in English (title required, body optional)
@@ -70,84 +137,119 @@ All naming conventions MUST be consistently applied across the monorepo:
 
 **Rationale**: Reduces cognitive load, improves team efficiency, ensures predictable codebase navigation, and maintains professional communication standards.
 
+### IX. Constitution Authority
+
+**Rule**: This constitution is NON-NEGOTIABLE and supersedes all other practices.
+
+**Requirements**:
+- All specifications, plans, and tasks MUST comply with constitutional principles
+- Constitution violations are automatically CRITICAL and block implementation
+- Constitution amendments require explicit update, version bump, and propagation
+- Analysis tools MUST check for constitution compliance
+
+**Rationale**: Constitutional authority ensures consistent quality and prevents ad-hoc deviations that accumulate technical debt.
+
 ## Development Standards
 
 ### Technology Stack
-All development MUST follow the established patterns documented in agent-specific context files. Technology stack is constrained to approved choices:
-- Backend: Python 3.12+ with uv package manager, FastAPI framework
-- Frontend: Node.js 20+ with pnpm, Next.js 15 with App Router, React 19
-- Database: PostgreSQL 18+ (required for native `uuidv7()` function support)
-- Testing: pytest (backend), Jest + React Testing Library (frontend)
 
-### Spec-Kit Workflow
+**Backend**: Python 3.12+ with uv package manager, FastAPI framework
+- Ruff linting with 120 char line length
+- Type hints required for all function signatures
+- Async patterns preferred for I/O operations
+- PostgreSQL 18+ required (native `uuidv7()` function support)
+- Alembic migrations for all schema changes
+
+**Frontend**: Node.js 20+ with pnpm, Next.js 15 with App Router, React 19
+- Strict TypeScript mode enabled
+- App Router only (no Pages Router)
+- Kebab-case for files and translation keys
+- Maximum cyclomatic complexity: 15
+- Server Components preferred over Client Components
+
+### Security Requirements
+
+- No secrets in code (environment variables only)
+- Input validation with Pydantic/Zod
+- No raw SQL with user input (ORM only)
+- CORS properly configured
+- JWT authentication with proper expiration
+- Rate limiting for public endpoints
+
+### Pre-commit Quality Gates
+
+- Husky hooks enforce quality before commits
+- Workspace-aware linting (api/ or web/)
+- Automatic fixes applied where possible
+- Commits blocked if quality checks fail
+
+## Spec-Kit Workflow
+
 All features MUST follow the Spec-Driven Development workflow:
-1. **Feature Specification** (`/specify`): Define WHAT the feature does in natural language
-2. **Implementation Planning** (`/plan`): Define HOW to implement with technical details
-3. **Task Generation** (`/tasks`): Generate ordered, dependency-aware task lists
-4. **Implementation**: Execute tasks following TDD principles and constitutional guidelines
 
-Feature specifications are stored in `.specify/specs/###-feature-name/` with spec.md, plan.md, and tasks.md files. The constitution is referenced in all implementation plans via the Constitution Check section.
+1. `/speckit.constitution` - Define or update project principles
+2. `/speckit.specify` - Create feature specification with quality validation
+3. `/speckit.clarify` - Resolve ambiguities (≤3 clarifications, interactive)
+4. `/speckit.plan` - Execute Phase 0/1, generate design artifacts
+5. `/speckit.tasks` - Generate priority-grouped task list
+6. `/speckit.implement` - Execute implementation with checklist validation
+7. `/speckit.analyze` - Cross-artifact consistency analysis (optional)
+8. `/speckit.checklist` - Custom quality checklists (optional)
 
-### Architecture Patterns
-New dependencies require architecture review and documentation updates. All features must integrate with existing architecture patterns:
-- Backend: FastAPI dependency injection for database sessions, async/await for I/O operations
-- Frontend: Server Components preferred over Client Components, proper use of React hooks
-- Database: Alembic migrations for all schema changes (never edit applied migrations)
-- Error handling: Structured error responses with request tracing
+Feature specifications are stored in `specs/###-feature-name/` with spec.md, plan.md, tasks.md, and optional artifacts (research.md, data-model.md, contracts/, quickstart.md).
 
 ## Quality Assurance
 
-### Quality Gates
-Code review is mandatory for all changes. Quality gates enforce multiple validation layers:
-- Type checking: TypeScript strict mode + Python type hints on all function signatures
-- Linting: Ruff (Python) + ESLint/oxlint (TypeScript) with caching enabled
-- Formatting: Prettier (frontend) + Ruff (backend) with automatic import sorting
-- Testing: Minimum 80% backend coverage, accessibility testing for all UI components
-- Pre-commit validation: Husky with monorepo-aware hooks (workspace-specific linting)
-- Performance monitoring: Bundle analysis required for frontend changes
-
 ### Pull Request Requirements
-All Pull Requests must meet quality requirements before merge:
-- All automated checks passing (linting, type checking, tests)
-- No debugging artifacts (`console.log`, `TODO` comments in implementation code)
-- Documentation updated for public API changes
-- Breaking changes explicitly marked and justified
-- PR template followed (summary, type checkboxes, issue linking)
-- All PR content in English (titles, descriptions, comments)
 
-### Testing Standards
-- Test isolation: Each test must be independent with automatic cache reset
-- Database tests: Use PostgreSQL 18+ (real database, not SQLite mocks)
-- Component testing: Test behavior, not implementation details
-- User interaction: Test user flows and accessibility, not just rendering
+Before creating PRs:
+- Read `.github/pull_request_template.md` to understand required format
+- Follow template structure (summary, type checkboxes, issue linking)
+- All PR titles, descriptions, and comments MUST be in English
+
+Quality requirements:
+- All checks must pass (linting, type checking, tests)
+- No console.log statements
+- No TODO comments (create issues instead)
+- Documentation updates for public API changes
+- Breaking changes explicitly marked and justified
+
+### Code Review
+
+- Code review is mandatory for all changes
+- Type checking: TypeScript strict mode + Python type hints
+- Performance monitoring: Bundle analysis for frontend changes
+- Test isolation: Each test independent with automatic cache reset
 
 ## Governance
 
-This constitution supersedes all other development practices and establishes project-wide standards. Amendments require documentation updates, team approval, and migration plan for existing code.
-
-### Compliance
-All Pull Requests must verify compliance with constitutional principles. Complexity that violates simplicity principles must be explicitly justified in the Complexity Tracking section of implementation plans (`.specify/specs/###-feature-name/plan.md`).
-
-### Agent-Specific Guidance
-Use agent-specific context files for runtime development guidance and tool-specific instructions. These files are automatically updated by `.specify/scripts/bash/update-agent-context.sh` based on feature specifications:
-- Claude Code: `CLAUDE.md`
-- Gemini CLI: `GEMINI.md`
-- GitHub Copilot: `.github/copilot-instructions.md`
-- Cursor IDE: `.cursor/rules/specify-rules.mdc`
-- Qwen Code: `QWEN.md`
-- opencode/Codex: `AGENTS.md`
-- Windsurf: `.windsurf/rules/specify-rules.md`
-- Kilo Code: `.kilocode/rules/specify-rules.md`
-- Auggie CLI: `.augment/rules/specify-rules.md`
-- Roo Code: `.roo/rules/specify-rules.md`
-- Amazon Q: `AGENTS.md`
-
 ### Amendment Process
-Constitutional amendments follow semantic versioning:
-- **MAJOR**: Backward incompatible governance/principle removals or redefinitions
-- **MINOR**: New principles/sections added or materially expanded guidance
+
+1. Propose change with rationale and version bump type (MAJOR/MINOR/PATCH)
+2. Validate impact on templates, commands, and existing features
+3. Update constitution and propagate changes to dependent artifacts
+4. Create Sync Impact Report documenting all changes
+5. Commit with clear message: `docs: amend constitution to vX.Y.Z (description)`
+
+### Versioning Policy
+
+- **MAJOR**: Backward-incompatible principle removals or redefinitions
+- **MINOR**: New principles or materially expanded guidance
 - **PATCH**: Clarifications, wording fixes, non-semantic refinements
 
-All amendments must update the Sync Impact Report and propagate changes to dependent templates in `.specify/templates/`.
+### Compliance Review
 
-**Version**: 1.1.0 | **Ratified**: 2025-09-21 | **Last Amended**: 2025-10-05
+- All PRs MUST verify constitution compliance
+- `/speckit.analyze` MUST flag constitution violations as CRITICAL
+- Violations MUST be resolved before merge, not waived
+- Constitution principles MUST be enforced by tooling, not manual review
+- Complexity violations must be explicitly justified in plan.md Complexity Tracking section
+
+### Runtime Guidance
+
+Development guidance is provided through:
+- `CLAUDE.md` - Project-specific AI agent instructions
+- `.specify/templates/` - Workflow templates for specs, plans, tasks, checklists
+- `.specify/scripts/bash/` - Automation scripts for prerequisite checking and setup
+
+**Version**: 2.0.0 | **Ratified**: 2025-09-21 | **Last Amended**: 2025-10-07

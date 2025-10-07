@@ -6,8 +6,9 @@ with validation and default values.
 """
 
 from functools import lru_cache
+from typing import Any
 
-from pydantic import ConfigDict, Field, field_validator
+from pydantic import ConfigDict, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings
 
 
@@ -44,10 +45,10 @@ class Settings(BaseSettings):
     log_format: str = Field(default="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     # CORS Settings
-    cors_origins: list[str] = Field(default=["http://localhost:3000"])
+    cors_origins: str | list[str] = Field(default=["http://localhost:3000"])
     cors_allow_credentials: bool = Field(default=True)
-    cors_allow_methods: list[str] = Field(default=["*"])
-    cors_allow_headers: list[str] = Field(default=["*"])
+    cors_allow_methods: str | list[str] = Field(default=["*"])
+    cors_allow_headers: str | list[str] = Field(default=["*"])
 
     # Environment
     environment: str = Field(default="development")
@@ -82,46 +83,33 @@ class Settings(BaseSettings):
             raise ValueError(f"Environment must be one of: {allowed_envs}")
         return v.lower()
 
-    @field_validator("cors_origins", mode="before")
+    @model_validator(mode="before")
     @classmethod
-    def parse_cors_origins(cls, v):
-        """Parse CORS origins from string or list."""
-        if isinstance(v, str):
-            # Handle JSON string format
-            import json
+    def parse_cors_fields(cls, data: dict[str, Any]) -> dict[str, Any]:
+        """
+        Parse CORS fields from string (comma-separated or JSON) to list.
 
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                # Handle comma-separated string
-                return [origin.strip() for origin in v.split(",")]
-        return v
+        Supports multiple formats:
+        - JSON array: '["http://localhost:3000","http://localhost:3001"]'
+        - Comma-separated: 'http://localhost:3000,http://localhost:3001'
+        - Single value: 'http://localhost:3000'
+        """
+        import json
 
-    @field_validator("cors_allow_methods", mode="before")
-    @classmethod
-    def parse_cors_methods(cls, v):
-        """Parse CORS methods from string or list."""
-        if isinstance(v, str):
-            import json
+        # Process all CORS list fields
+        cors_list_fields = ["cors_origins", "cors_allow_methods", "cors_allow_headers"]
 
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                return [method.strip() for method in v.split(",")]
-        return v
+        for field_name in cors_list_fields:
+            if field_name in data and isinstance(data[field_name], str):
+                value = data[field_name]
+                try:
+                    # Try JSON parsing first
+                    data[field_name] = json.loads(value)
+                except json.JSONDecodeError:
+                    # Fall back to comma-separated parsing
+                    data[field_name] = [item.strip() for item in value.split(",")]
 
-    @field_validator("cors_allow_headers", mode="before")
-    @classmethod
-    def parse_cors_headers(cls, v):
-        """Parse CORS headers from string or list."""
-        if isinstance(v, str):
-            import json
-
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                return [header.strip() for header in v.split(",")]
-        return v
+        return data
 
     model_config = ConfigDict(
         env_file=".env",

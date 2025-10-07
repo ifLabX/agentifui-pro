@@ -1,153 +1,73 @@
-<!--
-Sync Impact Report:
-Version change: 1.0.1 → 1.1.0
-Modified principles:
-- I. Dual-Stack Excellence (enhanced with OpenAPI automation and type generation details)
-- II. Quality-First Development (expanded with detailed quality gate requirements)
-- III. Test-Driven Implementation (added specific coverage targets and accessibility standards)
-- IV. Internationalization by Design (enhanced with type safety and namespace requirements)
-- V. Convention Consistency (expanded with commit, comment, and import organization policies)
-Added sections:
-- Spec-Kit Workflow integration in Development Standards
-- Enhanced PR requirements in Quality Assurance
-Removed sections: None
-Templates requiring updates:
-✅ plan-template.md (Constitution Check section aligned)
-✅ spec-template.md (quality requirements aligned)
-✅ tasks-template.md (testing and TDD workflow aligned)
-✅ agent-file-template.md (update-agent-context.sh compatible)
-✅ CLAUDE.md (runtime guidance synchronized)
-✅ .specify/README.md (spec-kit workflow documented)
-Follow-up TODOs: None
--->
+---
+description: Create or update the project constitution from interactive or provided principle inputs, ensuring all dependent templates stay in sync.
+---
 
-# Agentifui Pro Constitution
+The user input to you can be provided directly by the agent or as a command argument - you **MUST** consider it before proceeding with the prompt (if not empty).
 
-## Core Principles
+User input:
 
-### I. Dual-Stack Excellence
-Every feature MUST maintain consistency across both frontend (Next.js/TypeScript) and backend (FastAPI/Python) stacks. All APIs must be properly typed with Pydantic models on the backend and corresponding TypeScript interfaces on the frontend. Cross-stack communication follows OpenAPI standards with automatic type generation.
+$ARGUMENTS
 
-**Rationale**: Ensures type safety, reduces integration bugs, and maintains development velocity across the full stack.
+You are updating the project constitution at `.specify/memory/constitution.md`. This file is a TEMPLATE containing placeholder tokens in square brackets (e.g. `[PROJECT_NAME]`, `[PRINCIPLE_1_NAME]`). Your job is to (a) collect/derive concrete values, (b) fill the template precisely, and (c) propagate any amendments across dependent artifacts.
 
-### II. Quality-First Development
-Code quality is non-negotiable. All code MUST pass automated quality gates before entering the main branch:
-- Python: Ruff linting and formatting (120 character line length)
-- TypeScript: Dual-layer linting (oxlint + ESLint) with strict mode
-- Pre-commit hooks: Automated quality validation on all commits
-- Type hints: Required for all Python function signatures
-- Type safety: No `any` types in TypeScript, full type coverage required
+Follow this execution flow:
 
-**Rationale**: Prevents technical debt accumulation and ensures consistent, maintainable codebase across team members.
+1. Load the existing constitution template at `.specify/memory/constitution.md`.
+   - Identify every placeholder token of the form `[ALL_CAPS_IDENTIFIER]`.
+   **IMPORTANT**: The user might require less or more principles than the ones used in the template. If a number is specified, respect that - follow the general template. You will update the doc accordingly.
 
-### III. Test-Driven Implementation
-All new features MUST follow test-first development with mandatory coverage requirements:
-- Frontend: Jest + React Testing Library for component testing
-- Backend: FastAPI test client for endpoint validation (minimum 80% coverage)
-- Integration: Cross-stack communication validation tests required
-- Accessibility: WCAG 2.1 AA compliance testing for all UI components
-- Tests must pass before implementation is considered complete
+2. Collect/derive values for placeholders:
+   - If user input (conversation) supplies a value, use it.
+   - Otherwise infer from existing repo context (README, docs, prior constitution versions if embedded).
+   - For governance dates: `RATIFICATION_DATE` is the original adoption date (if unknown ask or mark TODO), `LAST_AMENDED_DATE` is today if changes are made, otherwise keep previous.
+   - `CONSTITUTION_VERSION` must increment according to semantic versioning rules:
+     * MAJOR: Backward incompatible governance/principle removals or redefinitions.
+     * MINOR: New principle/section added or materially expanded guidance.
+     * PATCH: Clarifications, wording, typo fixes, non-semantic refinements.
+   - If version bump type ambiguous, propose reasoning before finalizing.
 
-**Rationale**: Ensures reliability, enables safe refactoring, catches regressions early in development cycle, and maintains high code quality standards.
+3. Draft the updated constitution content:
+   - Replace every placeholder with concrete text (no bracketed tokens left except intentionally retained template slots that the project has chosen not to define yet—explicitly justify any left).
+   - Preserve heading hierarchy and comments can be removed once replaced unless they still add clarifying guidance.
+   - Ensure each Principle section: succinct name line, paragraph (or bullet list) capturing non‑negotiable rules, explicit rationale if not obvious.
+   - Ensure Governance section lists amendment procedure, versioning policy, and compliance review expectations.
 
-### IV. Internationalization by Design
-All user-facing text MUST use the next-intl translation system with strict naming conventions:
-- Translation keys: kebab-case matching component naming (`sign-in`, not `SignIn`)
-- Single function: Always use `t('namespace.section.key')` format
-- Type safety: All translation keys are compile-time validated
-- New features: Require translation namespace creation via `pnpm i18n:namespace`
-- No hardcoded strings in UI components under any circumstances
+4. Consistency propagation checklist (convert prior checklist into active validations):
+   - Read `.specify/templates/plan-template.md` and ensure any "Constitution Check" or rules align with updated principles.
+   - Read `.specify/templates/spec-template.md` for scope/requirements alignment—update if constitution adds/removes mandatory sections or constraints.
+   - Read `.specify/templates/tasks-template.md` and ensure task categorization reflects new or removed principle-driven task types (e.g., observability, versioning, testing discipline).
+   - Read each command file in `.specify/templates/commands/*.md` (including this one) to verify no outdated references (agent-specific names like CLAUDE only) remain when generic guidance is required.
+   - Read any runtime guidance docs (e.g., `README.md`, `docs/quickstart.md`, or agent-specific guidance files if present). Update references to principles changed.
 
-**Rationale**: Enables global reach, maintains consistency, ensures type safety, and prevents costly retrofitting of internationalization.
+5. Produce a Sync Impact Report (prepend as an HTML comment at top of the constitution file after update):
+   - Version change: old → new
+   - List of modified principles (old title → new title if renamed)
+   - Added sections
+   - Removed sections
+   - Templates requiring updates (✅ updated / ⚠ pending) with file paths
+   - Follow-up TODOs if any placeholders intentionally deferred.
 
-### V. Convention Consistency
-All naming conventions MUST be consistently applied across the monorepo:
-- Files/directories: kebab-case for all frontend files and directories
-- Translation keys: kebab-case matching component naming
-- Commit messages: Conventional commit format in English (title required, body optional)
-- Code comments: English only, minimal and purposeful (explain WHY, not WHAT)
-- Import organization: Automatic sorting via Prettier plugin (React/Next.js → third-party → internal → relative)
+6. Validation before final output:
+   - No remaining unexplained bracket tokens.
+   - Version line matches report.
+   - Dates ISO format YYYY-MM-DD.
+   - Principles are declarative, testable, and free of vague language ("should" → replace with MUST/SHOULD rationale where appropriate).
 
-**Rationale**: Reduces cognitive load, improves team efficiency, ensures predictable codebase navigation, and maintains professional communication standards.
+7. Write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
 
-## Development Standards
+8. Output a final summary to the user with:
+   - New version and bump rationale.
+   - Any files flagged for manual follow-up.
+   - Suggested commit message (e.g., `docs: amend constitution to vX.Y.Z (principle additions + governance update)`).
 
-### Technology Stack
-All development MUST follow the established patterns documented in agent-specific context files. Technology stack is constrained to approved choices:
-- Backend: Python 3.12+ with uv package manager, FastAPI framework
-- Frontend: Node.js 20+ with pnpm, Next.js 15 with App Router, React 19
-- Database: PostgreSQL 18+ (required for native `uuidv7()` function support)
-- Testing: pytest (backend), Jest + React Testing Library (frontend)
+Formatting & Style Requirements:
+- Use Markdown headings exactly as in the template (do not demote/promote levels).
+- Wrap long rationale lines to keep readability (<100 chars ideally) but do not hard enforce with awkward breaks.
+- Keep a single blank line between sections.
+- Avoid trailing whitespace.
 
-### Spec-Kit Workflow
-All features MUST follow the Spec-Driven Development workflow:
-1. **Feature Specification** (`/specify`): Define WHAT the feature does in natural language
-2. **Implementation Planning** (`/plan`): Define HOW to implement with technical details
-3. **Task Generation** (`/tasks`): Generate ordered, dependency-aware task lists
-4. **Implementation**: Execute tasks following TDD principles and constitutional guidelines
+If the user supplies partial updates (e.g., only one principle revision), still perform validation and version decision steps.
 
-Feature specifications are stored in `.specify/specs/###-feature-name/` with spec.md, plan.md, and tasks.md files. The constitution is referenced in all implementation plans via the Constitution Check section.
+If critical info missing (e.g., ratification date truly unknown), insert `TODO(<FIELD_NAME>): explanation` and include in the Sync Impact Report under deferred items.
 
-### Architecture Patterns
-New dependencies require architecture review and documentation updates. All features must integrate with existing architecture patterns:
-- Backend: FastAPI dependency injection for database sessions, async/await for I/O operations
-- Frontend: Server Components preferred over Client Components, proper use of React hooks
-- Database: Alembic migrations for all schema changes (never edit applied migrations)
-- Error handling: Structured error responses with request tracing
-
-## Quality Assurance
-
-### Quality Gates
-Code review is mandatory for all changes. Quality gates enforce multiple validation layers:
-- Type checking: TypeScript strict mode + Python type hints on all function signatures
-- Linting: Ruff (Python) + ESLint/oxlint (TypeScript) with caching enabled
-- Formatting: Prettier (frontend) + Ruff (backend) with automatic import sorting
-- Testing: Minimum 80% backend coverage, accessibility testing for all UI components
-- Pre-commit validation: Husky with monorepo-aware hooks (workspace-specific linting)
-- Performance monitoring: Bundle analysis required for frontend changes
-
-### Pull Request Requirements
-All Pull Requests must meet quality requirements before merge:
-- All automated checks passing (linting, type checking, tests)
-- No debugging artifacts (`console.log`, `TODO` comments in implementation code)
-- Documentation updated for public API changes
-- Breaking changes explicitly marked and justified
-- PR template followed (summary, type checkboxes, issue linking)
-- All PR content in English (titles, descriptions, comments)
-
-### Testing Standards
-- Test isolation: Each test must be independent with automatic cache reset
-- Database tests: Use PostgreSQL 18+ (real database, not SQLite mocks)
-- Component testing: Test behavior, not implementation details
-- User interaction: Test user flows and accessibility, not just rendering
-
-## Governance
-
-This constitution supersedes all other development practices and establishes project-wide standards. Amendments require documentation updates, team approval, and migration plan for existing code.
-
-### Compliance
-All Pull Requests must verify compliance with constitutional principles. Complexity that violates simplicity principles must be explicitly justified in the Complexity Tracking section of implementation plans (`.specify/specs/###-feature-name/plan.md`).
-
-### Agent-Specific Guidance
-Use agent-specific context files for runtime development guidance and tool-specific instructions. These files are automatically updated by `.specify/scripts/bash/update-agent-context.sh` based on feature specifications:
-- Claude Code: `CLAUDE.md`
-- Gemini CLI: `GEMINI.md`
-- GitHub Copilot: `.github/copilot-instructions.md`
-- Cursor IDE: `.cursor/rules/specify-rules.mdc`
-- Qwen Code: `QWEN.md`
-- opencode/Codex: `AGENTS.md`
-- Windsurf: `.windsurf/rules/specify-rules.md`
-- Kilo Code: `.kilocode/rules/specify-rules.md`
-- Auggie CLI: `.augment/rules/specify-rules.md`
-- Roo Code: `.roo/rules/specify-rules.md`
-- Amazon Q: `AGENTS.md`
-
-### Amendment Process
-Constitutional amendments follow semantic versioning:
-- **MAJOR**: Backward incompatible governance/principle removals or redefinitions
-- **MINOR**: New principles/sections added or materially expanded guidance
-- **PATCH**: Clarifications, wording fixes, non-semantic refinements
-
-All amendments must update the Sync Impact Report and propagate changes to dependent templates in `.specify/templates/`.
-
-**Version**: 1.1.0 | **Ratified**: 2025-09-21 | **Last Amended**: 2025-10-05
+Do not create a new template; always operate on the existing `.specify/memory/constitution.md` file.

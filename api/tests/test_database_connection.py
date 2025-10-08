@@ -19,7 +19,7 @@ def test_database_connection_module_exists():
         # Verify the function exists and is callable
         assert callable(get_async_engine)
     except ImportError:
-        pytest.fail("get_async_engine function must exist in database.connection module")
+        pytest.fail("get_async_engine function must exist in core.db module")
 
 
 def test_database_session_module_exists():
@@ -30,7 +30,7 @@ def test_database_session_module_exists():
         # Verify the function exists and is callable
         assert callable(get_db_session)
     except ImportError:
-        pytest.fail("get_db_session function must exist in database.session module")
+        pytest.fail("get_db_session function must exist in core.db module")
 
 
 @pytest.mark.asyncio

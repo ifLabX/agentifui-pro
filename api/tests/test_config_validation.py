@@ -20,7 +20,7 @@ def test_config_settings_class_exists():
         assert Settings is not None
         assert hasattr(Settings, "model_config")
     except ImportError:
-        pytest.fail("Settings class must exist in config.settings module")
+        pytest.fail("Settings class must exist in core.config module")
 
 
 def test_config_settings_has_required_fields():

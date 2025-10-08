@@ -30,7 +30,7 @@ def test_application_can_be_imported():
 
 def test_application_basic_configuration():
     """Test that application has basic configuration set up correctly."""
-    from config.settings import get_settings
+    from core.config import get_settings
     from main import app
 
     settings = get_settings()
@@ -48,7 +48,7 @@ def test_application_basic_configuration():
 
 def test_settings_configuration_startup():
     """Test that settings can be loaded during startup."""
-    from config.settings import get_settings
+    from core.config import get_settings
 
     # Should be able to get settings without errors
     settings = get_settings()
@@ -64,8 +64,7 @@ def test_settings_configuration_startup():
 def test_database_components_initialization():
     """Test that database components can be initialized."""
     try:
-        from database.connection import get_async_engine
-        from database.session import get_db_session
+        from core.db import get_async_engine, get_db_session
 
         # Should be able to create engine
         engine = get_async_engine()
@@ -157,12 +156,12 @@ def test_dependency_injection_startup():
 @pytest.mark.asyncio
 async def test_database_connection_during_startup():
     """Test database connection behavior during startup."""
-    with patch("database.connection.get_async_engine") as mock_get_engine:
+    with patch("core.db.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_get_engine.return_value = mock_engine
 
         # Should be able to get engine during startup
-        from database.connection import get_async_engine
+        from core.db import get_async_engine
 
         engine = get_async_engine()
 
@@ -174,7 +173,7 @@ def test_logging_configuration_startup():
     """Test that logging is configured during startup."""
     import logging
 
-    from config.settings import get_settings
+    from core.config import get_settings
 
     settings = get_settings()
 
@@ -218,7 +217,7 @@ def test_environment_variable_handling_startup():
     }
 
     with patch.dict(os.environ, test_env, clear=False):
-        from config.settings import get_settings
+        from core.config import get_settings
 
         # Clear the cache to allow new settings
         get_settings.cache_clear()
@@ -285,13 +284,13 @@ def test_openapi_schema_generation_startup():
 @pytest.mark.asyncio
 async def test_graceful_shutdown_capability():
     """Test that application can handle shutdown gracefully."""
-    with patch("database.connection.get_async_engine") as mock_get_engine:
+    with patch("core.db.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_engine.dispose = AsyncMock()
         mock_get_engine.return_value = mock_engine
 
         # Import inside patch to get the mocked version
-        from database.connection import get_async_engine
+        from core.db import get_async_engine
 
         # Get engine
         engine = get_async_engine()
@@ -311,7 +310,7 @@ def test_production_configuration_validation():
     }
 
     with patch.dict(os.environ, production_env, clear=False):
-        from config.settings import get_settings
+        from core.config import get_settings
 
         # Clear the cache to allow new settings
         get_settings.cache_clear()
@@ -334,7 +333,7 @@ def test_development_configuration_startup():
     }
 
     with patch.dict(os.environ, dev_env, clear=False):
-        from config.settings import get_settings
+        from core.config import get_settings
 
         # Clear the cache to allow new settings
         get_settings.cache_clear()
@@ -353,7 +352,7 @@ def test_startup_with_missing_optional_config():
     }
 
     with patch.dict(os.environ, minimal_env, clear=True):
-        from config.settings import Settings
+        from core.config import Settings
 
         # Should still work with minimal configuration
         settings = Settings(_env_file=None)

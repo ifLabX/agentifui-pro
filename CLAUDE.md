@@ -159,22 +159,14 @@ The repository uses Husky with monorepo-aware pre-commit hooks that:
 - **Documentation updates**: Update docs if changing public APIs
 - **Breaking changes**: Must be explicitly marked and justified
 
-## Key Files Reference
+## Key Directories
 
 ### Backend (api/)
-- `src/main.py`: FastAPI application entry point with CORS middleware
-- `src/database/`: Database connection, session management, and health checks
-- `src/models/base.py`: Base model with PostgreSQL 18 uuidv7() support
-- `migrations/`: Alembic migration files (never edit after applying)
-- `alembic.ini`: Alembic configuration (script_location = migrations)
-- `.ruff.toml`: Python linting configuration
-- `pyproject.toml`: Dependencies and project configuration
-- `README.md`: Development setup, Alembic workflow, and commands
+- `src/core/`: Core infrastructure (config, database)
+- `src/schemas/`: Pydantic models
+- `src/api/endpoints/`: API route handlers
+- `src/models/`: SQLAlchemy ORM models
 
 ### Frontend (web/)
 - `app/`: Next.js App Router pages and layouts
-- `i18n/config.ts`: Single source of truth for i18n configuration
-- `types/i18n.d.ts`: Auto-generated i18n type definitions
-- `eslint.config.mjs`: TypeScript linting configuration
-- `tailwind.config.ts`: Tailwind CSS configuration with theme extensions
-- `jest.config.ts`: Jest testing configuration
+- `i18n/config.ts`: i18n configuration

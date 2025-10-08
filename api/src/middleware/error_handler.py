@@ -16,7 +16,7 @@ from sqlalchemy.exc import DisconnectionError, SQLAlchemyError
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
-from config.settings import get_settings
+from core.config import get_settings
 from models.errors import (
     ErrorType,
     create_database_error,

@@ -98,21 +98,6 @@ ENVIRONMENT=development
 CORS_ORIGINS=["http://localhost:3000"]
 ```
 
-## Project Structure
-
-```
-api/
-  src/
-    config/         # Settings and configuration
-    database/       # Connection, sessions, health
-    health/         # Health endpoints
-    models/         # SQLAlchemy models (Base uses uuidv7)
-    middleware/     # Error handling
-    main.py         # FastAPI app entry
-  migrations/       # Alembic migrations
-  tests/            # Test suite
-```
-
 ## Features
 
 - **Async Architecture**: FastAPI + SQLAlchemy 2.0 + asyncpg

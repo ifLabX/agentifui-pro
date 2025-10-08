@@ -50,8 +50,8 @@ def test_quickstart_database_health_endpoint():
 
     # Mock database health for quickstart validation
     with (
-        patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
-        patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
+        patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {
@@ -86,7 +86,7 @@ def test_quickstart_database_unhealthy_scenario():
     client = TestClient(app)
 
     # Mock unhealthy database
-    with patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn:
+    with patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn:
         mock_conn.return_value = False
 
         response = client.get("/health/db")
@@ -107,7 +107,7 @@ def test_quickstart_database_unhealthy_scenario():
 async def test_quickstart_database_connection_test():
     """Test the database connection test scenario from quickstart guide."""
     # Mock the database engine and connection
-    with patch("database.connection.get_async_engine") as mock_get_engine:
+    with patch("core.db.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_conn = AsyncMock()
         mock_result = AsyncMock()
@@ -122,7 +122,7 @@ async def test_quickstart_database_connection_test():
         mock_get_engine.return_value = mock_engine
 
         # Test the quickstart database connection scenario (import inside patch)
-        from database.connection import get_async_engine
+        from core.db import get_async_engine
 
         engine = get_async_engine()
 
@@ -145,7 +145,7 @@ async def test_quickstart_database_connection_test():
 
 def test_quickstart_environment_configuration():
     """Test that environment configuration works as described in quickstart."""
-    from config.settings import Settings
+    from core.config import Settings
 
     # Test with quickstart example configuration
     test_env = {
@@ -235,8 +235,8 @@ async def test_quickstart_async_client_scenario():
 
         # Test database health endpoint
         with (
-            patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
-            patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
+            patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+            patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
         ):
             mock_conn.return_value = True
             mock_info.return_value = {
@@ -272,7 +272,7 @@ def test_quickstart_error_response_format():
 
 def test_quickstart_application_metadata():
     """Test that application metadata matches quickstart expectations."""
-    from config.settings import get_settings
+    from core.config import get_settings
     from main import app
 
     settings = get_settings()
@@ -309,7 +309,7 @@ def test_quickstart_development_server_startup():
     assert health_response.status_code == 200
 
     # Verify app configuration
-    from config.settings import get_settings
+    from core.config import get_settings
 
     settings = get_settings()
 
@@ -341,8 +341,8 @@ def test_quickstart_verification_scenarios():
 
     # Scenario 2: Database health validation (mocked)
     with (
-        patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
-        patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
+        patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {
@@ -391,11 +391,10 @@ def test_quickstart_file_structure_validation():
         "src/main.py",
         "pyproject.toml",
         ".env.example",
-        "src/config/settings.py",
-        "src/database/connection.py",
-        "src/database/session.py",
-        "src/health/endpoints.py",
-        "src/health/models.py",
+        "src/core/config.py",
+        "src/core/db.py",
+        "src/schemas/health.py",
+        "src/api/endpoints/health.py",
         "src/models/errors.py",
         "src/middleware/error_handler.py",
     ]
@@ -429,7 +428,7 @@ def test_quickstart_logging_configuration():
     """Test that logging works as described in quickstart."""
     import logging
 
-    from config.settings import get_settings
+    from core.config import get_settings
 
     settings = get_settings()
 

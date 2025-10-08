@@ -279,8 +279,8 @@ async def test_database_health_performance_with_mock():
 
     # Mock successful database connection
     with (
-        patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
-        patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
+        patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {

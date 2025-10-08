@@ -50,8 +50,8 @@ def test_quickstart_database_health_endpoint():
 
     # Mock database health for quickstart validation
     with (
-        patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
-        patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
+        patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {
@@ -86,7 +86,7 @@ def test_quickstart_database_unhealthy_scenario():
     client = TestClient(app)
 
     # Mock unhealthy database
-    with patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn:
+    with patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn:
         mock_conn.return_value = False
 
         response = client.get("/health/db")
@@ -235,8 +235,8 @@ async def test_quickstart_async_client_scenario():
 
         # Test database health endpoint
         with (
-            patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
-            patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
+            patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+            patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
         ):
             mock_conn.return_value = True
             mock_info.return_value = {
@@ -341,8 +341,8 @@ def test_quickstart_verification_scenarios():
 
     # Scenario 2: Database health validation (mocked)
     with (
-        patch("health.endpoints.check_database_connection", new_callable=AsyncMock) as mock_conn,
-        patch("health.endpoints.get_database_info", new_callable=AsyncMock) as mock_info,
+        patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {

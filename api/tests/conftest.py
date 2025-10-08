@@ -17,8 +17,8 @@ from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config.settings import reset_settings
-from database.session import reset_session_factory
+from core.config import reset_settings
+from core.db import reset_session_factory
 
 # Import application components
 from main import app

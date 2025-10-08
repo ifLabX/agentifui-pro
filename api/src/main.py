@@ -10,9 +10,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from config.settings import get_settings
-from database.connection import dispose_engine
-from health.endpoints import router as health_router
+from api.endpoints.health import router as health_router
+from core.config import get_settings
+from core.db import dispose_engine
 from middleware.error_handler import setup_error_handling
 
 

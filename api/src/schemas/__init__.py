@@ -1,4 +1,5 @@
 """API schemas module."""
+
 from schemas.health import (
     ConnectionPoolInfo,
     DatabaseHealthResponse,

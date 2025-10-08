@@ -1,4 +1,5 @@
 """Core infrastructure module."""
+
 from core.config import Settings, get_settings, reset_settings
 from core.db import (
     check_database_connection,

@@ -11,7 +11,7 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
-from src.config.settings import get_settings
+from src.core.config import get_settings
 
 # Get application settings
 settings = get_settings()

@@ -156,7 +156,7 @@ async def get_database_info() -> dict:
                 "database_name": database_name,
                 "connection_count": connection_count,
                 "pool_size": engine.pool.size() if engine.pool else None,
-                "checked_out_connections": (engine.pool.checkedout() if engine.pool else None),
+                "checked_out_connections": engine.pool.checkedout() if hasattr(engine.pool, "checkedout") else None,
             }
     except Exception as e:
         return {

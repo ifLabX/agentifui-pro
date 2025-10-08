@@ -84,23 +84,18 @@ def mock_database_health():
     Returns:
         Mock database health check function
     """
-    mock_health = {
+    mock_db_info = {
         "connected": True,
-        "response_time_ms": 10.5,
-        "connection_pool": {
-            "pool_size": 10,
-            "active_connections": 2,
-            "checked_out_connections": 0,
-            "overflow_connections": 0,
-            "invalid_connections": 0,
-        },
-        "database_info": {"version": "PostgreSQL 18.0", "driver": "asyncpg"},
-        "errors": [],
+        "version": "PostgreSQL 18.0",
+        "database_name": "test_db",
+        "connection_count": 5,
+        "pool_size": 10,
+        "checked_out_connections": 2,
     }
 
-    with patch("database.health.check_database_health", return_value=mock_health):
-        with patch("database.health.check_database_connectivity", return_value=True):
-            yield mock_health
+    with patch("core.db.check_database_connection", new_callable=AsyncMock, return_value=True):
+        with patch("core.db.get_database_info", new_callable=AsyncMock, return_value=mock_db_info):
+            yield mock_db_info
 
 
 @pytest.fixture
@@ -111,17 +106,14 @@ def mock_database_unhealthy():
     Returns:
         Mock unhealthy database state
     """
-    mock_health = {
+    mock_db_info = {
         "connected": False,
-        "response_time_ms": None,
-        "connection_pool": None,
-        "database_info": None,
-        "errors": ["Connection timeout", "Database unreachable"],
+        "error": "Connection timeout",
     }
 
-    with patch("database.health.check_database_health", return_value=mock_health):
-        with patch("database.health.check_database_connectivity", return_value=False):
-            yield mock_health
+    with patch("core.db.check_database_connection", new_callable=AsyncMock, return_value=False):
+        with patch("core.db.get_database_info", new_callable=AsyncMock, return_value=mock_db_info):
+            yield mock_db_info
 
 
 @pytest.fixture

@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 def test_cors_origins_comma_separated_format():
     """Test CORS origins with comma-separated format."""
-    from config.settings import Settings, reset_settings
+    from core.config import Settings, reset_settings
 
     # Test single origin
     with patch.dict(
@@ -45,7 +45,7 @@ def test_cors_origins_comma_separated_format():
 
 def test_cors_origins_json_array_format():
     """Test CORS origins with JSON array format."""
-    from config.settings import Settings, reset_settings
+    from core.config import Settings, reset_settings
 
     # Test JSON array format with single quotes
     with patch.dict(
@@ -79,7 +79,7 @@ def test_cors_origins_json_array_format():
 
 def test_cors_origins_with_spaces():
     """Test CORS origins with spaces in comma-separated format."""
-    from config.settings import Settings, reset_settings
+    from core.config import Settings, reset_settings
 
     # Test with spaces around commas
     with patch.dict(
@@ -101,7 +101,7 @@ def test_cors_origins_with_spaces():
 
 def test_cors_methods_parsing():
     """Test CORS methods parsing with different formats."""
-    from config.settings import Settings, reset_settings
+    from core.config import Settings, reset_settings
 
     # Test comma-separated methods
     with patch.dict(
@@ -135,7 +135,7 @@ def test_cors_methods_parsing():
 
 def test_cors_headers_parsing():
     """Test CORS headers parsing with different formats."""
-    from config.settings import Settings, reset_settings
+    from core.config import Settings, reset_settings
 
     # Test comma-separated headers
     with patch.dict(
@@ -169,7 +169,7 @@ def test_cors_headers_parsing():
 
 def test_cors_wildcard_format():
     """Test CORS with wildcard (*) format."""
-    from config.settings import Settings, reset_settings
+    from core.config import Settings, reset_settings
 
     # Test single asterisk
     with patch.dict(

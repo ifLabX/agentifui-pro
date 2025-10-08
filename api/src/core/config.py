@@ -13,6 +13,7 @@ from pydantic_settings import BaseSettings
 
 try:
     from importlib.metadata import PackageNotFoundError, version
+
     __version__ = version("agentifui-pro-api")
 except PackageNotFoundError:
     __version__ = "0.1.0"  # Fallback for development

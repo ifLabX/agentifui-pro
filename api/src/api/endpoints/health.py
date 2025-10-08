@@ -6,14 +6,12 @@ specification in contracts/health.yaml for container orchestration.
 """
 
 import time
-from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import get_settings
-from core.db import check_database_connection, get_database_info, get_db_session
+from core.db import check_database_connection, get_database_info
 from schemas.health import (
     ConnectionPoolInfo,
     DatabaseHealthResponse,
@@ -111,24 +109,19 @@ async def get_application_health():
     summary="Database Health Check",
     description="Returns the health status of the PostgreSQL database connection",
 )
-async def get_database_health(
-    db: Annotated[AsyncSession, Depends(get_db_session)],
-):
+async def get_database_health():
     """
     Get database health status.
 
     Performs comprehensive database connectivity and performance checks
     including connection pool status, response time, and migration status.
 
-    Args:
-        db: Database session dependency
-
     Returns:
         DatabaseHealthResponse: Database health status with metrics
     """
     try:
-        settings = get_settings()
         start_time = time.time()
+        settings = get_settings()
 
         # Check basic database connectivity
         is_connected = await check_database_connection()

@@ -90,6 +90,7 @@ def create_healthy_response(version: str, uptime_seconds: Optional[int] = None) 
         timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         version=version,
         uptime_seconds=uptime_seconds,
+        errors=None,
     )
 
 
@@ -137,6 +138,7 @@ def create_healthy_database_response(
         connection_pool=connection_pool,
         response_time_ms=response_time_ms,
         migration_status=migration_status,
+        errors=None,
     )
 
 
@@ -158,6 +160,8 @@ def create_unhealthy_database_response(
         status=HealthStatus.UNHEALTHY,
         timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         database_connected=False,
+        connection_pool=None,
         response_time_ms=response_time_ms,
+        migration_status=None,
         errors=errors,
     )

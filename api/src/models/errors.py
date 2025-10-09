@@ -151,7 +151,7 @@ def create_database_error(
 
 
 def create_validation_error(
-    validation_errors: list[dict],
+    validation_errors: list[dict[str, Any]],
     message: str = "Request validation failed",
 ) -> ValidationErrorResponse:
     """

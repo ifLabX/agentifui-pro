@@ -44,7 +44,7 @@ plugins = ["pydantic.mypy"]
 
 # Source paths
 mypy_path = "."
-files = ["src", "tests"]
+files = ["src"]
 
 # Namespace packages
 namespace_packages = true
@@ -54,6 +54,7 @@ explicit_package_bases = true
 exclude = [
     "^migrations/",
     "^\\.venv/",
+    "^tests/",
 ]
 
 # Error reporting

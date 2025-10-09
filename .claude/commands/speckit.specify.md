@@ -146,7 +146,7 @@ Given that feature description, do this:
 
 ## General Guidelines
 
-## Quick Guidelines
+### Quick Guidelines
 
 - Focus on **WHAT** users need and **WHY**.
 - Avoid HOW to implement (no tech stack, APIs, code structure).

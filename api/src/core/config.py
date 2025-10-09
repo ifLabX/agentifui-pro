@@ -141,7 +141,7 @@ def get_settings() -> Settings:
     Returns:
         Settings: Application settings instance
     """
-    return Settings()  # type: ignore[call-arg]  # Pydantic Settings loads from env vars
+    return Settings()
 
 
 def reset_settings() -> None:

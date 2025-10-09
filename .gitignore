@@ -57,6 +57,9 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Mypy
+api/.mypy_cache/
+
 # Jupyter Notebook
 .ipynb_checkpoints
 

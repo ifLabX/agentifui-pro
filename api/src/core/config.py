@@ -8,8 +8,8 @@ with validation and default values.
 from functools import lru_cache
 from typing import Any
 
-from pydantic import ConfigDict, Field, field_validator, model_validator
-from pydantic_settings import BaseSettings
+from pydantic import Field, field_validator, model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 try:
     from importlib.metadata import PackageNotFoundError, version
@@ -68,7 +68,7 @@ class Settings(BaseSettings):
 
     @field_validator("database_url")
     @classmethod
-    def validate_database_url(cls, v):
+    def validate_database_url(cls, v: str) -> str:
         """Validate that database URL is a PostgreSQL connection string."""
         if not v.startswith(("postgresql://", "postgresql+asyncpg://")):
             raise ValueError("Database URL must be a PostgreSQL connection string")
@@ -76,7 +76,7 @@ class Settings(BaseSettings):
 
     @field_validator("log_level")
     @classmethod
-    def validate_log_level(cls, v):
+    def validate_log_level(cls, v: str) -> str:
         """Validate that log level is one of the allowed values."""
         allowed_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         if v.upper() not in allowed_levels:
@@ -85,7 +85,7 @@ class Settings(BaseSettings):
 
     @field_validator("environment")
     @classmethod
-    def validate_environment(cls, v):
+    def validate_environment(cls, v: str) -> str:
         """Validate that environment is one of the allowed values."""
         allowed_envs = ["development", "staging", "production"]
         if v.lower() not in allowed_envs:
@@ -120,7 +120,7 @@ class Settings(BaseSettings):
 
         return data
 
-    model_config = ConfigDict(
+    model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,

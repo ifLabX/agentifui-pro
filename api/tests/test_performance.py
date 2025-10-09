@@ -197,7 +197,7 @@ def test_health_endpoint_memory_usage() -> None:
     """Test that health endpoint doesn't have memory leaks under load."""
     import os
 
-    import psutil  # type: ignore[import-untyped]
+    import psutil
 
     from main import app
 

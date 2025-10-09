@@ -164,26 +164,26 @@ async def test_connection_error_handling() -> None:
 def test_database_health_check_function() -> None:
     """Test that database health check functionality exists."""
     try:
-        from core.db import check_database_health  # type: ignore[attr-defined]
+        from core.db import get_database_info
     except ImportError:
         # Health module might not be implemented yet
         pytest.skip("Database health module not implemented yet")
 
     import inspect
 
-    assert inspect.iscoroutinefunction(check_database_health), "Health check must be async"
+    assert inspect.iscoroutinefunction(get_database_info), "Health check must be async"
 
 
 @pytest.mark.asyncio
 async def test_database_health_check_returns_status() -> None:
     """Test that database health check returns proper status."""
     try:
-        from core.db import check_database_health  # type: ignore[attr-defined]
+        from core.db import get_database_info
     except ImportError:
         pytest.skip("Database health module not implemented yet")
 
     # Should return health status information
-    health_status = await check_database_health()
+    health_status = await get_database_info()
 
     assert isinstance(health_status, dict)
     assert "connected" in health_status

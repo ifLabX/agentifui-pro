@@ -23,6 +23,7 @@ dev = [
     "httpx>=0.24.0",
     "psutil>=7.1.0",
     "mypy>=1.18.2",
+    "types-psutil>=0.0.1",
 ]
 
 [tool.setuptools.packages.find]

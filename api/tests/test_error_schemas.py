@@ -12,7 +12,7 @@ from pydantic import ValidationError
 def test_error_response_model_exists() -> None:
     """Test that ErrorResponse model exists."""
     try:
-        from models.errors import ErrorResponse
+        from src.models.errors import ErrorResponse
 
         # Verify the model exists and is a Pydantic model
         assert ErrorResponse is not None
@@ -23,7 +23,7 @@ def test_error_response_model_exists() -> None:
 
 def test_error_response_required_fields() -> None:
     """Test that ErrorResponse model has all required fields."""
-    from models.errors import ErrorResponse
+    from src.models.errors import ErrorResponse
 
     # Test with all required fields
     error_data = {"error": "TEST_ERROR", "message": "Test error message", "timestamp": "2025-09-23T10:30:00Z"}
@@ -37,7 +37,7 @@ def test_error_response_required_fields() -> None:
 
 def test_error_response_missing_required_fields() -> None:
     """Test that ErrorResponse model validates required fields."""
-    from models.errors import ErrorResponse
+    from src.models.errors import ErrorResponse
 
     # Test missing error field
     with pytest.raises(ValidationError):
@@ -54,7 +54,7 @@ def test_error_response_missing_required_fields() -> None:
 
 def test_error_response_optional_fields() -> None:
     """Test that ErrorResponse model handles optional fields correctly."""
-    from models.errors import ErrorResponse
+    from src.models.errors import ErrorResponse
 
     # Test with optional fields
     error_data = {
@@ -74,7 +74,7 @@ def test_error_response_optional_fields() -> None:
 def test_validation_error_response_model_exists() -> None:
     """Test that ValidationErrorResponse model exists."""
     try:
-        from models.errors import ValidationErrorResponse
+        from src.models.errors import ValidationErrorResponse
 
         # Verify the model exists and is a Pydantic model
         assert ValidationErrorResponse is not None
@@ -85,7 +85,7 @@ def test_validation_error_response_model_exists() -> None:
 
 def test_validation_error_response_structure() -> None:
     """Test that ValidationErrorResponse model has correct structure."""
-    from models.errors import ValidationError, ValidationErrorResponse
+    from src.models.errors import ValidationError, ValidationErrorResponse
 
     validation_errors = [
         ValidationError(field="database_url", message="Invalid PostgreSQL connection string"),
@@ -108,7 +108,7 @@ def test_validation_error_response_structure() -> None:
 
 def test_validation_error_model_structure() -> None:
     """Test that ValidationError model has correct structure."""
-    from models.errors import ValidationError
+    from src.models.errors import ValidationError
 
     validation_error = ValidationError(field="database_url", message="Invalid format", value="invalid-url")
 
@@ -120,7 +120,7 @@ def test_validation_error_model_structure() -> None:
 def test_service_unavailable_error_model() -> None:
     """Test that ServiceUnavailableError model exists and works correctly."""
     try:
-        from models.errors import ServiceUnavailableError
+        from src.models.errors import ServiceUnavailableError
     except ImportError:
         pytest.fail("ServiceUnavailableError model must exist in models.errors module")
 
@@ -139,7 +139,7 @@ def test_service_unavailable_error_model() -> None:
 
 def test_error_enum_validation() -> None:
     """Test that error enums are properly validated."""
-    from models.errors import ValidationErrorResponse
+    from src.models.errors import ValidationErrorResponse
 
     # Test that error field only accepts VALIDATION_ERROR
     with pytest.raises(ValidationError):
@@ -150,7 +150,7 @@ def test_error_enum_validation() -> None:
 
 def test_timestamp_format_validation() -> None:
     """Test that timestamp format is properly validated."""
-    from models.errors import ErrorResponse
+    from src.models.errors import ErrorResponse
 
     # Test with valid ISO 8601 timestamp
     valid_timestamps = ["2025-09-23T10:30:00Z", "2025-09-23T10:30:00.123Z", "2025-09-23T10:30:00+00:00"]
@@ -162,7 +162,7 @@ def test_timestamp_format_validation() -> None:
 
 def test_request_id_uuid_validation() -> None:
     """Test that request_id follows UUID format if validated."""
-    from models.errors import ErrorResponse
+    from src.models.errors import ErrorResponse
 
     # Test with valid UUID
     valid_uuid = "550e8400-e29b-41d4-a716-446655440000"
@@ -176,7 +176,7 @@ def test_request_id_uuid_validation() -> None:
 
 def test_error_response_serialization() -> None:
     """Test that error responses can be serialized to JSON correctly."""
-    from models.errors import ErrorResponse
+    from src.models.errors import ErrorResponse
 
     error_response = ErrorResponse(
         error="DATABASE_CONNECTION_ERROR",
@@ -197,7 +197,7 @@ def test_error_response_serialization() -> None:
 
 def test_validation_error_nested_structure() -> None:
     """Test that validation errors handle nested structure correctly."""
-    from models.errors import ValidationError, ValidationErrorResponse
+    from src.models.errors import ValidationError, ValidationErrorResponse
 
     # Test with multiple validation errors
     validation_errors = [
@@ -221,7 +221,7 @@ def test_validation_error_nested_structure() -> None:
 
 def test_error_models_immutability() -> None:
     """Test that error models are immutable if configured as frozen."""
-    from models.errors import ErrorResponse
+    from src.models.errors import ErrorResponse
 
     error_response = ErrorResponse(error="TEST_ERROR", message="Test", timestamp="2025-09-23T10:30:00Z")
 
@@ -237,7 +237,7 @@ def test_error_models_immutability() -> None:
 def test_error_response_factory_functions() -> None:
     """Test error response factory functions if they exist."""
     try:
-        from models.errors import create_database_error, create_validation_error
+        from src.models.errors import create_database_error, create_validation_error
     except ImportError:
         # Factory functions are optional
         pytest.skip("Error factory functions not implemented")

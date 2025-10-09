@@ -14,17 +14,16 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError as PydanticValidationError
 from sqlalchemy.exc import DisconnectionError, SQLAlchemyError
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.types import ASGIApp
-
-from core.config import get_settings
-from models.errors import (
+from src.core.config import get_settings
+from src.models.errors import (
     ErrorType,
     create_database_error,
     create_error_response,
     create_internal_server_error,
     create_validation_error,
 )
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.types import ASGIApp
 
 logger = logging.getLogger(__name__)
 

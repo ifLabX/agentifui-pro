@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 
 def test_health_endpoint_exists() -> None:
     """Test that /health endpoint exists and is accessible."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health")
@@ -24,7 +24,7 @@ def test_health_endpoint_exists() -> None:
 
 def test_health_endpoint_returns_json() -> None:
     """Test that /health endpoint returns valid JSON."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health")
@@ -38,7 +38,7 @@ def test_health_endpoint_returns_json() -> None:
 
 def test_health_endpoint_healthy_response_schema() -> None:
     """Test /health endpoint returns correct schema for healthy status."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health")
@@ -70,7 +70,7 @@ def test_health_endpoint_healthy_response_schema() -> None:
 
 def test_health_endpoint_uptime_field() -> None:
     """Test /health endpoint includes uptime_seconds field."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health")
@@ -85,7 +85,7 @@ def test_health_endpoint_uptime_field() -> None:
 
 def test_health_endpoint_error_response_schema() -> None:
     """Test /health endpoint error response format."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -108,7 +108,7 @@ def test_health_endpoint_performance() -> None:
     """Test /health endpoint responds quickly."""
     import time
 
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -124,7 +124,7 @@ def test_health_endpoint_performance() -> None:
 
 def test_health_endpoint_no_query_parameters() -> None:
     """Test /health endpoint works without query parameters."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health")
@@ -138,7 +138,7 @@ def test_health_endpoint_no_query_parameters() -> None:
 
 def test_health_endpoint_idempotent() -> None:
     """Test /health endpoint is idempotent (multiple calls return consistent results)."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 

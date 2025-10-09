@@ -14,7 +14,7 @@ import pytest
 def test_config_settings_class_exists() -> None:
     """Test that Settings configuration class exists."""
     try:
-        from core.config import Settings
+        from src.core.config import Settings
 
         # Verify the class can be instantiated
         assert Settings is not None
@@ -25,7 +25,7 @@ def test_config_settings_class_exists() -> None:
 
 def test_config_settings_has_required_fields() -> None:
     """Test that Settings class has all required configuration fields."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     # Create instance to check fields
     settings = Settings()
@@ -46,7 +46,7 @@ def test_config_settings_has_required_fields() -> None:
 
 def test_config_database_url_validation() -> None:
     """Test that database URL validation works correctly."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     # Test with valid PostgreSQL URL
     with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
@@ -61,7 +61,7 @@ def test_config_database_url_validation() -> None:
 
 def test_config_pool_size_validation() -> None:
     """Test that database pool size validation works correctly."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     # Test with valid pool size
     with patch.dict(
@@ -80,7 +80,7 @@ def test_config_pool_size_validation() -> None:
 
 def test_config_log_level_validation() -> None:
     """Test that log level validation works correctly."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
@@ -101,7 +101,7 @@ def test_config_log_level_validation() -> None:
 
 def test_config_environment_defaults() -> None:
     """Test that configuration provides sensible defaults."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     # Test with minimal environment
     with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}, clear=True):
@@ -117,7 +117,7 @@ def test_config_environment_defaults() -> None:
 
 def test_config_cors_settings() -> None:
     """Test that CORS settings are properly configured."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     with patch.dict(
         os.environ,
@@ -135,7 +135,7 @@ def test_config_cors_settings() -> None:
 
 def test_config_health_check_settings() -> None:
     """Test that health check timeout settings are properly configured."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     with patch.dict(
         os.environ,
@@ -159,7 +159,7 @@ def test_config_health_check_settings() -> None:
 
 def test_config_feature_flags() -> None:
     """Test that feature flag settings work correctly."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     with patch.dict(
         os.environ,
@@ -181,7 +181,7 @@ def test_config_feature_flags() -> None:
 
 def test_config_settings_immutable() -> None:
     """Test that settings are immutable after creation."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
         settings = Settings()
@@ -194,7 +194,7 @@ def test_config_settings_immutable() -> None:
 def test_config_singleton_pattern() -> None:
     """Test that settings follow singleton pattern if implemented."""
     try:
-        from core.config import get_settings
+        from src.core.config import get_settings
     except ImportError:
         # Singleton pattern not implemented, skip test
         pytest.skip("Singleton pattern not implemented")
@@ -208,7 +208,7 @@ def test_config_singleton_pattern() -> None:
 
 def test_config_validation_errors_descriptive() -> None:
     """Test that configuration validation errors are descriptive."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     # Test missing required field
     with patch.dict(os.environ, {}, clear=True):

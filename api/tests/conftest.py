@@ -16,12 +16,11 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from core.config import reset_settings
-from core.db import reset_session_factory
+from src.core.config import reset_settings
+from src.core.db import reset_session_factory
 
 # Import application components
-from main import app
+from src.main import app
 
 
 @pytest.fixture(scope="session")
@@ -93,8 +92,8 @@ def mock_database_health() -> Generator[dict[str, Any], None, None]:
         "checked_out_connections": 2,
     }
 
-    with patch("core.db.check_database_connection", new_callable=AsyncMock, return_value=True):
-        with patch("core.db.get_database_info", new_callable=AsyncMock, return_value=mock_db_info):
+    with patch("src.core.db.check_database_connection", new_callable=AsyncMock, return_value=True):
+        with patch("src.core.db.get_database_info", new_callable=AsyncMock, return_value=mock_db_info):
             yield mock_db_info
 
 
@@ -111,8 +110,8 @@ def mock_database_unhealthy() -> Generator[dict[str, Any], None, None]:
         "error": "Connection timeout",
     }
 
-    with patch("core.db.check_database_connection", new_callable=AsyncMock, return_value=False):
-        with patch("core.db.get_database_info", new_callable=AsyncMock, return_value=mock_db_info):
+    with patch("src.core.db.check_database_connection", new_callable=AsyncMock, return_value=False):
+        with patch("src.core.db.get_database_info", new_callable=AsyncMock, return_value=mock_db_info):
             yield mock_db_info
 
 

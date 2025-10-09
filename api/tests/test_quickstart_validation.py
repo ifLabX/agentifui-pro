@@ -15,7 +15,7 @@ from fastapi.testclient import TestClient
 
 def test_quickstart_health_endpoint_response() -> None:
     """Test that health endpoint returns expected quickstart response format."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health")
@@ -44,14 +44,14 @@ def test_quickstart_health_endpoint_response() -> None:
 
 def test_quickstart_database_health_endpoint() -> None:
     """Test database health endpoint as described in quickstart guide."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
     # Mock database health for quickstart validation
     with (
-        patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
-        patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
+        patch("src.api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("src.api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {
@@ -81,12 +81,12 @@ def test_quickstart_database_health_endpoint() -> None:
 
 def test_quickstart_database_unhealthy_scenario() -> None:
     """Test database health endpoint when database is unavailable."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
     # Mock unhealthy database
-    with patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn:
+    with patch("src.api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn:
         mock_conn.return_value = False
 
         response = client.get("/health/db")
@@ -122,7 +122,7 @@ async def test_quickstart_database_connection_test() -> None:
         mock_get_engine.return_value = mock_engine
 
         # Test the quickstart database connection scenario (import inside patch)
-        from core.db import get_async_engine
+        from src.core.db import get_async_engine
 
         engine = get_async_engine()
 
@@ -145,7 +145,7 @@ async def test_quickstart_database_connection_test() -> None:
 
 def test_quickstart_environment_configuration() -> None:
     """Test that environment configuration works as described in quickstart."""
-    from core.config import Settings
+    from src.core.config import Settings
 
     # Test with quickstart example configuration
     test_env = {
@@ -176,7 +176,7 @@ def test_quickstart_environment_configuration() -> None:
 
 def test_quickstart_api_documentation_endpoints() -> None:
     """Test that API documentation endpoints are available as mentioned in quickstart."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -206,7 +206,7 @@ def test_quickstart_api_documentation_endpoints() -> None:
 
 def test_quickstart_cors_configuration() -> None:
     """Test CORS configuration as described in quickstart guide."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -223,7 +223,7 @@ def test_quickstart_cors_configuration() -> None:
 @pytest.mark.asyncio
 async def test_quickstart_async_client_scenario() -> None:
     """Test async client usage scenario from quickstart development workflow."""
-    from main import app
+    from src.main import app
 
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         # Test health endpoint
@@ -235,8 +235,8 @@ async def test_quickstart_async_client_scenario() -> None:
 
         # Test database health endpoint
         with (
-            patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
-            patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
+            patch("src.api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+            patch("src.api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
         ):
             mock_conn.return_value = True
             mock_info.return_value = {
@@ -255,7 +255,7 @@ async def test_quickstart_async_client_scenario() -> None:
 
 def test_quickstart_error_response_format() -> None:
     """Test that error responses follow the format described in quickstart."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -272,8 +272,8 @@ def test_quickstart_error_response_format() -> None:
 
 def test_quickstart_application_metadata() -> None:
     """Test that application metadata matches quickstart expectations."""
-    from core.config import get_settings
-    from main import app
+    from src.core.config import get_settings
+    from src.main import app
 
     settings = get_settings()
 
@@ -294,7 +294,7 @@ def test_quickstart_application_metadata() -> None:
 
 def test_quickstart_development_server_startup() -> None:
     """Test that development server can start as described in quickstart."""
-    from main import app
+    from src.main import app
 
     # Verify app can be created and configured
     assert app is not None
@@ -309,7 +309,7 @@ def test_quickstart_development_server_startup() -> None:
     assert health_response.status_code == 200
 
     # Verify app configuration
-    from core.config import get_settings
+    from src.core.config import get_settings
 
     settings = get_settings()
 
@@ -321,7 +321,7 @@ def test_quickstart_development_server_startup() -> None:
 
 def test_quickstart_verification_scenarios() -> None:
     """Test the specific verification scenarios mentioned in quickstart guide."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -341,8 +341,8 @@ def test_quickstart_verification_scenarios() -> None:
 
     # Scenario 2: Database health validation (mocked)
     with (
-        patch("api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
-        patch("api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
+        patch("src.api.endpoints.health.check_database_connection", new_callable=AsyncMock) as mock_conn,
+        patch("src.api.endpoints.health.get_database_info", new_callable=AsyncMock) as mock_info,
     ):
         mock_conn.return_value = True
         mock_info.return_value = {
@@ -409,7 +409,7 @@ async def test_quickstart_performance_expectations() -> None:
     """Test that performance matches quickstart guide expectations."""
     import time
 
-    from main import app
+    from src.main import app
 
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         # Health endpoint should be fast (quickstart mentions responsiveness)
@@ -428,7 +428,7 @@ def test_quickstart_logging_configuration() -> None:
     """Test that logging works as described in quickstart."""
     import logging
 
-    from core.config import get_settings
+    from src.core.config import get_settings
 
     settings = get_settings()
 

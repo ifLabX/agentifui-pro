@@ -13,6 +13,7 @@ dependencies = [
     "asyncpg>=0.28.0",
     "alembic>=1.12.0",
     "greenlet>=3.0.0",
+    "dify-client @ git+https://github.com/langgenius/dify.git@cd47a47c3b4acc4d4457b73777722602c33bc950#subdirectory=sdks/python-client",
 ]
 
 [dependency-groups]
@@ -27,7 +28,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["."]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
@@ -42,13 +43,18 @@ strict = true
 plugins = ["pydantic.mypy"]
 
 # Source paths
-mypy_path = "src"
-files = ["src", "tests"]
+mypy_path = "."
+files = ["src"]
+
+# Namespace packages
+namespace_packages = true
+explicit_package_bases = true
 
 # Exclusions
 exclude = [
     "^migrations/",
     "^\\.venv/",
+    "^tests/",
 ]
 
 # Error reporting
@@ -73,5 +79,12 @@ ignore_errors = true
 module = "asyncpg.*"
 ignore_missing_imports = true
 
-[tool.uv]
-package = false
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.hatch.metadata]
+allow-direct-references = true

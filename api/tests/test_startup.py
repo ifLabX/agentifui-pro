@@ -18,7 +18,7 @@ from fastapi.testclient import TestClient
 def test_application_can_be_imported() -> None:
     """Test that the main application can be imported without errors."""
     try:
-        from main import app
+        from src.main import app
 
         assert isinstance(app, FastAPI)
         assert app is not None
@@ -30,8 +30,8 @@ def test_application_can_be_imported() -> None:
 
 def test_application_basic_configuration() -> None:
     """Test that application has basic configuration set up correctly."""
-    from core.config import get_settings
-    from main import app
+    from src.core.config import get_settings
+    from src.main import app
 
     settings = get_settings()
 
@@ -48,7 +48,7 @@ def test_application_basic_configuration() -> None:
 
 def test_settings_configuration_startup() -> None:
     """Test that settings can be loaded during startup."""
-    from core.config import get_settings
+    from src.core.config import get_settings
 
     # Should be able to get settings without errors
     settings = get_settings()
@@ -64,7 +64,7 @@ def test_settings_configuration_startup() -> None:
 def test_database_components_initialization() -> None:
     """Test that database components can be initialized."""
     try:
-        from core.db import get_async_engine, get_db_session
+        from src.core.db import get_async_engine, get_db_session
 
         # Should be able to create engine
         engine = get_async_engine()
@@ -80,7 +80,7 @@ def test_database_components_initialization() -> None:
 
 def test_health_endpoints_registration() -> None:
     """Test that health endpoints are properly registered during startup."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -96,7 +96,7 @@ def test_health_endpoints_registration() -> None:
 
 def test_error_handling_middleware_startup() -> None:
     """Test that error handling middleware is properly configured during startup."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -112,7 +112,7 @@ def test_error_handling_middleware_startup() -> None:
 
 def test_cors_middleware_startup() -> None:
     """Test that CORS middleware is configured during startup."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -130,7 +130,7 @@ def test_cors_middleware_startup() -> None:
 @pytest.mark.asyncio
 async def test_async_application_startup() -> None:
     """Test that application starts correctly in async context."""
-    from main import app
+    from src.main import app
 
     # Test async client startup
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
@@ -143,7 +143,7 @@ async def test_async_application_startup() -> None:
 
 def test_dependency_injection_startup() -> None:
     """Test that dependency injection works during startup."""
-    from main import app
+    from src.main import app
 
     # Verify that dependency is registered
     client = TestClient(app)
@@ -156,12 +156,12 @@ def test_dependency_injection_startup() -> None:
 @pytest.mark.asyncio
 async def test_database_connection_during_startup() -> None:
     """Test database connection behavior during startup."""
-    with patch("core.db.get_async_engine") as mock_get_engine:
+    with patch("src.core.db.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_get_engine.return_value = mock_engine
 
         # Should be able to get engine during startup
-        from core.db import get_async_engine
+        from src.core.db import get_async_engine
 
         engine = get_async_engine()
 
@@ -173,7 +173,7 @@ def test_logging_configuration_startup() -> None:
     """Test that logging is configured during startup."""
     import logging
 
-    from core.config import get_settings
+    from src.core.config import get_settings
 
     settings = get_settings()
 
@@ -190,7 +190,7 @@ def test_startup_performance() -> None:
     start_time = time.time()
 
     # Import and create client (simulates startup)
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -217,7 +217,7 @@ def test_environment_variable_handling_startup() -> None:
     }
 
     with patch.dict(os.environ, test_env, clear=False):
-        from core.config import get_settings
+        from src.core.config import get_settings
 
         # Clear the cache to allow new settings
         get_settings.cache_clear()
@@ -233,7 +233,7 @@ def test_environment_variable_handling_startup() -> None:
 
 def test_middleware_stack_startup() -> None:
     """Test that middleware stack is properly configured during startup."""
-    from main import app
+    from src.main import app
 
     # Check that middleware is configured (using user_middleware for FastAPI 0.100+)
     assert hasattr(app, "user_middleware")
@@ -246,7 +246,7 @@ def test_middleware_stack_startup() -> None:
 
 def test_route_registration_startup() -> None:
     """Test that all expected routes are registered during startup."""
-    from main import app
+    from src.main import app
 
     # Get all registered routes
     routes = []
@@ -263,7 +263,7 @@ def test_route_registration_startup() -> None:
 
 def test_openapi_schema_generation_startup() -> None:
     """Test that OpenAPI schema can be generated during startup."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -284,13 +284,13 @@ def test_openapi_schema_generation_startup() -> None:
 @pytest.mark.asyncio
 async def test_graceful_shutdown_capability() -> None:
     """Test that application can handle shutdown gracefully."""
-    with patch("core.db.get_async_engine") as mock_get_engine:
+    with patch("src.core.db.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
         mock_engine.dispose = AsyncMock()
         mock_get_engine.return_value = mock_engine
 
         # Import inside patch to get the mocked version
-        from core.db import get_async_engine
+        from src.core.db import get_async_engine
 
         # Get engine
         engine = get_async_engine()
@@ -310,7 +310,7 @@ def test_production_configuration_validation() -> None:
     }
 
     with patch.dict(os.environ, production_env, clear=False):
-        from core.config import get_settings
+        from src.core.config import get_settings
 
         # Clear the cache to allow new settings
         get_settings.cache_clear()
@@ -333,7 +333,7 @@ def test_development_configuration_startup() -> None:
     }
 
     with patch.dict(os.environ, dev_env, clear=False):
-        from core.config import get_settings
+        from src.core.config import get_settings
 
         # Clear the cache to allow new settings
         get_settings.cache_clear()
@@ -352,7 +352,7 @@ def test_startup_with_missing_optional_config() -> None:
     }
 
     with patch.dict(os.environ, minimal_env, clear=True):
-        from core.config import Settings
+        from src.core.config import Settings
 
         # Should still work with minimal configuration
         settings = Settings(_env_file=None)
@@ -367,8 +367,7 @@ def test_startup_with_missing_optional_config() -> None:
 def test_concurrent_startup_requests() -> None:
     """Test that application can handle concurrent requests during startup."""
     from httpx import Response
-
-    from main import app
+    from src.main import app
 
     def make_request() -> Response:
         client = TestClient(app)
@@ -393,7 +392,7 @@ def test_concurrent_startup_requests() -> None:
 
 def test_startup_error_recovery() -> None:
     """Test that startup can recover from transient errors."""
-    from main import app
+    from src.main import app
 
     # Even if some components fail during startup, basic app should work
     client = TestClient(app)

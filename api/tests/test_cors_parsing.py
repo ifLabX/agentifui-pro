@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 def test_cors_origins_comma_separated_format() -> None:
     """Test CORS origins with comma-separated format."""
-    from core.config import Settings, reset_settings
+    from src.core.config import Settings, reset_settings
 
     # Test single origin
     with patch.dict(
@@ -45,7 +45,7 @@ def test_cors_origins_comma_separated_format() -> None:
 
 def test_cors_origins_json_array_format() -> None:
     """Test CORS origins with JSON array format."""
-    from core.config import Settings, reset_settings
+    from src.core.config import Settings, reset_settings
 
     # Test JSON array format with single quotes
     with patch.dict(
@@ -79,7 +79,7 @@ def test_cors_origins_json_array_format() -> None:
 
 def test_cors_origins_with_spaces() -> None:
     """Test CORS origins with spaces in comma-separated format."""
-    from core.config import Settings, reset_settings
+    from src.core.config import Settings, reset_settings
 
     # Test with spaces around commas
     with patch.dict(
@@ -101,7 +101,7 @@ def test_cors_origins_with_spaces() -> None:
 
 def test_cors_methods_parsing() -> None:
     """Test CORS methods parsing with different formats."""
-    from core.config import Settings, reset_settings
+    from src.core.config import Settings, reset_settings
 
     # Test comma-separated methods
     with patch.dict(
@@ -135,7 +135,7 @@ def test_cors_methods_parsing() -> None:
 
 def test_cors_headers_parsing() -> None:
     """Test CORS headers parsing with different formats."""
-    from core.config import Settings, reset_settings
+    from src.core.config import Settings, reset_settings
 
     # Test comma-separated headers
     with patch.dict(
@@ -169,7 +169,7 @@ def test_cors_headers_parsing() -> None:
 
 def test_cors_wildcard_format() -> None:
     """Test CORS with wildcard (*) format."""
-    from core.config import Settings, reset_settings
+    from src.core.config import Settings, reset_settings
 
     # Test single asterisk
     with patch.dict(

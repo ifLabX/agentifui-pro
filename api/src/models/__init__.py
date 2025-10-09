@@ -5,8 +5,8 @@ Import all SQLAlchemy models here to register them with Base.metadata
 for Alembic autogenerate support.
 """
 
-from models.base import Base
-from models.errors import (
+from src.models.base import Base
+from src.models.errors import (
     ErrorResponse,
     ErrorType,
     ServiceUnavailableError,

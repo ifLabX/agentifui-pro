@@ -1,0 +1,318 @@
+# Type Checking Service Contract
+
+service: mypy-type-checker
+version: 1.0.0
+description: Static type checking service for Python backend code
+
+## Service Interface
+
+### Input Specification
+```yaml
+sources:
+  type: directory
+  path: api/src/
+  includes:
+    - "**/*.py"
+  excludes:
+    - "migrations/**"
+    - ".venv/**"
+    - "__pycache__/**"
+
+configuration:
+  type: file
+  path: api/pyproject.toml
+  section: "[tool.mypy]"
+  required_fields:
+    - python_version
+    - strict
+    - plugins
+    - mypy_path
+    - packages
+
+cache:
+  type: directory
+  path: api/.mypy_cache/
+  optional: true
+  auto_created: true
+```
+
+### Output Specification
+```yaml
+exit_code:
+  type: integer
+  values:
+    0: No type errors found
+    1: Type errors detected
+    2: Fatal error (configuration/runtime)
+
+error_report:
+  type: structured_text
+  format: "{file}:{line}:{column}: {severity}: {message}  [{error_code}]"
+  fields:
+    file: relative_path
+    line: positive_integer
+    column: positive_integer
+    severity: enum[error, note, warning]
+    message: string
+    error_code: string
+
+summary:
+  type: text
+  format: "Found {error_count} errors in {file_count} files (checked {total_files} source files)"
+  timing: included
+```
+
+### Performance Guarantees
+```yaml
+execution_time:
+  cold_cache:
+    small_project_15_files: <15_seconds
+    medium_project_50_files: <60_seconds
+
+  warm_cache:
+    single_file_change: <5_seconds
+    full_recheck: <30_seconds
+
+memory_usage:
+  peak: <200MB
+  cache_size: <5MB_per_100_files
+
+incremental_speedup:
+  factor: 5-10x
+  applicability: file_changes_only
+```
+
+## Behavioral Contracts
+
+### Contract 1: Strict Type Validation
+```yaml
+guarantee: All type annotations must be validated against actual usage
+
+test_cases:
+  - name: Valid type annotations accepted
+    input: |
+      def greet(name: str) -> str:
+          return f"Hello, {name}"
+    expected: exit_code = 0
+
+  - name: Type mismatch rejected
+    input: |
+      def get_age(user_id: int) -> int:
+          return "not an integer"
+    expected:
+      exit_code: 1
+      error_code: "return-value"
+      message: contains "incompatible return value type"
+
+  - name: Missing type annotations rejected (strict mode)
+    input: |
+      def process(data):
+          return data
+    expected:
+      exit_code: 1
+      error_code: "no-untyped-def"
+```
+
+### Contract 2: Async Pattern Support
+```yaml
+guarantee: Async/await patterns correctly type-checked
+
+test_cases:
+  - name: AsyncIterator correctly recognized
+    input: |
+      from collections.abc import AsyncIterator
+
+      async def arange(n: int) -> AsyncIterator[int]:
+          for i in range(n):
+              yield i
+    expected: exit_code = 0
+
+  - name: Coroutine type validated
+    input: |
+      async def fetch_data() -> int:
+          return 42
+
+      async def main() -> None:
+          result: int = await fetch_data()
+    expected: exit_code = 0
+
+  - name: Invalid await rejected
+    input: |
+      async def main() -> None:
+          result = await 42  # Can't await non-awaitable
+    expected:
+      exit_code: 1
+      error_code: contains "await"
+```
+
+### Contract 3: Pydantic Model Validation
+```yaml
+guarantee: Pydantic models type-checked with plugin support
+
+test_cases:
+  - name: Valid Pydantic model
+    input: |
+      from pydantic import BaseModel
+
+      class User(BaseModel):
+          id: int
+          name: str
+
+      user = User(id=1, name="Alice")
+    expected: exit_code = 0
+
+  - name: Invalid field type rejected
+    input: |
+      from pydantic import BaseModel
+
+      class User(BaseModel):
+          id: int
+          name: str
+
+      user = User(id="not_int", name="Alice")
+    expected:
+      exit_code: 1
+      error_code: "arg-type"
+```
+
+### Contract 4: Migration Exclusion
+```yaml
+guarantee: Migration files excluded from strict checking
+
+test_cases:
+  - name: Migration file with type issues ignored
+    input_file: migrations/versions/001_create_users.py
+    content: |
+      def upgrade():
+          pass  # No type annotations - would fail strict mode
+    expected: exit_code = 0  # Ignored due to exclusion
+
+  - name: Source file with same issues rejected
+    input_file: src/models/user.py
+    content: |
+      def create_user():
+          pass  # No type annotations
+    expected:
+      exit_code: 1
+      error_code: "no-untyped-def"
+```
+
+### Contract 5: Incremental Caching
+```yaml
+guarantee: Cache provides performance improvement on subsequent runs
+
+test_cases:
+  - name: First run creates cache
+    precondition: cache_directory_empty
+    action: run_mypy
+    postcondition:
+      - cache_directory_exists
+      - cache_contains_data_json_files
+      - execution_time_recorded
+
+  - name: Second run uses cache
+    precondition: cache_directory_populated
+    action: run_mypy_no_changes
+    postcondition:
+      - execution_time < 0.2 * first_run_time
+      - exit_code_unchanged
+
+  - name: Cache invalidated on file change
+    precondition: cache_directory_populated
+    action:
+      - modify_source_file
+      - run_mypy
+    postcondition:
+      - cache_updated_for_changed_file
+      - cache_reused_for_unchanged_files
+```
+
+## Error Scenarios
+
+### Configuration Errors
+```yaml
+- scenario: Missing required configuration
+  trigger: [tool.mypy] section absent in pyproject.toml
+  expected_behavior:
+    exit_code: 2
+    error_message: "Configuration file not found or invalid"
+
+- scenario: Invalid Python version
+  trigger: python_version = "2.7"
+  expected_behavior:
+    exit_code: 2
+    error_message: contains "unsupported python version"
+
+- scenario: Plugin not installed
+  trigger: plugins = ["non.existent.plugin"]
+  expected_behavior:
+    exit_code: 2
+    error_message: contains "plugin" and "not found"
+```
+
+### Runtime Errors
+```yaml
+- scenario: Source directory not found
+  trigger: mypy_path points to non-existent directory
+  expected_behavior:
+    exit_code: 2
+    error_message: contains "cannot find module"
+
+- scenario: Cache directory not writable
+  trigger: .mypy_cache/ has no write permissions
+  expected_behavior:
+    fallback: run without caching
+    warning: "cache directory not writable"
+    exit_code: based on type checking results
+
+- scenario: Syntax error in source file
+  trigger: invalid Python syntax
+  expected_behavior:
+    exit_code: 1
+    error_message: contains "syntax error"
+    error_code: "syntax"
+```
+
+## Integration Points
+
+### Pre-commit Hook Integration
+```yaml
+trigger: git commit with api/ changes
+execution: cd api && uv run mypy .
+success_criteria:
+  exit_code: 0
+  allow_commit: true
+failure_criteria:
+  exit_code: 1
+  block_commit: true
+  display_errors: true
+```
+
+### CI/CD Pipeline Integration
+```yaml
+stage: after_linting_before_testing
+command: |
+  cd api
+  uv sync --dev
+  uv run mypy .
+success_criteria:
+  exit_code: 0
+  pipeline_continues: true
+failure_criteria:
+  exit_code: 1 or 2
+  pipeline_fails: true
+  annotations: create GitHub annotations for each error
+```
+
+## Acceptance Criteria
+
+- [ ] Mypy executes successfully on codebase (exit code 0 or 1, not 2)
+- [ ] Strict mode enforced (all type annotations required)
+- [ ] Pydantic plugin loaded and functioning
+- [ ] Async patterns correctly validated
+- [ ] Migration files excluded from strict checking
+- [ ] Cache created and provides speedup (>5x)
+- [ ] Error messages clear and actionable
+- [ ] Pre-commit hook blocks commits with type errors
+- [ ] CI/CD pipeline fails on type errors
+- [ ] Performance goals met (<5s incremental, <30s full)

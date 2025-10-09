@@ -7,9 +7,10 @@ exceptions and returns standardized error responses.
 
 import logging
 import traceback
-from typing import Union
+from collections.abc import Awaitable, Callable
+from typing import Optional, Union, cast
 
-from fastapi import HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError as PydanticValidationError
 from sqlalchemy.exc import DisconnectionError, SQLAlchemyError
@@ -40,7 +41,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.settings = get_settings()
 
-    async def dispatch(self, request: Request, call_next) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
         """
         Process request and handle any exceptions.
 
@@ -207,7 +208,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             content=error_response.model_dump(),
         )
 
-    def _get_request_id(self, request: Request) -> str:
+    def _get_request_id(self, request: Request) -> Optional[str]:
         """
         Extract or generate request ID for error tracking.
 
@@ -223,15 +224,15 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
             return request_id
 
         # Try to get from request state (set by other middleware)
-        request_id = getattr(request.state, "request_id", None)
-        if request_id:
-            return request_id
+        state_request_id = getattr(request.state, "request_id", None)
+        if state_request_id is not None:
+            return cast(str, state_request_id)
 
         # Generate a new request ID (will be handled by error response creation)
         return None
 
 
-def setup_error_handling(app) -> None:
+def setup_error_handling(app: FastAPI) -> None:
     """
     Set up global error handling for the FastAPI application.
 

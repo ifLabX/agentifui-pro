@@ -13,7 +13,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def test_quickstart_health_endpoint_response():
+def test_quickstart_health_endpoint_response() -> None:
     """Test that health endpoint returns expected quickstart response format."""
     from main import app
 
@@ -42,7 +42,7 @@ def test_quickstart_health_endpoint_response():
         pytest.fail(f"Invalid timestamp format: {data['timestamp']}")
 
 
-def test_quickstart_database_health_endpoint():
+def test_quickstart_database_health_endpoint() -> None:
     """Test database health endpoint as described in quickstart guide."""
     from main import app
 
@@ -79,7 +79,7 @@ def test_quickstart_database_health_endpoint():
         assert data["database_connected"] is True
 
 
-def test_quickstart_database_unhealthy_scenario():
+def test_quickstart_database_unhealthy_scenario() -> None:
     """Test database health endpoint when database is unavailable."""
     from main import app
 
@@ -104,7 +104,7 @@ def test_quickstart_database_unhealthy_scenario():
 
 @pytest.mark.skip(reason="Requires real database connection - better as integration test")
 @pytest.mark.asyncio
-async def test_quickstart_database_connection_test():
+async def test_quickstart_database_connection_test() -> None:
     """Test the database connection test scenario from quickstart guide."""
     # Mock the database engine and connection
     with patch("core.db.get_async_engine") as mock_get_engine:
@@ -143,7 +143,7 @@ async def test_quickstart_database_connection_test():
         mock_engine.dispose.assert_called_once()
 
 
-def test_quickstart_environment_configuration():
+def test_quickstart_environment_configuration() -> None:
     """Test that environment configuration works as described in quickstart."""
     from core.config import Settings
 
@@ -174,7 +174,7 @@ def test_quickstart_environment_configuration():
         assert settings.log_level == "INFO"
 
 
-def test_quickstart_api_documentation_endpoints():
+def test_quickstart_api_documentation_endpoints() -> None:
     """Test that API documentation endpoints are available as mentioned in quickstart."""
     from main import app
 
@@ -204,7 +204,7 @@ def test_quickstart_api_documentation_endpoints():
     assert "/health/db" in openapi_data["paths"]
 
 
-def test_quickstart_cors_configuration():
+def test_quickstart_cors_configuration() -> None:
     """Test CORS configuration as described in quickstart guide."""
     from main import app
 
@@ -221,7 +221,7 @@ def test_quickstart_cors_configuration():
 
 
 @pytest.mark.asyncio
-async def test_quickstart_async_client_scenario():
+async def test_quickstart_async_client_scenario() -> None:
     """Test async client usage scenario from quickstart development workflow."""
     from main import app
 
@@ -253,7 +253,7 @@ async def test_quickstart_async_client_scenario():
             assert db_data["database_connected"] is True
 
 
-def test_quickstart_error_response_format():
+def test_quickstart_error_response_format() -> None:
     """Test that error responses follow the format described in quickstart."""
     from main import app
 
@@ -270,7 +270,7 @@ def test_quickstart_error_response_format():
     assert "message" in error_data or "detail" in error_data
 
 
-def test_quickstart_application_metadata():
+def test_quickstart_application_metadata() -> None:
     """Test that application metadata matches quickstart expectations."""
     from core.config import get_settings
     from main import app
@@ -292,7 +292,7 @@ def test_quickstart_application_metadata():
     assert openapi_data["info"]["version"] == settings.app_version
 
 
-def test_quickstart_development_server_startup():
+def test_quickstart_development_server_startup() -> None:
     """Test that development server can start as described in quickstart."""
     from main import app
 
@@ -319,7 +319,7 @@ def test_quickstart_development_server_startup():
     assert settings.database_url is not None
 
 
-def test_quickstart_verification_scenarios():
+def test_quickstart_verification_scenarios() -> None:
     """Test the specific verification scenarios mentioned in quickstart guide."""
     from main import app
 
@@ -363,7 +363,7 @@ def test_quickstart_verification_scenarios():
         assert db_data["database_connected"] is True
 
 
-def test_quickstart_dependency_validation():
+def test_quickstart_dependency_validation() -> None:
     """Test that required dependencies from quickstart are available."""
     # Test that core dependencies can be imported
     try:
@@ -380,7 +380,7 @@ def test_quickstart_dependency_validation():
         pytest.fail(f"Required dependency missing: {e}")
 
 
-def test_quickstart_file_structure_validation():
+def test_quickstart_file_structure_validation() -> None:
     """Test that file structure matches quickstart expectations."""
     from pathlib import Path
 
@@ -405,7 +405,7 @@ def test_quickstart_file_structure_validation():
 
 
 @pytest.mark.asyncio
-async def test_quickstart_performance_expectations():
+async def test_quickstart_performance_expectations() -> None:
     """Test that performance matches quickstart guide expectations."""
     import time
 
@@ -424,7 +424,7 @@ async def test_quickstart_performance_expectations():
         assert response_time < 1000, f"Health endpoint took {response_time:.2f}ms"
 
 
-def test_quickstart_logging_configuration():
+def test_quickstart_logging_configuration() -> None:
     """Test that logging works as described in quickstart."""
     import logging
 

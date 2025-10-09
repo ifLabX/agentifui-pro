@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def test_health_endpoint_exists():
+def test_health_endpoint_exists() -> None:
     """Test that /health endpoint exists and is accessible."""
     from main import app
 
@@ -22,7 +22,7 @@ def test_health_endpoint_exists():
     assert response.status_code != 404, "Health endpoint /health must exist"
 
 
-def test_health_endpoint_returns_json():
+def test_health_endpoint_returns_json() -> None:
     """Test that /health endpoint returns valid JSON."""
     from main import app
 
@@ -36,7 +36,7 @@ def test_health_endpoint_returns_json():
     assert isinstance(data, dict)
 
 
-def test_health_endpoint_healthy_response_schema():
+def test_health_endpoint_healthy_response_schema() -> None:
     """Test /health endpoint returns correct schema for healthy status."""
     from main import app
 
@@ -68,7 +68,7 @@ def test_health_endpoint_healthy_response_schema():
     assert data["version"] == "0.1.0"
 
 
-def test_health_endpoint_uptime_field():
+def test_health_endpoint_uptime_field() -> None:
     """Test /health endpoint includes uptime_seconds field."""
     from main import app
 
@@ -83,7 +83,7 @@ def test_health_endpoint_uptime_field():
         assert data["uptime_seconds"] >= 0
 
 
-def test_health_endpoint_error_response_schema():
+def test_health_endpoint_error_response_schema() -> None:
     """Test /health endpoint error response format."""
     from main import app
 
@@ -104,7 +104,7 @@ def test_health_endpoint_error_response_schema():
                 assert isinstance(error, str)
 
 
-def test_health_endpoint_performance():
+def test_health_endpoint_performance() -> None:
     """Test /health endpoint responds quickly."""
     import time
 
@@ -122,7 +122,7 @@ def test_health_endpoint_performance():
     assert response_time < 0.2, f"Health check took {response_time:.3f}s, should be <0.2s"
 
 
-def test_health_endpoint_no_query_parameters():
+def test_health_endpoint_no_query_parameters() -> None:
     """Test /health endpoint works without query parameters."""
     from main import app
 
@@ -136,7 +136,7 @@ def test_health_endpoint_no_query_parameters():
     assert "status" in data
 
 
-def test_health_endpoint_idempotent():
+def test_health_endpoint_idempotent() -> None:
     """Test /health endpoint is idempotent (multiple calls return consistent results)."""
     from main import app
 

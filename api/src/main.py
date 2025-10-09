@@ -5,6 +5,7 @@ This module sets up the FastAPI application with middleware, routers,
 and dependency injection for the Agentifui Pro API.
 """
 
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -17,7 +18,7 @@ from middleware.error_handler import setup_error_handling
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     Application lifespan manager.
 
@@ -75,7 +76,7 @@ app = create_app()
 
 
 @app.get("/")
-async def root():
+async def root() -> dict[str, str]:
     """Root endpoint returning basic API information."""
     settings = get_settings()
     return {

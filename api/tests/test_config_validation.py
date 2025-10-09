@@ -11,7 +11,7 @@ from unittest.mock import patch
 import pytest
 
 
-def test_config_settings_class_exists():
+def test_config_settings_class_exists() -> None:
     """Test that Settings configuration class exists."""
     try:
         from core.config import Settings
@@ -23,7 +23,7 @@ def test_config_settings_class_exists():
         pytest.fail("Settings class must exist in core.config module")
 
 
-def test_config_settings_has_required_fields():
+def test_config_settings_has_required_fields() -> None:
     """Test that Settings class has all required configuration fields."""
     from core.config import Settings
 
@@ -44,7 +44,7 @@ def test_config_settings_has_required_fields():
     assert hasattr(settings, "log_level")
 
 
-def test_config_database_url_validation():
+def test_config_database_url_validation() -> None:
     """Test that database URL validation works correctly."""
     from core.config import Settings
 
@@ -59,7 +59,7 @@ def test_config_database_url_validation():
             Settings()
 
 
-def test_config_pool_size_validation():
+def test_config_pool_size_validation() -> None:
     """Test that database pool size validation works correctly."""
     from core.config import Settings
 
@@ -78,7 +78,7 @@ def test_config_pool_size_validation():
             Settings()
 
 
-def test_config_log_level_validation():
+def test_config_log_level_validation() -> None:
     """Test that log level validation works correctly."""
     from core.config import Settings
 
@@ -99,7 +99,7 @@ def test_config_log_level_validation():
             Settings()
 
 
-def test_config_environment_defaults():
+def test_config_environment_defaults() -> None:
     """Test that configuration provides sensible defaults."""
     from core.config import Settings
 
@@ -115,7 +115,7 @@ def test_config_environment_defaults():
         assert settings.database_pool_size > 0
 
 
-def test_config_cors_settings():
+def test_config_cors_settings() -> None:
     """Test that CORS settings are properly configured."""
     from core.config import Settings
 
@@ -133,7 +133,7 @@ def test_config_cors_settings():
             assert isinstance(settings.cors_origins, list)
 
 
-def test_config_health_check_settings():
+def test_config_health_check_settings() -> None:
     """Test that health check timeout settings are properly configured."""
     from core.config import Settings
 
@@ -157,7 +157,7 @@ def test_config_health_check_settings():
             assert settings.database_health_check_timeout > 0
 
 
-def test_config_feature_flags():
+def test_config_feature_flags() -> None:
     """Test that feature flag settings work correctly."""
     from core.config import Settings
 
@@ -179,7 +179,7 @@ def test_config_feature_flags():
             assert isinstance(settings.enable_docs, bool)
 
 
-def test_config_settings_immutable():
+def test_config_settings_immutable() -> None:
     """Test that settings are immutable after creation."""
     from core.config import Settings
 
@@ -188,10 +188,10 @@ def test_config_settings_immutable():
 
         # Attempt to modify should raise error (if using frozen=True)
         with pytest.raises((ValueError, TypeError)):
-            settings.app_name = "modified"
+            settings.app_name = "modified"  # type: ignore[misc]
 
 
-def test_config_singleton_pattern():
+def test_config_singleton_pattern() -> None:
     """Test that settings follow singleton pattern if implemented."""
     try:
         from core.config import get_settings
@@ -206,7 +206,7 @@ def test_config_singleton_pattern():
     assert settings1 is settings2, "Settings should follow singleton pattern"
 
 
-def test_config_validation_errors_descriptive():
+def test_config_validation_errors_descriptive() -> None:
     """Test that configuration validation errors are descriptive."""
     from core.config import Settings
 

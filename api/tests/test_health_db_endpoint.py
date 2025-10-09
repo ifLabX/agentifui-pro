@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def test_health_db_endpoint_exists():
+def test_health_db_endpoint_exists() -> None:
     """Test that /health/db endpoint exists and is accessible."""
     from main import app
 
@@ -22,7 +22,7 @@ def test_health_db_endpoint_exists():
     assert response.status_code != 404, "Database health endpoint /health/db must exist"
 
 
-def test_health_db_endpoint_returns_json():
+def test_health_db_endpoint_returns_json() -> None:
     """Test that /health/db endpoint returns valid JSON."""
     from main import app
 
@@ -36,7 +36,7 @@ def test_health_db_endpoint_returns_json():
     assert isinstance(data, dict)
 
 
-def test_health_db_endpoint_healthy_response_schema():
+def test_health_db_endpoint_healthy_response_schema() -> None:
     """Test /health/db endpoint returns correct schema for healthy database."""
     from main import app
 
@@ -67,7 +67,7 @@ def test_health_db_endpoint_healthy_response_schema():
             pytest.fail(f"Invalid timestamp format: {timestamp}")
 
 
-def test_health_db_endpoint_connection_pool_info():
+def test_health_db_endpoint_connection_pool_info() -> None:
     """Test /health/db endpoint includes connection pool information."""
     from main import app
 
@@ -92,7 +92,7 @@ def test_health_db_endpoint_connection_pool_info():
             assert pool_info["pool_size"] >= 1
 
 
-def test_health_db_endpoint_response_time_info():
+def test_health_db_endpoint_response_time_info() -> None:
     """Test /health/db endpoint includes response time information."""
     from main import app
 
@@ -110,7 +110,7 @@ def test_health_db_endpoint_response_time_info():
                 assert response_time >= 0
 
 
-def test_health_db_endpoint_migration_status():
+def test_health_db_endpoint_migration_status() -> None:
     """Test /health/db endpoint includes migration status."""
     from main import app
 
@@ -126,7 +126,7 @@ def test_health_db_endpoint_migration_status():
             assert migration_status in ["up_to_date", "pending", "unknown"]
 
 
-def test_health_db_endpoint_unhealthy_response_schema():
+def test_health_db_endpoint_unhealthy_response_schema() -> None:
     """Test /health/db endpoint error response format."""
     from main import app
 
@@ -152,7 +152,7 @@ def test_health_db_endpoint_unhealthy_response_schema():
                 assert isinstance(error, str)
 
 
-def test_health_db_endpoint_performance():
+def test_health_db_endpoint_performance() -> None:
     """Test /health/db endpoint responds within acceptable time."""
     import time
 
@@ -170,7 +170,7 @@ def test_health_db_endpoint_performance():
     assert response_time < 0.5, f"DB health check took {response_time:.3f}s, should be <0.5s"
 
 
-def test_health_db_endpoint_handles_database_errors():
+def test_health_db_endpoint_handles_database_errors() -> None:
     """Test /health/db endpoint gracefully handles database connection issues."""
     from main import app
 
@@ -186,7 +186,7 @@ def test_health_db_endpoint_handles_database_errors():
     assert "database_connected" in data
 
 
-def test_health_db_endpoint_consistency():
+def test_health_db_endpoint_consistency() -> None:
     """Test /health/db endpoint returns consistent results for database state."""
     from main import app
 

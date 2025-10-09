@@ -29,7 +29,7 @@ createdb agentifui_pro
 uv run alembic upgrade head
 
 # 4. Run server
-uv run uvicorn src.main:app --reload
+uv run uvicorn main:app --reload
 ```
 
 Server runs at http://localhost:8000
@@ -158,7 +158,7 @@ RUN pip install uv
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen
 COPY . .
-CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0"]
+CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0"]
 ```
 
 **Production checklist**:

@@ -9,7 +9,7 @@ import os
 from unittest.mock import patch
 
 
-def test_cors_origins_comma_separated_format():
+def test_cors_origins_comma_separated_format() -> None:
     """Test CORS origins with comma-separated format."""
     from core.config import Settings, reset_settings
 
@@ -43,7 +43,7 @@ def test_cors_origins_comma_separated_format():
         assert "https://example.com" in settings.cors_origins
 
 
-def test_cors_origins_json_array_format():
+def test_cors_origins_json_array_format() -> None:
     """Test CORS origins with JSON array format."""
     from core.config import Settings, reset_settings
 
@@ -77,7 +77,7 @@ def test_cors_origins_json_array_format():
         assert "https://app.example.com" in settings.cors_origins
 
 
-def test_cors_origins_with_spaces():
+def test_cors_origins_with_spaces() -> None:
     """Test CORS origins with spaces in comma-separated format."""
     from core.config import Settings, reset_settings
 
@@ -99,7 +99,7 @@ def test_cors_origins_with_spaces():
         assert "https://example.com" in settings.cors_origins
 
 
-def test_cors_methods_parsing():
+def test_cors_methods_parsing() -> None:
     """Test CORS methods parsing with different formats."""
     from core.config import Settings, reset_settings
 
@@ -133,7 +133,7 @@ def test_cors_methods_parsing():
         assert "PATCH" in settings.cors_allow_methods
 
 
-def test_cors_headers_parsing():
+def test_cors_headers_parsing() -> None:
     """Test CORS headers parsing with different formats."""
     from core.config import Settings, reset_settings
 
@@ -167,7 +167,7 @@ def test_cors_headers_parsing():
         assert "X-Custom-Header" in settings.cors_allow_headers
 
 
-def test_cors_wildcard_format():
+def test_cors_wildcard_format() -> None:
     """Test CORS with wildcard (*) format."""
     from core.config import Settings, reset_settings
 

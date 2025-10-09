@@ -45,7 +45,7 @@ def test_mypy_config_exists() -> None:
     mypy_config = config["tool"]["mypy"]
 
     # Verify required fields
-    required_fields = ["strict", "plugins", "python_version", "mypy_path", "packages"]
+    required_fields = ["strict", "plugins", "python_version", "mypy_path", "files"]
     for field in required_fields:
         assert field in mypy_config, f"Missing required field: {field}"
 

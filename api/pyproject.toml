@@ -43,7 +43,7 @@ plugins = ["pydantic.mypy"]
 
 # Source paths
 mypy_path = "src"
-packages = ["src", "tests"]
+files = ["src", "tests"]
 
 # Exclusions
 exclude = [

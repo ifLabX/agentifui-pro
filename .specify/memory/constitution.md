@@ -23,7 +23,7 @@ Templates Status:
 ✅ plan-template.md - Constitution Check section references this file
 ✅ spec-template.md - User stories and requirements align with principles
 ✅ tasks-template.md - Task structure supports TDD and parallel execution
-⚠️ No command files found yet - future commands should reference this constitution
+⚠️ New `speckit.*` command files created - they should reference this constitution
 
 Follow-up TODOs: None - all placeholders filled with concrete values
 -->

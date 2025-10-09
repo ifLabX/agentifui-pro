@@ -28,10 +28,10 @@ if $api_modified; then
     echo "Running Ruff linter on api module"
 
     # run Ruff linter auto-fixing
-    uv run --project api --dev ruff check --fix ./api
+    uv run --project api ruff check --fix ./api
 
     # run Ruff linter checks
-    uv run --project api --dev ruff check ./api || status=$?
+    uv run --project api ruff check ./api || status=$?
 
     status=${status:-0}
 
@@ -45,7 +45,7 @@ if $api_modified; then
 
     # run mypy type checking (must run from api directory for Pydantic plugin to work correctly)
     # use subshell to isolate directory change for safety
-    (cd api && uv run --dev mypy .) || status=$?
+    (cd api && uv run mypy .) || status=$?
 
     status=${status:-0}
 

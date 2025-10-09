@@ -44,7 +44,7 @@ if $api_modified; then
     echo "Running mypy type checking on api module"
 
     # run mypy type checking (must run from api directory for Pydantic plugin to work correctly)
-    cd api && uv run --dev mypy src || status=$?
+    cd api && uv run --dev mypy . || status=$?
     cd ..
 
     status=${status:-0}

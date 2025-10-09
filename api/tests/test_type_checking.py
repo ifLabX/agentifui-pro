@@ -10,7 +10,7 @@ import tomllib
 from pathlib import Path
 
 
-def test_mypy_installed():
+def test_mypy_installed() -> None:
     """Contract: mypy is installed and accessible via uv."""
     result = subprocess.run(
         ["uv", "run", "mypy", "--version"],
@@ -32,7 +32,7 @@ def test_mypy_installed():
     assert (major, minor) >= (1, 8), f"mypy version {version_str} < 1.8.0"
 
 
-def test_mypy_config_exists():
+def test_mypy_config_exists() -> None:
     """Contract: mypy configuration section exists in pyproject.toml."""
     pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
 
@@ -50,7 +50,7 @@ def test_mypy_config_exists():
         assert field in mypy_config, f"Missing required field: {field}"
 
 
-def test_strict_mode_enabled():
+def test_strict_mode_enabled() -> None:
     """Contract: mypy strict mode is enabled."""
     pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
 
@@ -61,7 +61,7 @@ def test_strict_mode_enabled():
     assert mypy_config.get("strict") is True, "strict mode not enabled"
 
 
-def test_pydantic_plugin_configured():
+def test_pydantic_plugin_configured() -> None:
     """Contract: Pydantic mypy plugin is configured."""
     pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
 
@@ -75,7 +75,7 @@ def test_pydantic_plugin_configured():
     assert "pydantic.mypy" in plugins, "pydantic.mypy plugin not configured"
 
 
-def test_migrations_excluded():
+def test_migrations_excluded() -> None:
     """Contract: migrations directory is excluded from type checking."""
     pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
 
@@ -100,7 +100,7 @@ def test_migrations_excluded():
     assert migrations_override.get("ignore_errors") is True, "migrations errors not ignored"
 
 
-def test_mypy_runs_successfully():
+def test_mypy_runs_successfully() -> None:
     """Contract: mypy executes without configuration errors.
 
     Exit codes:
@@ -120,7 +120,7 @@ def test_mypy_runs_successfully():
     assert result.returncode in [0, 1], f"mypy configuration error (exit {result.returncode}): {result.stderr}"
 
 
-def test_mypy_cache_created():
+def test_mypy_cache_created() -> None:
     """Contract: mypy creates cache directory on execution."""
     cache_dir = Path(__file__).parent.parent / ".mypy_cache"
 
@@ -146,7 +146,7 @@ def test_mypy_cache_created():
     assert python_subdir.exists(), "Python 3.12 cache subdirectory not created"
 
 
-def test_type_error_detection():
+def test_type_error_detection() -> None:
     """Contract: mypy correctly detects type errors."""
     # Create temporary file with intentional type error
     temp_file = Path(__file__).parent.parent / "src" / "_test_temp_type_error.py"

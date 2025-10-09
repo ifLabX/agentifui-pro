@@ -74,8 +74,3 @@ ignore_errors = true
 [[tool.mypy.overrides]]
 module = "asyncpg.*"
 ignore_missing_imports = true
-
-# Temporarily exclude tests until all test files are fixed
-[[tool.mypy.overrides]]
-module = "tests.*"
-ignore_errors = true

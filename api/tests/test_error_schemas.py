@@ -9,7 +9,7 @@ import pytest
 from pydantic import ValidationError
 
 
-def test_error_response_model_exists():
+def test_error_response_model_exists() -> None:
     """Test that ErrorResponse model exists."""
     try:
         from models.errors import ErrorResponse
@@ -21,7 +21,7 @@ def test_error_response_model_exists():
         pytest.fail("ErrorResponse model must exist in models.errors module")
 
 
-def test_error_response_required_fields():
+def test_error_response_required_fields() -> None:
     """Test that ErrorResponse model has all required fields."""
     from models.errors import ErrorResponse
 
@@ -35,24 +35,24 @@ def test_error_response_required_fields():
     assert error_response.timestamp == "2025-09-23T10:30:00Z"
 
 
-def test_error_response_missing_required_fields():
+def test_error_response_missing_required_fields() -> None:
     """Test that ErrorResponse model validates required fields."""
     from models.errors import ErrorResponse
 
     # Test missing error field
     with pytest.raises(ValidationError):
-        ErrorResponse(message="Test", timestamp="2025-09-23T10:30:00Z")
+        ErrorResponse(message="Test", timestamp="2025-09-23T10:30:00Z")  # type: ignore[call-arg]
 
     # Test missing message field
     with pytest.raises(ValidationError):
-        ErrorResponse(error="TEST_ERROR", timestamp="2025-09-23T10:30:00Z")
+        ErrorResponse(error="TEST_ERROR", timestamp="2025-09-23T10:30:00Z")  # type: ignore[call-arg]
 
     # Test missing timestamp field
     with pytest.raises(ValidationError):
-        ErrorResponse(error="TEST_ERROR", message="Test")
+        ErrorResponse(error="TEST_ERROR", message="Test")  # type: ignore[call-arg]
 
 
-def test_error_response_optional_fields():
+def test_error_response_optional_fields() -> None:
     """Test that ErrorResponse model handles optional fields correctly."""
     from models.errors import ErrorResponse
 
@@ -71,7 +71,7 @@ def test_error_response_optional_fields():
     assert error_response.request_id == "550e8400-e29b-41d4-a716-446655440000"
 
 
-def test_validation_error_response_model_exists():
+def test_validation_error_response_model_exists() -> None:
     """Test that ValidationErrorResponse model exists."""
     try:
         from models.errors import ValidationErrorResponse
@@ -83,7 +83,7 @@ def test_validation_error_response_model_exists():
         pytest.fail("ValidationErrorResponse model must exist in models.errors module")
 
 
-def test_validation_error_response_structure():
+def test_validation_error_response_structure() -> None:
     """Test that ValidationErrorResponse model has correct structure."""
     from models.errors import ValidationError, ValidationErrorResponse
 
@@ -106,7 +106,7 @@ def test_validation_error_response_structure():
     assert validation_response.validation_errors[0].field == "database_url"
 
 
-def test_validation_error_model_structure():
+def test_validation_error_model_structure() -> None:
     """Test that ValidationError model has correct structure."""
     from models.errors import ValidationError
 
@@ -117,7 +117,7 @@ def test_validation_error_model_structure():
     assert validation_error.value == "invalid-url"
 
 
-def test_service_unavailable_error_model():
+def test_service_unavailable_error_model() -> None:
     """Test that ServiceUnavailableError model exists and works correctly."""
     try:
         from models.errors import ServiceUnavailableError
@@ -137,7 +137,7 @@ def test_service_unavailable_error_model():
     assert service_error.retry_after == 30
 
 
-def test_error_enum_validation():
+def test_error_enum_validation() -> None:
     """Test that error enums are properly validated."""
     from models.errors import ValidationErrorResponse
 
@@ -148,7 +148,7 @@ def test_error_enum_validation():
         )
 
 
-def test_timestamp_format_validation():
+def test_timestamp_format_validation() -> None:
     """Test that timestamp format is properly validated."""
     from models.errors import ErrorResponse
 
@@ -160,7 +160,7 @@ def test_timestamp_format_validation():
         assert error_response.timestamp == timestamp
 
 
-def test_request_id_uuid_validation():
+def test_request_id_uuid_validation() -> None:
     """Test that request_id follows UUID format if validated."""
     from models.errors import ErrorResponse
 
@@ -174,7 +174,7 @@ def test_request_id_uuid_validation():
     assert error_response.request_id == valid_uuid
 
 
-def test_error_response_serialization():
+def test_error_response_serialization() -> None:
     """Test that error responses can be serialized to JSON correctly."""
     from models.errors import ErrorResponse
 
@@ -195,7 +195,7 @@ def test_error_response_serialization():
     assert "detail" in data
 
 
-def test_validation_error_nested_structure():
+def test_validation_error_nested_structure() -> None:
     """Test that validation errors handle nested structure correctly."""
     from models.errors import ValidationError, ValidationErrorResponse
 
@@ -219,7 +219,7 @@ def test_validation_error_nested_structure():
     assert serialized["validation_errors"][1]["value"] == -1
 
 
-def test_error_models_immutability():
+def test_error_models_immutability() -> None:
     """Test that error models are immutable if configured as frozen."""
     from models.errors import ErrorResponse
 
@@ -227,14 +227,14 @@ def test_error_models_immutability():
 
     # If frozen=True is configured, this should raise an error
     try:
-        error_response.error = "MODIFIED_ERROR"
+        error_response.error = "MODIFIED_ERROR"  # type: ignore[misc]
         # If no error raised, model is not frozen (which is also valid)
     except Exception:
         # Model is frozen, which is good for error responses
         pass
 
 
-def test_error_response_factory_functions():
+def test_error_response_factory_functions() -> None:
     """Test error response factory functions if they exist."""
     try:
         from models.errors import create_database_error, create_validation_error

@@ -11,7 +11,7 @@ from unittest.mock import patch
 import pytest
 
 
-def test_database_connection_module_exists():
+def test_database_connection_module_exists() -> None:
     """Test that database connection module exists."""
     try:
         from core.db import get_async_engine
@@ -22,7 +22,7 @@ def test_database_connection_module_exists():
         pytest.fail("get_async_engine function must exist in core.db module")
 
 
-def test_database_session_module_exists():
+def test_database_session_module_exists() -> None:
     """Test that database session module exists."""
     try:
         from core.db import get_db_session
@@ -34,7 +34,7 @@ def test_database_session_module_exists():
 
 
 @pytest.mark.asyncio
-async def test_async_engine_creation():
+async def test_async_engine_creation() -> None:
     """Test that async engine can be created with valid configuration."""
     from core.db import get_async_engine
 
@@ -48,7 +48,7 @@ async def test_async_engine_creation():
 
 
 @pytest.mark.asyncio
-async def test_async_engine_disposal():
+async def test_async_engine_disposal() -> None:
     """Test that async engine can be properly disposed."""
     from core.db import get_async_engine
 
@@ -59,7 +59,7 @@ async def test_async_engine_disposal():
 
 
 @pytest.mark.asyncio
-async def test_database_connection_context_manager():
+async def test_database_connection_context_manager() -> None:
     """Test that database connections work with async context manager."""
     from core.db import get_async_engine
 
@@ -80,7 +80,7 @@ async def test_database_connection_context_manager():
         await engine.dispose()
 
 
-def test_database_session_dependency():
+def test_database_session_dependency() -> None:
     """Test that database session dependency function exists and is async."""
     import inspect
 
@@ -91,7 +91,7 @@ def test_database_session_dependency():
 
 
 @pytest.mark.asyncio
-async def test_database_session_lifecycle():
+async def test_database_session_lifecycle() -> None:
     """Test that database session follows proper lifecycle."""
     from core.db import get_db_session
 
@@ -117,7 +117,7 @@ async def test_database_session_lifecycle():
             pytest.fail(f"Expected database-related error, got: {e}")
 
 
-def test_connection_pool_configuration():
+def test_connection_pool_configuration() -> None:
     """Test that connection pool is properly configured."""
     from core.db import get_async_engine
 
@@ -133,7 +133,7 @@ def test_connection_pool_configuration():
 
 
 @pytest.mark.asyncio
-async def test_connection_error_handling():
+async def test_connection_error_handling() -> None:
     """Test that connection errors are handled gracefully."""
     from sqlalchemy.exc import DBAPIError
 
@@ -152,17 +152,19 @@ async def test_connection_error_handling():
 
         # Should raise OSError (for DNS/socket errors) or DBAPIError (for database errors)
         # The specific error type varies by environment and failure mode
+        from sqlalchemy import text
+
         with pytest.raises((OSError, DBAPIError)):
             async with engine.connect() as conn:
-                await conn.execute("SELECT 1")
+                await conn.execute(text("SELECT 1"))
 
         await engine.dispose()
 
 
-def test_database_health_check_function():
+def test_database_health_check_function() -> None:
     """Test that database health check functionality exists."""
     try:
-        from core.db import check_database_health
+        from core.db import check_database_health  # type: ignore[attr-defined]
     except ImportError:
         # Health module might not be implemented yet
         pytest.skip("Database health module not implemented yet")
@@ -173,10 +175,10 @@ def test_database_health_check_function():
 
 
 @pytest.mark.asyncio
-async def test_database_health_check_returns_status():
+async def test_database_health_check_returns_status() -> None:
     """Test that database health check returns proper status."""
     try:
-        from core.db import check_database_health
+        from core.db import check_database_health  # type: ignore[attr-defined]
     except ImportError:
         pytest.skip("Database health module not implemented yet")
 
@@ -191,10 +193,10 @@ async def test_database_health_check_returns_status():
         assert isinstance(health_status["response_time_ms"], (int, float, type(None)))
 
 
-def test_session_factory_configuration():
+def test_session_factory_configuration() -> None:
     """Test that session factory is properly configured."""
     try:
-        from core.db import SessionLocal
+        from core.db import SessionLocal  # type: ignore[attr-defined]
     except ImportError:
         # SessionLocal might be internal implementation detail
         pytest.skip("SessionLocal not exposed")
@@ -204,11 +206,13 @@ def test_session_factory_configuration():
 
 
 @pytest.mark.asyncio
-async def test_concurrent_sessions():
+async def test_concurrent_sessions() -> None:
     """Test that multiple concurrent sessions can be created."""
+    from typing import Any
+
     from core.db import get_db_session
 
-    async def get_session():
+    async def get_session() -> Any:
         session_gen = get_db_session()
         try:
             session = await session_gen.__anext__()
@@ -229,7 +233,7 @@ async def test_concurrent_sessions():
     assert success_count == len(sessions) or error_count == len(sessions)
 
 
-def test_database_url_from_settings():
+def test_database_url_from_settings() -> None:
     """Test that database connection uses URL from settings."""
     from core.db import get_async_engine
 
@@ -242,7 +246,7 @@ def test_database_url_from_settings():
 
 
 @pytest.mark.asyncio
-async def test_connection_cleanup():
+async def test_connection_cleanup() -> None:
     """Test that database connections are properly cleaned up."""
     from core.db import get_async_engine
 

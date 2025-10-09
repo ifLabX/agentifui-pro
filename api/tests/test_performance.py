@@ -16,7 +16,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 
-def test_health_endpoint_response_time():
+def test_health_endpoint_response_time() -> None:
     """Test that /health endpoint responds within 200ms."""
     from main import app
 
@@ -36,7 +36,7 @@ def test_health_endpoint_response_time():
     assert response_time < 200, f"Health endpoint took {response_time:.2f}ms, should be <200ms"
 
 
-def test_health_db_endpoint_response_time(mock_database_health):
+def test_health_db_endpoint_response_time(mock_database_health: dict[str, bool | int | str]) -> None:
     """Test that /health/db endpoint responds within 500ms."""
     from main import app
 
@@ -61,13 +61,13 @@ def test_health_db_endpoint_response_time(mock_database_health):
     assert response_time < 500, f"DB health endpoint took {response_time:.2f}ms, should be <500ms"
 
 
-def test_health_endpoint_concurrent_requests():
+def test_health_endpoint_concurrent_requests() -> None:
     """Test health endpoint performance under concurrent load."""
     from main import app
 
     client = TestClient(app)
 
-    def make_request():
+    def make_request() -> dict[str, int | float]:
         """Make a single request and return response time."""
         start_time = time.time()
         response = client.get("/health")
@@ -96,7 +96,7 @@ def test_health_endpoint_concurrent_requests():
 
 
 @pytest.mark.skip(reason="TestClient not thread-safe in ThreadPoolExecutor, use real integration tests instead")
-def test_health_db_endpoint_concurrent_requests():
+def test_health_db_endpoint_concurrent_requests() -> None:
     """Test database health endpoint performance under concurrent load."""
     from concurrent.futures import TimeoutError as FuturesTimeoutError
 
@@ -104,7 +104,7 @@ def test_health_db_endpoint_concurrent_requests():
 
     client = TestClient(app)
 
-    def make_request():
+    def make_request() -> dict[str, int | float]:
         """Make a single request and return response time."""
         start_time = time.time()
         try:
@@ -144,7 +144,7 @@ def test_health_db_endpoint_concurrent_requests():
 
 
 @pytest.mark.asyncio
-async def test_async_health_endpoint_performance():
+async def test_async_health_endpoint_performance() -> None:
     """Test health endpoint performance using async client."""
     from main import app
 
@@ -164,11 +164,11 @@ async def test_async_health_endpoint_performance():
 
 
 @pytest.mark.asyncio
-async def test_async_concurrent_health_requests():
+async def test_async_concurrent_health_requests() -> None:
     """Test concurrent async requests to health endpoint."""
     from main import app
 
-    async def make_async_request(client):
+    async def make_async_request(client: httpx.AsyncClient) -> dict[str, int | float]:
         """Make async request and return response time."""
         start_time = time.time()
         response = await client.get("/health")
@@ -193,11 +193,11 @@ async def test_async_concurrent_health_requests():
     assert max_response_time < 500, f"Async max response time {max_response_time:.2f}ms exceeds 500ms"
 
 
-def test_health_endpoint_memory_usage():
+def test_health_endpoint_memory_usage() -> None:
     """Test that health endpoint doesn't have memory leaks under load."""
     import os
 
-    import psutil
+    import psutil  # type: ignore[import-untyped]
 
     from main import app
 
@@ -225,7 +225,7 @@ def test_health_endpoint_memory_usage():
     )
 
 
-def test_health_endpoint_response_consistency():
+def test_health_endpoint_response_consistency() -> None:
     """Test that health endpoint returns consistent response times."""
     from main import app
 
@@ -253,7 +253,7 @@ def test_health_endpoint_response_consistency():
     assert consistency_ratio < 0.5, f"Response time inconsistency ratio {consistency_ratio:.2f} too high"
 
 
-def test_error_response_performance():
+def test_error_response_performance() -> None:
     """Test that error responses are also fast."""
     from main import app
 
@@ -271,7 +271,7 @@ def test_error_response_performance():
 
 
 @pytest.mark.asyncio
-async def test_database_health_performance_with_mock():
+async def test_database_health_performance_with_mock() -> None:
     """Test database health endpoint performance with mocked database."""
     from unittest.mock import AsyncMock
 
@@ -301,15 +301,15 @@ async def test_database_health_performance_with_mock():
             assert response_time < 200, f"Mocked DB health took {response_time:.2f}ms, should be <200ms"
 
 
-def test_health_endpoints_under_stress(mock_database_health):
+def test_health_endpoints_under_stress(mock_database_health: dict[str, bool | int | str]) -> None:
     """Stress test both health endpoints with rapid requests."""
     from main import app
 
     client = TestClient(app)
 
-    def stress_test_endpoint(endpoint: str, expected_max_time: float):
+    def stress_test_endpoint(endpoint: str, expected_max_time: float) -> None:
         """Stress test a specific endpoint."""
-        response_times = []
+        response_times: list[float] = []
         errors = 0
 
         for _ in range(50):  # 50 rapid requests

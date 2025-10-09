@@ -38,7 +38,7 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
 
 
 @pytest.fixture(autouse=True)
-def reset_caches():
+def reset_caches() -> Generator[None, None, None]:
     """
     Auto-reset settings and session factory caches between tests.
 
@@ -77,7 +77,7 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest.fixture
-def mock_database_health():
+def mock_database_health() -> Generator[dict[str, Any], None, None]:
     """
     Mock database health check for testing endpoints without database.
 
@@ -99,7 +99,7 @@ def mock_database_health():
 
 
 @pytest.fixture
-def mock_database_unhealthy():
+def mock_database_unhealthy() -> Generator[dict[str, Any], None, None]:
     """
     Mock unhealthy database for testing error scenarios.
 
@@ -164,7 +164,7 @@ def mock_request_id() -> str:
 
 
 @pytest.fixture
-def mock_environment_production():
+def mock_environment_production() -> Generator[None, None, None]:
     """
     Mock production environment for testing production-specific behavior.
     """
@@ -180,7 +180,7 @@ def mock_environment_production():
 
 
 @pytest.fixture
-def mock_environment_development():
+def mock_environment_development() -> Generator[None, None, None]:
     """
     Mock development environment for testing development-specific behavior.
     """
@@ -196,7 +196,7 @@ def mock_environment_development():
 
 
 @pytest.fixture
-def capture_logs(caplog):
+def capture_logs(caplog: Any) -> Any:
     """
     Capture logs during testing.
 
@@ -212,18 +212,18 @@ def capture_logs(caplog):
 class MockAsyncContextManager:
     """Mock async context manager for testing."""
 
-    def __init__(self, return_value=None):
+    def __init__(self, return_value: Any = None) -> None:
         self.return_value = return_value
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> Any:
         return self.return_value
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         pass
 
 
 @pytest.fixture
-def mock_async_session():
+def mock_async_session() -> AsyncMock:
     """
     Mock async database session for testing.
 
@@ -242,7 +242,7 @@ def mock_async_session():
 
 
 @pytest.fixture
-def mock_database_engine():
+def mock_database_engine() -> AsyncMock:
     """
     Mock database engine for testing.
 
@@ -267,7 +267,7 @@ def mock_database_engine():
 
 
 @pytest.fixture
-def mock_successful_query_result():
+def mock_successful_query_result() -> Mock:
     """
     Mock successful database query result.
 
@@ -284,7 +284,7 @@ def mock_successful_query_result():
 
 
 @pytest.fixture(autouse=True)
-def clean_app_state():
+def clean_app_state() -> Generator[None, None, None]:
     """
     Clean FastAPI app state between tests.
 
@@ -296,7 +296,7 @@ def clean_app_state():
 
 
 @pytest.fixture
-def temporary_file():
+def temporary_file() -> Generator[str, None, None]:
     """
     Create a temporary file for testing file operations.
 
@@ -319,12 +319,12 @@ def temporary_file():
 
 
 # Async test utilities
-async def async_return(value):
+async def async_return(value: Any) -> Any:
     """Helper to return a value from an async function."""
     return value
 
 
-def async_mock_return(value):
+def async_mock_return(value: Any) -> AsyncMock:
     """Helper to create an AsyncMock that returns a specific value."""
     mock = AsyncMock()
     mock.return_value = value
@@ -336,9 +336,9 @@ class TestDataFactory:
     """Factory for creating test data objects."""
 
     @staticmethod
-    def create_health_response(status: str = "healthy", **kwargs) -> dict[str, Any]:
+    def create_health_response(status: str = "healthy", **kwargs: Any) -> dict[str, Any]:
         """Create a health response for testing."""
-        default_response = {
+        default_response: dict[str, Any] = {
             "status": status,
             "timestamp": "2025-09-23T10:30:00Z",
             "version": "0.1.0-test",
@@ -353,9 +353,9 @@ class TestDataFactory:
         return default_response
 
     @staticmethod
-    def create_db_health_response(connected: bool = True, **kwargs) -> dict[str, Any]:
+    def create_db_health_response(connected: bool = True, **kwargs: Any) -> dict[str, Any]:
         """Create a database health response for testing."""
-        default_response = {
+        default_response: dict[str, Any] = {
             "status": "healthy" if connected else "unhealthy",
             "timestamp": "2025-09-23T10:30:00Z",
             "database_connected": connected,
@@ -385,32 +385,32 @@ def test_data_factory() -> TestDataFactory:
 
 # Performance testing utilities
 @pytest.fixture
-def performance_timer():
+def performance_timer() -> type:
     """Timer utility for performance testing."""
     import time
 
     class Timer:
-        def __init__(self):
-            self.start_time = None
-            self.end_time = None
+        def __init__(self) -> None:
+            self.start_time: float | None = None
+            self.end_time: float | None = None
 
-        def start(self):
+        def start(self) -> None:
             self.start_time = time.time()
 
-        def stop(self):
+        def stop(self) -> None:
             self.end_time = time.time()
 
         @property
-        def elapsed_ms(self):
+        def elapsed_ms(self) -> float | None:
             if self.start_time and self.end_time:
                 return (self.end_time - self.start_time) * 1000
             return None
 
-        def __enter__(self):
+        def __enter__(self) -> "Timer":
             self.start()
             return self
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
+        def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
             self.stop()
 
     return Timer

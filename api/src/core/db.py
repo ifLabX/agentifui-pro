@@ -6,7 +6,7 @@ and session dependency injection for FastAPI using PostgreSQL with asyncpg drive
 """
 
 from collections.abc import AsyncGenerator
-from typing import Optional
+from typing import Any, Optional
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
@@ -126,7 +126,7 @@ async def check_database_connection() -> bool:
         return False
 
 
-async def get_database_info() -> dict:
+async def get_database_info() -> dict[str, Any]:
     """
     Get database information and connection status.
 
@@ -150,13 +150,19 @@ async def get_database_info() -> dict:
             )
             connection_count = result.scalar()
 
+            pool_size = None
+            checked_out = None
+            if engine.pool:
+                pool_size = engine.pool.size() if hasattr(engine.pool, "size") else None
+                checked_out = engine.pool.checkedout() if hasattr(engine.pool, "checkedout") else None
+
             return {
                 "connected": True,
                 "version": version,
                 "database_name": database_name,
                 "connection_count": connection_count,
-                "pool_size": engine.pool.size() if engine.pool else None,
-                "checked_out_connections": engine.pool.checkedout() if hasattr(engine.pool, "checkedout") else None,
+                "pool_size": pool_size,
+                "checked_out_connections": checked_out,
             }
     except Exception as e:
         return {

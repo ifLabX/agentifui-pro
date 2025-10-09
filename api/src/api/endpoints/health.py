@@ -39,7 +39,7 @@ APP_START_TIME = time.time()
     summary="Application Health Check",
     description="Returns the overall health status of the FastAPI application",
 )
-async def get_application_health():
+async def get_application_health() -> JSONResponse:
     """
     Get application health status.
 
@@ -109,7 +109,7 @@ async def get_application_health():
     summary="Database Health Check",
     description="Returns the health status of the PostgreSQL database connection",
 )
-async def get_database_health():
+async def get_database_health() -> JSONResponse:
     """
     Get database health status.
 

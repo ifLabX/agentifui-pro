@@ -15,7 +15,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 
-def test_application_can_be_imported():
+def test_application_can_be_imported() -> None:
     """Test that the main application can be imported without errors."""
     try:
         from main import app
@@ -28,7 +28,7 @@ def test_application_can_be_imported():
         pytest.fail(f"Error during application import: {e}")
 
 
-def test_application_basic_configuration():
+def test_application_basic_configuration() -> None:
     """Test that application has basic configuration set up correctly."""
     from core.config import get_settings
     from main import app
@@ -46,7 +46,7 @@ def test_application_basic_configuration():
     assert len(app.routes) > 0
 
 
-def test_settings_configuration_startup():
+def test_settings_configuration_startup() -> None:
     """Test that settings can be loaded during startup."""
     from core.config import get_settings
 
@@ -61,7 +61,7 @@ def test_settings_configuration_startup():
     assert settings.port > 0
 
 
-def test_database_components_initialization():
+def test_database_components_initialization() -> None:
     """Test that database components can be initialized."""
     try:
         from core.db import get_async_engine, get_db_session
@@ -78,7 +78,7 @@ def test_database_components_initialization():
         pytest.fail(f"Database component initialization failed: {e}")
 
 
-def test_health_endpoints_registration():
+def test_health_endpoints_registration() -> None:
     """Test that health endpoints are properly registered during startup."""
     from main import app
 
@@ -94,7 +94,7 @@ def test_health_endpoints_registration():
     assert db_health_response.status_code in [200, 503]
 
 
-def test_error_handling_middleware_startup():
+def test_error_handling_middleware_startup() -> None:
     """Test that error handling middleware is properly configured during startup."""
     from main import app
 
@@ -110,7 +110,7 @@ def test_error_handling_middleware_startup():
     assert "detail" in error_data or "error" in error_data
 
 
-def test_cors_middleware_startup():
+def test_cors_middleware_startup() -> None:
     """Test that CORS middleware is configured during startup."""
     from main import app
 
@@ -128,7 +128,7 @@ def test_cors_middleware_startup():
 
 
 @pytest.mark.asyncio
-async def test_async_application_startup():
+async def test_async_application_startup() -> None:
     """Test that application starts correctly in async context."""
     from main import app
 
@@ -141,7 +141,7 @@ async def test_async_application_startup():
         assert health_data["status"] == "healthy"
 
 
-def test_dependency_injection_startup():
+def test_dependency_injection_startup() -> None:
     """Test that dependency injection works during startup."""
     from main import app
 
@@ -154,7 +154,7 @@ def test_dependency_injection_startup():
 
 
 @pytest.mark.asyncio
-async def test_database_connection_during_startup():
+async def test_database_connection_during_startup() -> None:
     """Test database connection behavior during startup."""
     with patch("core.db.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
@@ -169,7 +169,7 @@ async def test_database_connection_during_startup():
         mock_get_engine.assert_called()
 
 
-def test_logging_configuration_startup():
+def test_logging_configuration_startup() -> None:
     """Test that logging is configured during startup."""
     import logging
 
@@ -185,7 +185,7 @@ def test_logging_configuration_startup():
     assert hasattr(settings, "log_level")
 
 
-def test_startup_performance():
+def test_startup_performance() -> None:
     """Test that application startup is reasonably fast."""
     start_time = time.time()
 
@@ -205,7 +205,7 @@ def test_startup_performance():
     assert startup_time < 5.0, f"Startup took {startup_time:.2f}s, should be <5s"
 
 
-def test_environment_variable_handling_startup():
+def test_environment_variable_handling_startup() -> None:
     """Test that environment variables are handled correctly during startup."""
     test_env = {
         "APP_NAME": "Test Startup App",
@@ -231,7 +231,7 @@ def test_environment_variable_handling_startup():
         assert settings.log_level == "DEBUG"
 
 
-def test_middleware_stack_startup():
+def test_middleware_stack_startup() -> None:
     """Test that middleware stack is properly configured during startup."""
     from main import app
 
@@ -244,7 +244,7 @@ def test_middleware_stack_startup():
     assert middleware_count > 0, "No middleware configured"
 
 
-def test_route_registration_startup():
+def test_route_registration_startup() -> None:
     """Test that all expected routes are registered during startup."""
     from main import app
 
@@ -261,7 +261,7 @@ def test_route_registration_startup():
         assert expected_route in routes, f"Route {expected_route} not registered"
 
 
-def test_openapi_schema_generation_startup():
+def test_openapi_schema_generation_startup() -> None:
     """Test that OpenAPI schema can be generated during startup."""
     from main import app
 
@@ -282,7 +282,7 @@ def test_openapi_schema_generation_startup():
 
 
 @pytest.mark.asyncio
-async def test_graceful_shutdown_capability():
+async def test_graceful_shutdown_capability() -> None:
     """Test that application can handle shutdown gracefully."""
     with patch("core.db.get_async_engine") as mock_get_engine:
         mock_engine = AsyncMock()
@@ -300,7 +300,7 @@ async def test_graceful_shutdown_capability():
         mock_engine.dispose.assert_called_once()
 
 
-def test_production_configuration_validation():
+def test_production_configuration_validation() -> None:
     """Test that production configuration is properly validated during startup."""
     production_env = {
         "ENVIRONMENT": "production",
@@ -323,7 +323,7 @@ def test_production_configuration_validation():
         assert settings.log_level == "INFO"
 
 
-def test_development_configuration_startup():
+def test_development_configuration_startup() -> None:
     """Test that development configuration works during startup."""
     dev_env = {
         "ENVIRONMENT": "development",
@@ -345,7 +345,7 @@ def test_development_configuration_startup():
         assert settings.log_level == "DEBUG"
 
 
-def test_startup_with_missing_optional_config():
+def test_startup_with_missing_optional_config() -> None:
     """Test that startup works even with missing optional configuration."""
     minimal_env = {
         "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
@@ -364,11 +364,13 @@ def test_startup_with_missing_optional_config():
         assert settings.app_version is not None
 
 
-def test_concurrent_startup_requests():
+def test_concurrent_startup_requests() -> None:
     """Test that application can handle concurrent requests during startup."""
+    from httpx import Response
+
     from main import app
 
-    def make_request():
+    def make_request() -> Response:
         client = TestClient(app)
         return client.get("/health")
 
@@ -389,7 +391,7 @@ def test_concurrent_startup_requests():
         assert data["status"] == "healthy"
 
 
-def test_startup_error_recovery():
+def test_startup_error_recovery() -> None:
     """Test that startup can recover from transient errors."""
     from main import app
 

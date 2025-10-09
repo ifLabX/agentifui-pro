@@ -59,6 +59,9 @@ jobs:
       - name: Format check
         run: uv run ruff format --check .
 
+      - name: Type check
+        run: uv run mypy .
+
       - name: Run tests
         if: inputs.run-tests
         env:

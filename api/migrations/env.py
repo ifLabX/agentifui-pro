@@ -30,7 +30,6 @@ config.set_main_option("sqlalchemy.url", settings.database_url)
 
 # Add your model's MetaData object here for 'autogenerate' support
 # Import all models through models package __init__.py (triggers registration)
-# When new models are added: add "from models.user import User" to models/__init__.py
 import models  # noqa: F401
 from models.base import Base
 

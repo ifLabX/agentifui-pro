@@ -93,4 +93,5 @@ cover/
 
 #claude
 .claude/settings.json
+**/claudedocs/
 .serena

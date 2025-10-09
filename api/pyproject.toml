@@ -26,9 +26,6 @@ dev = [
     "types-psutil>=0.0.1",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
-
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]

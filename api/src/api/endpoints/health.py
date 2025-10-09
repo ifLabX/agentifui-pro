@@ -9,10 +9,9 @@ import time
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-
-from core.config import get_settings
-from core.db import check_database_connection, get_database_info
-from schemas.health import (
+from src.core.config import get_settings
+from src.core.db import check_database_connection, get_database_info
+from src.schemas.health import (
     ConnectionPoolInfo,
     DatabaseHealthResponse,
     HealthResponse,

@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 
 def test_health_db_endpoint_exists() -> None:
     """Test that /health/db endpoint exists and is accessible."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -24,7 +24,7 @@ def test_health_db_endpoint_exists() -> None:
 
 def test_health_db_endpoint_returns_json() -> None:
     """Test that /health/db endpoint returns valid JSON."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -38,7 +38,7 @@ def test_health_db_endpoint_returns_json() -> None:
 
 def test_health_db_endpoint_healthy_response_schema() -> None:
     """Test /health/db endpoint returns correct schema for healthy database."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -69,7 +69,7 @@ def test_health_db_endpoint_healthy_response_schema() -> None:
 
 def test_health_db_endpoint_connection_pool_info() -> None:
     """Test /health/db endpoint includes connection pool information."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -94,7 +94,7 @@ def test_health_db_endpoint_connection_pool_info() -> None:
 
 def test_health_db_endpoint_response_time_info() -> None:
     """Test /health/db endpoint includes response time information."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -112,7 +112,7 @@ def test_health_db_endpoint_response_time_info() -> None:
 
 def test_health_db_endpoint_migration_status() -> None:
     """Test /health/db endpoint includes migration status."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -128,7 +128,7 @@ def test_health_db_endpoint_migration_status() -> None:
 
 def test_health_db_endpoint_unhealthy_response_schema() -> None:
     """Test /health/db endpoint error response format."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -156,7 +156,7 @@ def test_health_db_endpoint_performance() -> None:
     """Test /health/db endpoint responds within acceptable time."""
     import time
 
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 
@@ -172,7 +172,7 @@ def test_health_db_endpoint_performance() -> None:
 
 def test_health_db_endpoint_handles_database_errors() -> None:
     """Test /health/db endpoint gracefully handles database connection issues."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
     response = client.get("/health/db")
@@ -188,7 +188,7 @@ def test_health_db_endpoint_handles_database_errors() -> None:
 
 def test_health_db_endpoint_consistency() -> None:
     """Test /health/db endpoint returns consistent results for database state."""
-    from main import app
+    from src.main import app
 
     client = TestClient(app)
 

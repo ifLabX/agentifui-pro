@@ -1,6 +1,6 @@
 """API schemas module."""
 
-from schemas.health import (
+from src.schemas.health import (
     ConnectionPoolInfo,
     DatabaseHealthResponse,
     HealthResponse,

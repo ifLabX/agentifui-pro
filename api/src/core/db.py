@@ -11,8 +11,7 @@ from typing import Any, Optional
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
-
-from core.config import get_settings
+from src.core.config import get_settings
 
 # Global engine and session factory instances
 _engine: Optional[AsyncEngine] = None

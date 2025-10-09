@@ -28,7 +28,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["."]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
@@ -43,8 +43,12 @@ strict = true
 plugins = ["pydantic.mypy"]
 
 # Source paths
-mypy_path = "src"
+mypy_path = "."
 files = ["src", "tests"]
+
+# Namespace packages
+namespace_packages = true
+explicit_package_bases = true
 
 # Exclusions
 exclude = [
@@ -74,5 +78,12 @@ ignore_errors = true
 module = "asyncpg.*"
 ignore_missing_imports = true
 
-[tool.uv]
-package = false
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.hatch.metadata]
+allow-direct-references = true

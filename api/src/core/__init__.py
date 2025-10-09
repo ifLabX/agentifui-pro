@@ -1,7 +1,7 @@
 """Core infrastructure module."""
 
-from core.config import Settings, get_settings, reset_settings
-from core.db import (
+from src.core.config import Settings, get_settings, reset_settings
+from src.core.db import (
     check_database_connection,
     create_all_tables,
     dispose_engine,

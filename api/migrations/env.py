@@ -11,7 +11,7 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
-from core.config import get_settings
+from src.core.config import get_settings
 
 # Get application settings
 settings = get_settings()
@@ -30,8 +30,8 @@ config.set_main_option("sqlalchemy.url", settings.database_url)
 
 # Add your model's MetaData object here for 'autogenerate' support
 # Import all models through models package __init__.py (triggers registration)
-import models  # noqa: F401
-from models.base import Base
+import src.models  # noqa: F401
+from src.models.base import Base
 
 target_metadata = Base.metadata
 

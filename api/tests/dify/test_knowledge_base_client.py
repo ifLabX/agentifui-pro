@@ -18,13 +18,9 @@ from dify_client import KnowledgeBaseClient
 class TestKnowledgeBaseClientInitialization:
     """Test KnowledgeBaseClient initialization."""
 
-    def test_client_initialization_with_dataset_id(
-        self, mock_api_key: str, sample_dataset_id: str
-    ) -> None:
+    def test_client_initialization_with_dataset_id(self, mock_api_key: str, sample_dataset_id: str) -> None:
         """Test client initialization with dataset ID."""
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
 
         assert client.api_key == mock_api_key
         assert client.dataset_id == sample_dataset_id
@@ -37,9 +33,7 @@ class TestKnowledgeBaseClientInitialization:
         assert client.api_key == mock_api_key
         assert client.dataset_id is None
 
-    def test_client_initialization_with_custom_base_url(
-        self, mock_api_key: str, mock_base_url: str
-    ) -> None:
+    def test_client_initialization_with_custom_base_url(self, mock_api_key: str, mock_base_url: str) -> None:
         """Test client initialization with custom base URL."""
         client = KnowledgeBaseClient(api_key=mock_api_key, base_url=mock_base_url)
 
@@ -124,9 +118,7 @@ class TestKnowledgeBaseClientDatasetManagement:
         """Test deleting a dataset."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.delete_dataset()
 
         # Verify request
@@ -150,9 +142,7 @@ class TestKnowledgeBaseClientDocumentByText:
         """Test creating a document with minimal parameters."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         doc_name = "Test Document"
         doc_text = "This is test content"
         response = client.create_document_by_text(name=doc_name, text=doc_text)
@@ -178,16 +168,12 @@ class TestKnowledgeBaseClientDocumentByText:
         """Test creating a document with extra parameters."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         extra_params = {
             "indexing_technique": "economy",
             "process_rule": sample_process_rule,
         }
-        response = client.create_document_by_text(
-            name="Doc", text="Content", extra_params=extra_params
-        )
+        response = client.create_document_by_text(name="Doc", text="Content", extra_params=extra_params)
 
         # Verify extra params are merged
         call_kwargs = mock_requests_request.call_args[1]
@@ -206,23 +192,16 @@ class TestKnowledgeBaseClientDocumentByText:
         """Test updating a document by text."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         new_name = "Updated Document"
         new_text = "Updated content"
-        response = client.update_document_by_text(
-            document_id=sample_document_id, name=new_name, text=new_text
-        )
+        response = client.update_document_by_text(document_id=sample_document_id, name=new_name, text=new_text)
 
         # Verify request
         mock_requests_request.assert_called_once()
         call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "POST"
-        assert (
-            f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/update_by_text"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/update_by_text" in call_args[1]
         assert call_kwargs["json"]["name"] == new_name
         assert call_kwargs["json"]["text"] == new_text
         assert response == mock_successful_response
@@ -243,9 +222,7 @@ class TestKnowledgeBaseClientDocumentByFile:
         """Test creating a document from file with minimal parameters."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         file_path = "/tmp/test.txt"
         response = client.create_document_by_file(file_path=file_path)
 
@@ -272,13 +249,9 @@ class TestKnowledgeBaseClientDocumentByFile:
         """Test creating a document from file with original document ID."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         original_doc_id = "doc-original-123"
-        response = client.create_document_by_file(
-            file_path="/tmp/test.txt", original_document_id=original_doc_id
-        )
+        response = client.create_document_by_file(file_path="/tmp/test.txt", original_document_id=original_doc_id)
 
         # Verify original_document_id is included
         call_kwargs = mock_requests_request.call_args[1]
@@ -299,13 +272,9 @@ class TestKnowledgeBaseClientDocumentByFile:
         """Test updating a document by file."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         file_path = "/tmp/updated.txt"
-        response = client.update_document_by_file(
-            document_id=sample_document_id, file_path=file_path
-        )
+        response = client.update_document_by_file(document_id=sample_document_id, file_path=file_path)
 
         # Verify file was opened
         mock_file.assert_called_once_with(file_path, "rb")
@@ -313,10 +282,7 @@ class TestKnowledgeBaseClientDocumentByFile:
         # Verify request
         call_args = mock_requests_request.call_args[0]
         assert call_args[0] == "POST"
-        assert (
-            f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/update_by_file"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/update_by_file" in call_args[1]
         assert response == mock_successful_response
 
 
@@ -333,9 +299,7 @@ class TestKnowledgeBaseClientDocumentOperations:
         """Test listing documents with default parameters."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.list_documents()
 
         # Verify request
@@ -356,9 +320,7 @@ class TestKnowledgeBaseClientDocumentOperations:
         """Test listing documents with pagination."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.list_documents(page=2, page_size=30)
 
         # Verify pagination
@@ -377,9 +339,7 @@ class TestKnowledgeBaseClientDocumentOperations:
         """Test listing documents with keyword filter."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.list_documents(keyword="important")
 
         # Verify keyword filter
@@ -398,19 +358,14 @@ class TestKnowledgeBaseClientDocumentOperations:
         """Test deleting a document."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.delete_document(document_id=sample_document_id)
 
         # Verify request
         mock_requests_request.assert_called_once()
         call_args = mock_requests_request.call_args[0]
         assert call_args[0] == "DELETE"
-        assert (
-            f"/datasets/{sample_dataset_id}/documents/{sample_document_id}"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/documents/{sample_document_id}" in call_args[1]
         assert response == mock_successful_response
 
     def test_batch_indexing_status(
@@ -423,9 +378,7 @@ class TestKnowledgeBaseClientDocumentOperations:
         """Test getting batch indexing status."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         batch_id = "batch-12345"
         response = client.batch_indexing_status(batch_id=batch_id)
 
@@ -451,22 +404,15 @@ class TestKnowledgeBaseClientSegmentOperations:
         """Test adding segments to a document."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         segments = [sample_segment_data]
-        response = client.add_segments(
-            document_id=sample_document_id, segments=segments
-        )
+        response = client.add_segments(document_id=sample_document_id, segments=segments)
 
         # Verify request
         mock_requests_request.assert_called_once()
         call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "POST"
-        assert (
-            f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments" in call_args[1]
         assert call_kwargs["json"]["segments"] == segments
         assert response == mock_successful_response
 
@@ -481,18 +427,13 @@ class TestKnowledgeBaseClientSegmentOperations:
         """Test querying segments with default parameters."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.query_segments(document_id=sample_document_id)
 
         # Verify request
         call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "GET"
-        assert (
-            f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments" in call_args[1]
         assert call_kwargs["params"] == {}
         assert response == mock_successful_response
 
@@ -507,12 +448,8 @@ class TestKnowledgeBaseClientSegmentOperations:
         """Test querying segments with keyword and status filters."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
-        response = client.query_segments(
-            document_id=sample_document_id, keyword="test", status="completed"
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
+        response = client.query_segments(document_id=sample_document_id, keyword="test", status="completed")
 
         # Verify filters
         call_kwargs = mock_requests_request.call_args[1]
@@ -531,9 +468,7 @@ class TestKnowledgeBaseClientSegmentOperations:
         """Test updating a document segment."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         segment_id = "seg-123"
         segment_data = {
             "content": "Updated content",
@@ -548,10 +483,7 @@ class TestKnowledgeBaseClientSegmentOperations:
         # Verify request
         call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "POST"
-        assert (
-            f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments/{segment_id}"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments/{segment_id}" in call_args[1]
         assert call_kwargs["json"]["segment"] == segment_data
         assert response == mock_successful_response
 
@@ -566,21 +498,14 @@ class TestKnowledgeBaseClientSegmentOperations:
         """Test deleting a document segment."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         segment_id = "seg-456"
-        response = client.delete_document_segment(
-            document_id=sample_document_id, segment_id=segment_id
-        )
+        response = client.delete_document_segment(document_id=sample_document_id, segment_id=segment_id)
 
         # Verify request
         call_args = mock_requests_request.call_args[0]
         assert call_args[0] == "DELETE"
-        assert (
-            f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments/{segment_id}"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments/{segment_id}" in call_args[1]
         assert response == mock_successful_response
 
 
@@ -597,9 +522,7 @@ class TestKnowledgeBaseClientAdvancedFeatures:
         """Test hit testing with minimal parameters."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         query = "What is AI?"
         response = client.hit_testing(query=query)
 
@@ -621,12 +544,8 @@ class TestKnowledgeBaseClientAdvancedFeatures:
         """Test hit testing with retrieval model configuration."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
-        response = client.hit_testing(
-            query="test", retrieval_model=sample_retrieval_model
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
+        response = client.hit_testing(query="test", retrieval_model=sample_retrieval_model)
 
         # Verify retrieval model is included
         call_kwargs = mock_requests_request.call_args[1]
@@ -647,9 +566,7 @@ class TestKnowledgeBaseClientMetadataAPIs:
         """Test getting dataset metadata."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.get_dataset_metadata()
 
         # Verify request
@@ -669,9 +586,7 @@ class TestKnowledgeBaseClientMetadataAPIs:
         """Test creating dataset metadata."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.create_dataset_metadata(metadata_data=sample_metadata)
 
         # Verify request
@@ -692,13 +607,9 @@ class TestKnowledgeBaseClientMetadataAPIs:
         """Test updating dataset metadata."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         metadata_id = "meta-123"
-        response = client.update_dataset_metadata(
-            metadata_id=metadata_id, metadata_data=sample_metadata
-        )
+        response = client.update_dataset_metadata(metadata_id=metadata_id, metadata_data=sample_metadata)
 
         # Verify request
         call_args, call_kwargs = mock_requests_request.call_args
@@ -717,9 +628,7 @@ class TestKnowledgeBaseClientMetadataAPIs:
         """Test getting built-in metadata."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.get_built_in_metadata()
 
         # Verify request
@@ -738,21 +647,15 @@ class TestKnowledgeBaseClientMetadataAPIs:
         """Test managing built-in metadata."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         action = "enable"
         metadata_data = {"field": "value"}
-        response = client.manage_built_in_metadata(
-            action=action, metadata_data=metadata_data
-        )
+        response = client.manage_built_in_metadata(action=action, metadata_data=metadata_data)
 
         # Verify request
         call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "POST"
-        assert (
-            f"/datasets/{sample_dataset_id}/metadata/built-in/{action}" in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/metadata/built-in/{action}" in call_args[1]
         assert call_kwargs["json"] == metadata_data
         assert response == mock_successful_response
 
@@ -766,9 +669,7 @@ class TestKnowledgeBaseClientMetadataAPIs:
         """Test updating metadata for multiple documents."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         operation_data = [
             {"document_id": "doc-1", "metadata": {"key": "value1"}},
             {"document_id": "doc-2", "metadata": {"key": "value2"}},
@@ -814,9 +715,7 @@ class TestKnowledgeBaseClientTagsAPIs:
         """Test binding tags to dataset."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         tag_ids = ["tag-1", "tag-2", "tag-3"]
         response = client.bind_dataset_tags(tag_ids=tag_ids)
 
@@ -838,9 +737,7 @@ class TestKnowledgeBaseClientTagsAPIs:
         """Test unbinding a single tag from dataset."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         tag_id = "tag-to-remove"
         response = client.unbind_dataset_tag(tag_id=tag_id)
 
@@ -862,9 +759,7 @@ class TestKnowledgeBaseClientTagsAPIs:
         """Test getting tags for current dataset."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.get_dataset_tags()
 
         # Verify request
@@ -887,18 +782,13 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         """Test getting datasource plugins."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.get_datasource_plugins(is_published=True)
 
         # Verify request
         call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "GET"
-        assert (
-            f"/datasets/{sample_dataset_id}/pipeline/datasource-plugins"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/pipeline/datasource-plugins" in call_args[1]
         assert call_kwargs["params"]["is_published"] is True
         assert response == mock_successful_response
 
@@ -912,23 +802,16 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         """Test running a datasource node."""
         mock_requests_request.return_value = mock_streaming_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         node_id = "node-123"
         inputs = {"query": "test"}
         datasource_type = "external"
-        response = client.run_datasource_node(
-            node_id=node_id, inputs=inputs, datasource_type=datasource_type
-        )
+        response = client.run_datasource_node(node_id=node_id, inputs=inputs, datasource_type=datasource_type)
 
         # Verify request
         call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "POST"
-        assert (
-            f"/datasets/{sample_dataset_id}/pipeline/datasource/nodes/{node_id}/run"
-            in call_args[1]
-        )
+        assert f"/datasets/{sample_dataset_id}/pipeline/datasource/nodes/{node_id}/run" in call_args[1]
         assert call_kwargs["json"]["inputs"] == inputs
         assert call_kwargs["json"]["datasource_type"] == datasource_type
         assert call_kwargs["stream"] is True
@@ -945,9 +828,7 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         """Test running RAG pipeline in blocking mode."""
         mock_requests_request.return_value = mock_successful_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.run_rag_pipeline(
             inputs=sample_rag_pipeline_data["inputs"],
             datasource_type=sample_rag_pipeline_data["datasource_type"],
@@ -975,9 +856,7 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         """Test running RAG pipeline in streaming mode."""
         mock_requests_request.return_value = mock_streaming_response
 
-        client = KnowledgeBaseClient(
-            api_key=mock_api_key, dataset_id=sample_dataset_id
-        )
+        client = KnowledgeBaseClient(api_key=mock_api_key, dataset_id=sample_dataset_id)
         response = client.run_rag_pipeline(
             inputs=sample_rag_pipeline_data["inputs"],
             datasource_type=sample_rag_pipeline_data["datasource_type"],

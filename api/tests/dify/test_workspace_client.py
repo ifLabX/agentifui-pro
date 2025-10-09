@@ -13,9 +13,7 @@ from dify_client import WorkspaceClient
 class TestWorkspaceClientInitialization:
     """Test WorkspaceClient initialization."""
 
-    def test_workspace_client_inherits_from_dify_client(
-        self, mock_api_key: str
-    ) -> None:
+    def test_workspace_client_inherits_from_dify_client(self, mock_api_key: str) -> None:
         """Test that WorkspaceClient inherits from DifyClient."""
         client = WorkspaceClient(api_key=mock_api_key)
 

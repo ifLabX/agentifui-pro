@@ -23,9 +23,7 @@ class TestDifyClientInitialization:
         assert client.api_key == mock_api_key
         assert client.base_url == "https://api.dify.ai/v1"
 
-    def test_client_initialization_with_custom_base_url(
-        self, mock_api_key: str, mock_base_url: str
-    ) -> None:
+    def test_client_initialization_with_custom_base_url(self, mock_api_key: str, mock_base_url: str) -> None:
         """Test that client initializes with custom base URL."""
         client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
 
@@ -176,9 +174,7 @@ class TestDifyClientFileUpload:
         client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
         data = {"user": "test-user"}
 
-        response = client._send_request_with_files(
-            "POST", "/files/upload", data=data, files=sample_files
-        )
+        response = client._send_request_with_files("POST", "/files/upload", data=data, files=sample_files)
 
         # Verify file upload request
         mock_requests_request.assert_called_once_with(
@@ -223,9 +219,7 @@ class TestDifyClientMessageFeedback:
         mock_requests_request.return_value = mock_successful_response
 
         client = DifyClient(api_key=mock_api_key)
-        response = client.message_feedback(
-            message_id=sample_message_id, rating="like", user=mock_user
-        )
+        response = client.message_feedback(message_id=sample_message_id, rating="like", user=mock_user)
 
         # Verify request
         mock_requests_request.assert_called_once()
@@ -246,9 +240,7 @@ class TestDifyClientMessageFeedback:
         mock_requests_request.return_value = mock_successful_response
 
         client = DifyClient(api_key=mock_api_key)
-        response = client.message_feedback(
-            message_id=sample_message_id, rating="dislike", user=mock_user
-        )
+        response = client.message_feedback(message_id=sample_message_id, rating="dislike", user=mock_user)
 
         assert response == mock_successful_response
 

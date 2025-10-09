@@ -311,9 +311,7 @@ class TestChatClientGetConversationMessages:
         mock_requests_request.return_value = mock_successful_response
 
         client = ChatClient(api_key=mock_api_key)
-        response = client.get_conversation_messages(
-            user=mock_user, conversation_id=sample_conversation_id
-        )
+        response = client.get_conversation_messages(user=mock_user, conversation_id=sample_conversation_id)
 
         # Verify conversation_id is included
         call_kwargs = mock_requests_request.call_args[1]
@@ -333,9 +331,7 @@ class TestChatClientGetConversationMessages:
         client = ChatClient(api_key=mock_api_key)
         first_id = "msg-first-456"
         limit = 50
-        response = client.get_conversation_messages(
-            user=mock_user, first_id=first_id, limit=limit
-        )
+        response = client.get_conversation_messages(user=mock_user, first_id=first_id, limit=limit)
 
         # Verify pagination params
         call_kwargs = mock_requests_request.call_args[1]
@@ -416,9 +412,7 @@ class TestChatClientDeleteConversation:
         mock_requests_request.return_value = mock_successful_response
 
         client = ChatClient(api_key=mock_api_key)
-        response = client.delete_conversation(
-            conversation_id=sample_conversation_id, user=mock_user
-        )
+        response = client.delete_conversation(conversation_id=sample_conversation_id, user=mock_user)
 
         # Verify request
         mock_requests_request.assert_called_once()
@@ -507,9 +501,7 @@ class TestChatClientAnnotationAPIs:
         assert "/apps/annotation-reply/disable" in call_args[1]
         assert response == mock_successful_response
 
-    def test_annotation_reply_action_raises_on_none_values(
-        self, mock_api_key: str
-    ) -> None:
+    def test_annotation_reply_action_raises_on_none_values(self, mock_api_key: str) -> None:
         """Test that annotation reply action raises error for None values."""
         client = ChatClient(api_key=mock_api_key)
 

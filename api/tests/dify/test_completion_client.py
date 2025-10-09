@@ -14,9 +14,7 @@ from dify_client import CompletionClient
 class TestCompletionClientInitialization:
     """Test CompletionClient initialization."""
 
-    def test_completion_client_inherits_from_dify_client(
-        self, mock_api_key: str
-    ) -> None:
+    def test_completion_client_inherits_from_dify_client(self, mock_api_key: str) -> None:
         """Test that CompletionClient inherits from DifyClient."""
         client = CompletionClient(api_key=mock_api_key)
 

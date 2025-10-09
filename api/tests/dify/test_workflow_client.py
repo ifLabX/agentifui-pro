@@ -15,9 +15,7 @@ from dify_client import WorkflowClient
 class TestWorkflowClientInitialization:
     """Test WorkflowClient initialization."""
 
-    def test_workflow_client_inherits_from_dify_client(
-        self, mock_api_key: str
-    ) -> None:
+    def test_workflow_client_inherits_from_dify_client(self, mock_api_key: str) -> None:
         """Test that WorkflowClient inherits from DifyClient."""
         client = WorkflowClient(api_key=mock_api_key)
 

@@ -176,7 +176,7 @@ class TestChatStreaming:
         # Verify SSE format: should have event lines, data lines, and blank lines
         event_lines = [line for line in mock_streaming_events if b"event:" in line]
         data_lines = [line for line in mock_streaming_events if b"data:" in line]
-        blank_lines = [line for line in mock_streaming_events if line == b'']
+        blank_lines = [line for line in mock_streaming_events if line == b""]
 
         # Should have 5 event lines, 5 data lines, and 5 blank separators
         assert len(event_lines) == 5

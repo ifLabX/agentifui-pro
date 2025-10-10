@@ -110,21 +110,21 @@ def mock_streaming_events() -> list[bytes]:
     with blank lines between SSE events.
     """
     return [
-        b'event: conversation.chat.created',
+        b"event: conversation.chat.created",
         b'data: {"id":"chat-123","status":"created"}',
-        b'',
-        b'event: conversation.chat.in_progress',
+        b"",
+        b"event: conversation.chat.in_progress",
         b'data: {"id":"chat-123","status":"in_progress"}',
-        b'',
-        b'event: conversation.message.delta',
+        b"",
+        b"event: conversation.message.delta",
         b'data: {"message":{"content":"Hello"}}',
-        b'',
-        b'event: conversation.message.delta',
+        b"",
+        b"event: conversation.message.delta",
         b'data: {"message":{"content":" World"}}',
-        b'',
-        b'event: conversation.chat.completed',
+        b"",
+        b"event: conversation.chat.completed",
         b'data: {"id":"chat-123","status":"completed","usage":{"token_count":633}}',
-        b'',
+        b"",
     ]
 
 

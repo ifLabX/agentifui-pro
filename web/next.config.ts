@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
 };
 
 // Bundle analyzer is only compatible with Webpack builds
-// To use: ANALYZE=true pnpm build:webpack
+// To use: pnpm analyze
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });

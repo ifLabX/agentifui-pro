@@ -8,10 +8,6 @@ const nextConfig: NextConfig = {
     // Set workspace root to resolve monorepo lockfile warning
     root: require("path").resolve(__dirname, "../"),
   },
-  experimental: {
-    // Enable persistent caching for faster dev server restarts and builds
-    turbopackPersistentCaching: true,
-  },
   // Production optimizations: remove console logs except errors
   // Note: This only works with Webpack, not Turbopack
   ...(process.env.NODE_ENV === "production" && {

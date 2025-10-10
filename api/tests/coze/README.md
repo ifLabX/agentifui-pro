@@ -82,6 +82,7 @@ All tests use `unittest.mock` to mock HTTP interactions. No real API calls are m
 ```python
 from unittest.mock import Mock, patch
 import httpx
+from cozepy import Coze
 
 def test_example(coze_client: Coze) -> None:
     # Configure mock response

@@ -231,13 +231,27 @@ conversation.chat.failed (error)
 ```python
 @pytest.fixture
 def mock_streaming_events() -> list[bytes]:
-    """Mock streaming event data."""
+    """Mock streaming event data.
+
+    Matches httpx.Response.iter_lines() behavior - yields individual lines
+    with blank lines between SSE events.
+    """
     return [
-        b'event: conversation.chat.created\ndata: {"id":"chat-123","status":"created"}',
-        b'event: conversation.chat.in_progress\ndata: {"id":"chat-123","status":"in_progress"}',
-        b'event: conversation.message.delta\ndata: {"message":{"content":"Hello"}}',
-        b'event: conversation.message.delta\ndata: {"message":{"content":" World"}}',
-        b'event: conversation.chat.completed\ndata: {"id":"chat-123","status":"completed","usage":{"token_count":633}}',
+        b'event: conversation.chat.created',
+        b'data: {"id":"chat-123","status":"created"}',
+        b'',
+        b'event: conversation.chat.in_progress',
+        b'data: {"id":"chat-123","status":"in_progress"}',
+        b'',
+        b'event: conversation.message.delta',
+        b'data: {"message":{"content":"Hello"}}',
+        b'',
+        b'event: conversation.message.delta',
+        b'data: {"message":{"content":" World"}}',
+        b'',
+        b'event: conversation.chat.completed',
+        b'data: {"id":"chat-123","status":"completed","usage":{"token_count":633}}',
+        b'',
     ]
 ```
 

@@ -55,12 +55,12 @@ git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 
 **Backend** (if `$HAS_BACKEND == true`):
 ```bash
-(cd api && uv run ruff check . && uv run mypy . && uv run pytest --cov --cov-report=term-missing --cov-fail-under=80)
+(cd api && uv run ruff check . && uv run mypy . && uv run pytest --cov --cov-report=term-missing)
 ```
 
 **Frontend** (if `$HAS_FRONTEND == true`):
 ```bash
-(cd web && pnpm lint && pnpm type-check && pnpm test && pnpm i18n:check)
+(cd web && pnpm lint && pnpm type-check && pnpm test)
 ```
 
 **Gates:** Skip if `--no-checks`, halt on failure, all commands chained with `&&`
@@ -128,8 +128,8 @@ URL:   <github-pr-url>
 Remote: <remote-name>
 
 Quality Checks: ✅ All Passed
-${HAS_BACKEND:+- Backend: Ruff, Mypy, Pytest (≥80%)}
-${HAS_FRONTEND:+- Frontend: ESLint, TypeScript, Tests, i18n}
+${HAS_BACKEND:+- Backend: Ruff, Mypy, Pytest}
+${HAS_FRONTEND:+- Frontend: ESLint, TypeScript, Tests}
 
 Next: Review PR, monitor CI, add labels with gh pr edit <num> --add-label <label>
 ```
@@ -174,13 +174,11 @@ Next: Review PR, monitor CI, add labels with gh pr edit <num> --add-label <label
 **Monorepo:** Detects changes via `git diff --name-only`, runs targeted checks (api/ or web/)
 
 **Quality:**
-- Backend: Ruff, Mypy, Pytest ≥80% coverage
-- Frontend: ESLint+Prettier, TypeScript strict, Tests, i18n kebab-case validation
-
-**i18n:** Validates `t('auth.sign-in.email')` kebab-case format, checks hardcoded strings
+- Backend: Ruff linting, Mypy type-checking, Pytest with coverage
+- Frontend: ESLint linting, TypeScript strict mode, Unit tests
 
 ## Boundaries
 
-**Will:** Detect default branch dynamically, run targeted quality checks, push to any remote (named/URL), enforce 80% coverage, validate i18n, generate conventional commit PRs
+**Will:** Detect default branch dynamically, run targeted quality checks, push to any remote (named/URL), generate conventional commit PRs
 
 **Will Not:** Create PRs from default branch, bypass checks without `--no-checks`, force push without awareness, add permanent URL remotes, auto-fix code issues

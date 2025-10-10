@@ -31,7 +31,7 @@ git status --short
 **Validation:**
 - **HALT** if on `$DEFAULT_BRANCH` → "Cannot create PR from default branch. Create feature branch first."
 - **HALT** if uncommitted changes → "Commit or stash changes first."
-- **VERIFY** current branch has commits: `git log $DEFAULT_BRANCH..HEAD --oneline`
+- **HALT** if no new commits on branch → "No new commits to create a pull request."
 
 ### 2. Detect Changes and Parse Arguments
 

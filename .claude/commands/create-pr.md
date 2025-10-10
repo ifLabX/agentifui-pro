@@ -60,7 +60,7 @@ git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 
 **Frontend** (if `$HAS_FRONTEND == true`):
 ```bash
-(cd web && pnpm fix && pnpm type-check && pnpm test && pnpm i18n:check)
+(cd web && pnpm lint && pnpm type-check && pnpm test && pnpm i18n:check)
 ```
 
 **Gates:** Skip if `--no-checks`, halt on failure, all commands chained with `&&`

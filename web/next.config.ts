@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     root: require("path").resolve(__dirname, "../"),
   },
   // Production optimizations: remove console logs except errors
+  // Note: This only works with Webpack, not Turbopack
   ...(process.env.NODE_ENV === "production" && {
     compiler: {
       removeConsole: {
@@ -18,12 +19,10 @@ const nextConfig: NextConfig = {
   }),
 };
 
-// Conditionally enable bundle analyzer (only when not using Turbopack)
+// Bundle analyzer is only compatible with Webpack builds
+// To use: ANALYZE=true pnpm build (Turbopack not supported)
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true" && !process.env.TURBOPACK,
 });
 
-// Use Turbopack mode when TURBOPACK env var is set, otherwise use standard mode with bundle analyzer
-export default process.env.TURBOPACK
-  ? withNextIntl(nextConfig)
-  : withNextIntl(withBundleAnalyzer(nextConfig));
+export default withNextIntl(withBundleAnalyzer(nextConfig));

@@ -114,7 +114,7 @@ gh pr create \
   --body "<generated-description>" \
   --base ${BASE_BRANCH:-$DEFAULT_BRANCH} \
   ${DRAFT_FLAG:+--draft} \
-  ${REVIEWERS:+--reviewer $REVIEWERS}
+  ${REVIEWERS:+--reviewer "$REVIEWERS"}
 ```
 
 ### 7. Display Results

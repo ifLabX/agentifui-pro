@@ -70,23 +70,13 @@ git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 **Title** (72 char max): `<type>: <description>`
 Types: `feat|fix|refactor|docs|test|chore|perf|style|ci`
 
-**Description Template:**
-```markdown
-## Summary
-<Synthesize commit messages>
-
-<If issue>Fixes #<number></If>
-
-## Type
-- [ ] 🐛 Bug | [ ] ✨ Feature | [ ] 💥 Breaking | [x] 📚 Docs | [ ] ♻️ Refactor | [ ] ⚡ Performance
-
-## Changes
-<Backend/Frontend/Tests/Docs organized by scope>
-
-## Testing
-- [x] Quality checks passed
-- [ ] Manual testing completed
-```
+**Description:**
+- **MUST** read `.github/pull_request_template.md` for the template structure
+- Synthesize commit messages into Summary section
+- Auto-select Type checkbox based on commit type
+- Add `Fixes #<number>` if issue reference found
+- Fill in Changes section organized by scope (Backend/Frontend/Tests/Docs)
+- Mark quality checks checkbox if validation passed
 
 ### 5. Push to Remote
 

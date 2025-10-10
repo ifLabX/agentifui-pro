@@ -38,8 +38,8 @@ git status --short
 ```bash
 # Detect monorepo scope
 CHANGED_FILES=$(git diff --name-only $DEFAULT_BRANCH..HEAD)
-HAS_BACKEND=$(echo "$CHANGED_FILES" | grep -q "^api/" && echo "true" || echo "false")
-HAS_FRONTEND=$(echo "$CHANGED_FILES" | grep -q "^web/" && echo "true" || echo "false")
+HAS_BACKEND=$(echo "$CHANGED_FILES" | grep -q "^api/" && echo "true" || echo "")
+HAS_FRONTEND=$(echo "$CHANGED_FILES" | grep -q "^web/" && echo "true" || echo "")
 
 # Get commits for PR description
 git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse

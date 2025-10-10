@@ -3,6 +3,23 @@ Tests for Coze SDK client initialization and configuration.
 
 This module tests both synchronous (Coze) and asynchronous (AsyncCoze) client
 initialization with various authentication and configuration options.
+
+Real SDK Usage Pattern (from coze-py/examples/auth_pat.py):
+    ```python
+    from cozepy import Coze, TokenAuth, AsyncCoze, AsyncTokenAuth, COZE_CN_BASE_URL
+
+    # Synchronous client
+    coze = Coze(
+        auth=TokenAuth(token="your_token"),
+        base_url=COZE_CN_BASE_URL  # or custom URL
+    )
+
+    # Asynchronous client
+    async_coze = AsyncCoze(
+        auth=AsyncTokenAuth(token="your_token"),
+        base_url="https://api.coze.com/v1"
+    )
+    ```
 """
 
 import pytest

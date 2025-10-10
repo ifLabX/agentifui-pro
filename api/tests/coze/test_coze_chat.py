@@ -3,6 +3,77 @@ Tests for Coze SDK chat and conversation operations.
 
 This module tests chat-related operations including creating chats,
 sending messages, streaming responses, and managing conversations.
+
+Real SDK Usage Patterns (from coze-py/examples):
+
+1. **Streaming Chat** (chat_stream.py):
+    ```python
+    from cozepy import ChatEventType, Message
+
+    stream = coze.chat.stream(
+        bot_id=bot_id,
+        user_id=user_id,
+        additional_messages=[
+            Message.build_user_question_text("Tell a 500-word story."),
+        ],
+    )
+    print("logid:", stream.response.logid)
+
+    for event in stream:
+        if event.event == ChatEventType.CONVERSATION_MESSAGE_DELTA:
+            print(event.message.content, end="", flush=True)
+        if event.event == ChatEventType.CONVERSATION_CHAT_COMPLETED:
+            print("token usage:", event.chat.usage.token_count)
+        if event.event == ChatEventType.CONVERSATION_CHAT_FAILED:
+            print("chat failed", event.chat.last_error)
+    ```
+
+2. **Non-Streaming Chat** (chat_no_stream.py):
+    ```python
+    from cozepy import ChatStatus
+
+    # Method 1: Create and manually poll
+    chat = coze.chat.create(
+        bot_id=bot_id,
+        user_id=user_id,
+        additional_messages=[
+            Message.build_user_question_text("Who are you?"),
+        ],
+    )
+
+    while chat.status == ChatStatus.IN_PROGRESS:
+        time.sleep(1)
+        chat = coze.chat.retrieve(
+            conversation_id=chat.conversation_id,
+            chat_id=chat.id
+        )
+
+    messages = coze.chat.messages.list(
+        conversation_id=chat.conversation_id,
+        chat_id=chat.id
+    )
+
+    # Method 2: Simplified with create_and_poll
+    chat_poll = coze.chat.create_and_poll(
+        bot_id=bot_id,
+        user_id=user_id,
+        additional_messages=[Message.build_user_question_text("...")],
+    )
+    for message in chat_poll.messages:
+        print(message.content)
+    ```
+
+3. **Conversation Management** (conversation.py):
+    ```python
+    # List conversations
+    conversations = coze.conversations.list()
+
+    # Retrieve conversation
+    conversation = coze.conversations.retrieve(conversation_id=conversation_id)
+
+    # List messages in conversation
+    messages = coze.conversations.messages.list(conversation_id=conversation_id)
+    ```
 """
 
 from typing import Any

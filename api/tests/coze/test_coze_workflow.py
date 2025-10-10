@@ -3,6 +3,64 @@ Tests for Coze SDK workflow operations.
 
 This module tests workflow-related operations including running workflows,
 retrieving workflow status, streaming workflow execution, and managing workflow runs.
+
+Real SDK Usage Patterns (from coze-py/examples):
+
+1. **Streaming Workflow** (workflow_stream.py):
+    ```python
+    from cozepy import Coze, TokenAuth, WorkflowEvent, WorkflowEventType
+
+    coze = Coze(auth=TokenAuth(token="your_token"))
+    workflow_id = "workflow_id"
+    parameters = {"key": "value"}
+
+    # Stream workflow execution and handle events
+    stream = coze.workflows.runs.stream(
+        workflow_id=workflow_id,
+        parameters=parameters,
+    )
+
+    for event in stream:
+        if event.event == WorkflowEventType.MESSAGE:
+            print("got message", event.message)
+        elif event.event == WorkflowEventType.ERROR:
+            print("got error", event.error)
+        elif event.event == WorkflowEventType.INTERRUPT:
+            # Handle interrupts by resuming workflow
+            coze.workflows.runs.resume(
+                workflow_id=workflow_id,
+                event_id=event.interrupt.interrupt_data.event_id,
+                resume_data="response",
+                interrupt_type=event.interrupt.interrupt_data.type,
+            )
+    ```
+
+2. **Non-Streaming Workflow** (workflow_no_stream.py):
+    ```python
+    from cozepy import Coze, TokenAuth
+
+    coze = Coze(auth=TokenAuth(token="your_token"))
+    workflow_id = "workflow_id"
+
+    # Create and run workflow (blocking)
+    workflow = coze.workflows.runs.create(
+        workflow_id=workflow_id,
+    )
+    print("workflow.data", workflow.data)
+    ```
+
+3. **Retrieve Workflow Info** (workflow_retrieve.py):
+    ```python
+    from cozepy import Coze, TokenAuth
+
+    coze = Coze(auth=TokenAuth(token="your_token"))
+    workflow_id = "workflow_id"
+
+    # Get workflow details
+    workflow_info = coze.workflows.retrieve(workflow_id=workflow_id)
+    print("workflow info:", workflow_info)
+    print("logid:", workflow_info.response.logid)
+    ```
 """
 
 from typing import Any

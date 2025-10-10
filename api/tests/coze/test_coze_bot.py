@@ -3,6 +3,40 @@ Tests for Coze SDK bot operations.
 
 This module tests bot-related operations including listing, retrieving,
 creating, updating, and deleting bots through the Coze SDK.
+
+Real SDK Usage Patterns (from coze-py/examples):
+
+1. **List Bots** (bots_list.py):
+    ```python
+    bots = coze.bots.list(space_id=workspace_id)
+    for bot in bots:
+        print(bot.model_dump_json(indent=2))
+    print("logid", bots.response.logid)
+    ```
+
+2. **Retrieve Bot** (bot_retrieve.py):
+    ```python
+    bot = coze.bots.retrieve(bot_id=bot_id)
+    print("retrieve bot", bot.model_dump_json(indent=2))
+    print("logid", bot.response.logid)
+    ```
+
+3. **Create Bot** (bot_create.py):
+    ```python
+    bot = coze.bots.create(
+        space_id=workspace_id,
+        name="Bot Name",
+        description="Bot Description"
+    )
+    ```
+
+4. **Update Bot** (bot_update.py):
+    ```python
+    bot = coze.bots.update(
+        bot_id=bot_id,
+        name="Updated Name"
+    )
+    ```
 """
 
 from typing import Any

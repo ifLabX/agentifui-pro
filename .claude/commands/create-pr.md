@@ -16,365 +16,171 @@ Create a well-formatted pull request that follows project conventions, passes al
 
 ## Execution Steps
 
-### 1. Validate Git State
-
-Check current repository status and branch:
+### 1. Detect Default Branch and Validate Git State
 
 ```bash
-git status
-git branch --show-current
+# Detect repository's default branch
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
+
+# Check current state
+CURRENT_BRANCH=$(git branch --show-current)
+git status --short
 ```
 
-**Validation Rules:**
-- **HALT** if on `main` or `master` branch → "Cannot create PR from main/master. Switch to a feature branch first."
-- **HALT** if working directory has unstaged changes → "Uncommitted changes detected. Commit or stash them first."
-- **WARN** if ahead of origin → Suggest pushing commits before PR creation
-- **VERIFY** current branch has commits not in main/master
+**Validation:**
+- **HALT** if on `$DEFAULT_BRANCH` → "Cannot create PR from default branch. Create feature branch first."
+- **HALT** if uncommitted changes → "Commit or stash changes first."
+- **VERIFY** current branch has commits: `git log $DEFAULT_BRANCH..HEAD --oneline`
 
-### 2. Extract PR Context
+### 2. Detect Changes and Parse Arguments
 
-Gather information for PR creation:
-
-**From Git History:**
 ```bash
-# Get commits not in main
-git log main..HEAD --oneline
+# Detect monorepo scope
+CHANGED_FILES=$(git diff --name-only $DEFAULT_BRANCH..HEAD)
+HAS_BACKEND=$(echo "$CHANGED_FILES" | grep -q "^api/" && echo "true" || echo "false")
+HAS_FRONTEND=$(echo "$CHANGED_FILES" | grep -q "^web/" && echo "true" || echo "false")
 
-# Get commit messages for PR description
-git log main..HEAD --format="%s%n%b" --reverse
+# Get commits for PR description
+git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 ```
 
-**From Branch Name:**
-- Extract issue number if present (e.g., `feature/123-auth` → `#123`)
-- Infer feature type from prefix: `feature/`, `fix/`, `refactor/`, `docs/`
-
-**From User Arguments:**
-- Parse `$ARGUMENTS` for:
-  - PR title override
-  - Issue references (`#123`, `Fixes #456`)
-  - Additional context or description
-  - Flags: `--draft`, `--base <branch>`, `--no-checks`
+**Parse `$ARGUMENTS`:**
+- PR title (first quoted string)
+- Issue refs: `#123`, `Fixes #456`, `Closes #789`
+- Flags: `--draft`, `--base <branch>`, `--no-checks`, `--remote <name|url>`, `--reviewer <users>`
+- Branch name: Extract issue number from `feature/123-*` pattern
 
 ### 3. Run Quality Checks
 
-Execute project-specific quality validation:
-
-**For Backend Changes (api/ directory):**
+**Backend** (if `$HAS_BACKEND == true`):
 ```bash
-cd api
-uv run ruff check . --fix
-uv run mypy .
-uv run pytest --cov --cov-report=term-missing
+(cd api && uv run ruff check . --fix && uv run mypy . && uv run pytest --cov --cov-report=term-missing --cov-fail-under=80)
 ```
 
-**For Frontend Changes (web/ directory):**
+**Frontend** (if `$HAS_FRONTEND == true`):
 ```bash
-cd web
-pnpm fix
-pnpm type-check
-pnpm test
+(cd web && pnpm fix && pnpm type-check && pnpm test && pnpm i18n:check)
 ```
 
-**Quality Gates:**
-- **CRITICAL**: If `--no-checks` flag NOT provided:
-  - All linters must pass (ruff, ESLint)
-  - All type checks must pass (mypy, TypeScript)
-  - All tests must pass
-  - **HALT** on any failure with clear error report
-- **SKIP**: If `--no-checks` flag provided → Proceed with warning
+**Gates:** Skip if `--no-checks`, halt on failure, all commands chained with `&&`
 
 ### 4. Generate PR Title and Description
 
-**Title Format:**
-Follow conventional commits pattern from most recent commit or infer from changes:
-```
-<type>: <description>
+**Title** (72 char max): `<type>: <description>`
+Types: `feat|fix|refactor|docs|test|chore|perf|style|ci`
 
-Types: feat, fix, refactor, docs, test, chore, perf, style, ci
-```
-
-**Extract from commits:**
-- If all commits have same type → Use that type
-- If mixed → Ask user to clarify or use most common type
-- Character limit: 72 characters max
-
-**Description Structure:**
-Use template from `.github/pull_request_template.md`:
-
-1. **Overview**: Synthesize commit messages into coherent summary
-2. **Changes**: Bullet list of key modifications
-3. **Testing**: How changes were validated
-4. **Issue Links**: Auto-detect from commits or branch name
-5. **Checklist**: Pre-fill based on changes detected
-
-### 5. Detect Issue References
-
-Search for issue references in:
-- Branch name pattern: `feature/123-*` or `fix/456-*`
-- Commit messages: `#123`, `Fixes #456`, `Closes #789`
-- User arguments: Explicit issue references
-
-**Link Format:**
-- If issue found → Add `Fixes #<number>` to description
-- If multiple issues → List all with appropriate keywords
-- If no issue → Omit issue section
-
-### 6. Build PR Description
-
-Synthesize final PR body following this template:
-
+**Description Template:**
 ```markdown
-## Overview
-<Synthesized summary from commits and context>
+## Summary
+<Synthesize commit messages>
+
+<If issue>Fixes #<number></If>
+
+## Type
+- [ ] 🐛 Bug | [ ] ✨ Feature | [ ] 💥 Breaking | [x] 📚 Docs | [ ] ♻️ Refactor | [ ] ⚡ Performance
 
 ## Changes
-<Bullet list of key changes organized by area>
-- **Backend**: <changes>
-- **Frontend**: <changes>
-- **Tests**: <changes>
-- **Documentation**: <changes>
+<Backend/Frontend/Tests/Docs organized by scope>
 
 ## Testing
-<How the changes were validated>
-- [ ] Unit tests pass
-- [ ] Integration tests pass
+- [x] Quality checks passed
 - [ ] Manual testing completed
-- [ ] Type checking passes
-
-## Related Issues
-<If applicable>
-Fixes #<issue-number>
-
-## Additional Context
-<Any relevant information for reviewers>
-
-## Checklist
-- [ ] Code follows project style guidelines
-- [ ] Self-review completed
-- [ ] Comments added for complex logic
-- [ ] Documentation updated
-- [ ] No new warnings introduced
-- [ ] Tests added/updated
-- [ ] All quality checks pass
 ```
 
-### 7. Create Pull Request
+### 5. Push to Remote
 
-Use GitHub CLI to create PR:
+```bash
+REMOTE=${REMOTE_ARG:-origin}
+
+# Handle URL remote
+if [[ $REMOTE =~ ^https?:// ]]; then
+  git remote add temp-pr-remote $REMOTE
+  REMOTE="temp-pr-remote"
+elif ! git remote | grep -q "^${REMOTE}$"; then
+  echo "❌ Remote '$REMOTE' not found. Available: $(git remote | tr '\n' ', ')"
+  exit 1
+fi
+
+git push -u $REMOTE $CURRENT_BRANCH
+[[ $REMOTE == "temp-pr-remote" ]] && git remote remove temp-pr-remote
+```
+
+### 6. Create Pull Request
 
 ```bash
 gh pr create \
   --title "<generated-title>" \
-  --body "$(cat <<'EOF'
-<generated-description>
-EOF
-)" \
-  --base main \
-  [--draft if requested] \
-  [--reviewer <if specified>] \
-  [--label <if inferred>]
+  --body "<generated-description>" \
+  --base ${BASE_BRANCH:-$DEFAULT_BRANCH} \
+  ${DRAFT_FLAG:+--draft} \
+  ${REVIEWERS:+--reviewer $REVIEWERS}
 ```
 
-**Base Branch Selection:**
-- Default: `main`
-- Override with `--base <branch>` from user arguments
-- Validate base branch exists before creation
+### 7. Display Results
 
-**Draft Mode:**
-- Enable with `--draft` flag in arguments
-- Useful for WIP or early feedback requests
+```
+✅ Pull Request Created Successfully
 
-### 8. Post-Creation Actions
+Title: <type>: <description>
+Base:  $DEFAULT_BRANCH ← $CURRENT_BRANCH
+URL:   <github-pr-url>
+Remote: <remote-name>
 
-After successful PR creation:
+Quality Checks: ✅ All Passed
+${HAS_BACKEND:+- Backend: Ruff, Mypy, Pytest (≥80%)}
+${HAS_FRONTEND:+- Frontend: ESLint, TypeScript, Tests, i18n}
 
-1. **Display PR URL**: Show clickable link to created PR
-2. **Show PR Summary**:
-   ```
-   ✅ Pull Request Created Successfully
-
-   Title: feat: add user authentication
-   Base:  main ← feature/auth-system
-   URL:   https://github.com/user/repo/pull/123
-
-   Quality Checks: ✅ All Passed
-   - Linting: ✅
-   - Type Check: ✅
-   - Tests: ✅
-
-   Next Steps:
-   - Review the PR description and make any necessary edits
-   - Request reviews from team members
-   - Monitor CI/CD pipeline status
-   ```
-
-3. **Suggest Next Actions**:
-   - Add reviewers: `gh pr edit <number> --add-reviewer <username>`
-   - Add labels: `gh pr edit <number> --add-label <label>`
-   - Convert to draft: `gh pr ready --undo <number>`
-
-## Operating Principles
-
-### Safety First
-- **NEVER create PR from main/master branch**
-- **ALWAYS verify clean working directory**
-- **REQUIRE quality checks pass** (unless `--no-checks` explicitly provided)
-- **VALIDATE base branch exists** before creation
-
-### Quality Standards
-- **Conventional Commits**: Enforce standard commit message format
-- **Complete Testing**: All tests must pass before PR creation
-- **Type Safety**: No type errors allowed in production code
-- **Code Style**: Automated formatting applied before PR
-
-### User Experience
-- **Clear Error Messages**: Explain what failed and how to fix
-- **Actionable Output**: Provide next steps and useful commands
-- **Progress Visibility**: Show what's being validated in real-time
-- **Smart Defaults**: Infer context from git history and branch names
-
-### Token Efficiency
-- **Minimal File Reading**: Only read necessary files (PR template, git log)
-- **Batched Commands**: Run quality checks in parallel where possible
-- **Smart Caching**: Reuse git log and status information
-- **Progressive Disclosure**: Show summary first, details on request
+Next: Review PR, monitor CI, add labels with gh pr edit <num> --add-label <label>
+```
 
 ## Error Handling
 
-### Common Failure Scenarios
+**On Default Branch:** `❌ Cannot create PR from '$DEFAULT_BRANCH'. Action: git checkout -b feature/name`
 
-**On Main Branch:**
-```
-❌ Cannot create PR from main/master branch
+**Uncommitted Changes:** `❌ Uncommitted changes. Action: git add . && git commit OR git stash`
 
-Current branch: main
+**Quality Failed:** `❌ <Scope>: <Check> failed. Action: Fix errors or use --no-checks`
 
-Action Required:
-1. Create a feature branch: git checkout -b feature/my-feature
-2. Make your changes and commit
-3. Run /create-pr again
-```
+**Remote Not Found:** `❌ Remote '<name>' not found. Available: <list>. Action: Use existing or add remote`
 
-**Uncommitted Changes:**
-```
-❌ Uncommitted changes detected
+## Usage Examples
 
-Modified files:
-- api/app/main.py
-- web/src/components/Header.tsx
-
-Action Required:
-1. Commit changes: git add . && git commit -m "your message"
-   OR
-2. Stash changes: git stash
-3. Run /create-pr again
-```
-
-**Quality Checks Failed:**
-```
-❌ Quality checks failed - cannot create PR
-
-Backend Checks:
-✅ Linting (ruff): Passed
-❌ Type Check (mypy): 3 errors found
-✅ Tests (pytest): Passed
-
-Action Required:
-1. Fix type errors reported above
-2. Run checks again: cd api && uv run mypy .
-3. Use --no-checks flag to bypass (NOT recommended)
-```
-
-**No Commits to PR:**
-```
-❌ No new commits found
-
-Current branch has no commits ahead of main.
-
-Action Required:
-1. Make changes and commit them
-2. Ensure commits are not already in main
-```
-
-## Examples
-
-### Basic PR Creation
-```
+```bash
+# Basic
 /create-pr
-```
-- Auto-detects changes, runs quality checks
-- Generates title from recent commits
-- Creates PR with full description
-- Links issues if found in branch/commits
 
-### PR with Custom Title and Issue
-```
-/create-pr "feat: implement OAuth2 authentication" Fixes #123
-```
-- Uses provided title instead of auto-generation
-- Links to issue #123 with "Fixes" keyword
-- Runs quality checks
-- Creates PR with custom context
+# Custom title + issue
+/create-pr "feat: implement OAuth2" Fixes #123
 
-### Draft PR Without Quality Checks
-```
+# Draft, skip checks
 /create-pr --draft --no-checks
-```
-- Creates draft PR (work in progress)
-- Skips quality validation (for early feedback)
-- Still validates git state and generates description
-- Warns about skipped checks
 
-### PR to Different Base Branch
-```
-/create-pr --base develop
-```
-- Creates PR targeting `develop` instead of `main`
-- Useful for feature branch workflows
-- Validates base branch exists
+# Custom remote + base
+/create-pr --remote upstream --base develop
 
-### PR with Specific Reviewers
-```
+# URL remote
+/create-pr --remote https://github.com/org/repo.git
+
+# With reviewers
 /create-pr --reviewer alice,bob
+
+# Combined
+/create-pr "feat: add feature" --remote upstream --base develop --draft --reviewer alice
 ```
-- Creates PR and requests reviews from alice and bob
-- Uses GitHub usernames
-- Can combine with other flags
 
-## Integration with Project Standards
+## Project Integration
 
-### Monorepo Awareness
-- **Detects scope**: Identifies if changes are backend, frontend, or both
-- **Targeted checks**: Runs only relevant quality checks for changed areas
-- **Smart labeling**: Suggests labels based on changed directories
+**Monorepo:** Detects changes via `git diff --name-only`, runs targeted checks (api/ or web/)
 
-### Conventional Commits
-- **Enforces format**: `<type>: <description>`
-- **Validates types**: feat, fix, refactor, docs, test, chore, perf, style, ci
-- **Character limits**: Max 72 chars for title
+**Quality:**
+- Backend: Ruff, Mypy, Pytest ≥80% coverage
+- Frontend: ESLint+Prettier, TypeScript strict, Tests, i18n kebab-case validation
 
-### i18n Compliance
-- **Checks translation keys**: Validates kebab-case format in translations
-- **Warns on hardcoded strings**: Suggests using `t()` for user-facing text
-
-### Testing Requirements
-- **Backend**: Minimum 80% coverage required
-- **Frontend**: All tests must pass, type-check clean
-- **E2E**: Suggests running Playwright tests for UI changes
+**i18n:** Validates `t('auth.sign-in.email')` kebab-case format, checks hardcoded strings
 
 ## Boundaries
 
-**Will:**
-- Validate git state and enforce branch safety rules
-- Run comprehensive quality checks before PR creation
-- Generate well-formatted PR descriptions following project templates
-- Auto-detect and link related issues from commits and branch names
-- Provide clear error messages with actionable remediation steps
+**Will:** Detect default branch dynamically, run targeted quality checks, push to any remote (named/URL), enforce 80% coverage, validate i18n, generate conventional commit PRs
 
-**Will Not:**
-- Create PRs from main/master branches (safety violation)
-- Bypass quality checks without explicit `--no-checks` flag
-- Modify code to fix quality issues automatically (user must fix)
-- Push commits to remote (user should review before pushing)
-- Merge or approve PRs (separate review process)
-- Invent issue numbers or commit messages that don't exist
+**Will Not:** Create PRs from default branch, bypass checks without `--no-checks`, force push without awareness, add permanent URL remotes, auto-fix code issues

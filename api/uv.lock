@@ -9,7 +9,7 @@ source = { editable = "." }
 dependencies = [
     { name = "alembic" },
     { name = "asyncpg" },
-    { name = "dify-client" },
+    { name = "dify-python-sdk" },
     { name = "fastapi" },
     { name = "greenlet" },
     { name = "pydantic" },
@@ -33,7 +33,7 @@ dev = [
 requires-dist = [
     { name = "alembic", specifier = ">=1.12.0" },
     { name = "asyncpg", specifier = ">=0.28.0" },
-    { name = "dify-client", git = "https://github.com/langgenius/dify.git?subdirectory=sdks%2Fpython-client&rev=cd47a47c3b4acc4d4457b73777722602c33bc950" },
+    { name = "dify-python-sdk", specifier = ">=0.1.13" },
     { name = "fastapi", specifier = ">=0.100.0" },
     { name = "greenlet", specifier = ">=3.0.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
@@ -187,11 +187,16 @@ wheels = [
 ]
 
 [[package]]
-name = "dify-client"
-version = "0.1.12"
-source = { git = "https://github.com/langgenius/dify.git?subdirectory=sdks%2Fpython-client&rev=cd47a47c3b4acc4d4457b73777722602c33bc950#cd47a47c3b4acc4d4457b73777722602c33bc950" }
+name = "dify-python-sdk"
+version = "0.1.13"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "pytest" },
     { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/76/e9/e3403abd706db5222da4acc8a9567babf7acecb4c5ed854b54e8a62fd19e/dify_python_sdk-0.1.13.tar.gz", hash = "sha256:41bbe7579c6bce224eebaa7572eae944aea3c47cb0107fcd5ed7ad9fedeb9cfd", size = 30031, upload-time = "2025-10-10T08:22:13.096Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fd/11/6fdb4a78c1d73e04ff87758e90b2ea25543f23fce7607c1bb92e794f574c/dify_python_sdk-0.1.13-py3-none-any.whl", hash = "sha256:3faaab39ff6f4d112ffdf4337f21c133216bd6a985c341ec83eaa1abc8b3e421", size = 9101, upload-time = "2025-10-10T08:22:11.691Z" },
 ]
 
 [[package]]

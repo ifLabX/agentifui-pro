@@ -85,6 +85,7 @@ REMOTE=${REMOTE_ARG:-origin}
 
 # Handle URL remote
 if [[ $REMOTE =~ ^https?:// ]]; then
+  git remote remove temp-pr-remote 2>/dev/null || true
   git remote add temp-pr-remote $REMOTE
   REMOTE="temp-pr-remote"
 elif ! git remote | grep -q "^${REMOTE}$"; then

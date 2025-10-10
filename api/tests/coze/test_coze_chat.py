@@ -150,16 +150,17 @@ class TestChatStreaming:
         # Mock the HTTP client
         with patch("httpx.Client.request", return_value=mock_streaming_response):
             # This test demonstrates the streaming chat pattern
-            events = list(mock_streaming_response.iter_lines())
+            lines = list(mock_streaming_response.iter_lines())
 
-            # Verify streaming events
-            assert len(events) == 5
+            # Verify streaming event lines (15 lines: event, data, blank × 5 events)
+            assert len(lines) == 15
             # First event: chat created
-            assert b"conversation.chat.created" in events[0]
+            assert b"conversation.chat.created" in lines[0]
             # Middle events: message deltas
-            assert b"conversation.message.delta" in events[2]
+            assert b"conversation.message.delta" in lines[6]
+            assert b"conversation.message.delta" in lines[9]
             # Last event: chat completed
-            assert b"conversation.chat.completed" in events[4]
+            assert b"conversation.chat.completed" in lines[12]
 
     def test_stream_event_parsing(
         self,
@@ -170,13 +171,17 @@ class TestChatStreaming:
 
         GIVEN: Raw streaming event data
         WHEN: Parsing events
-        THEN: Each event has correct format and data
+        THEN: Events follow SSE format with event, data, and blank lines
         """
-        # Verify event format
-        for event in mock_streaming_events:
-            # Events should have "event:" and "data:" sections
-            assert b"event:" in event
-            assert b"data:" in event
+        # Verify SSE format: should have event lines, data lines, and blank lines
+        event_lines = [line for line in mock_streaming_events if b"event:" in line]
+        data_lines = [line for line in mock_streaming_events if b"data:" in line]
+        blank_lines = [line for line in mock_streaming_events if line == b'']
+
+        # Should have 5 event lines, 5 data lines, and 5 blank separators
+        assert len(event_lines) == 5
+        assert len(data_lines) == 5
+        assert len(blank_lines) == 5
 
 
 class TestConversationManagement:

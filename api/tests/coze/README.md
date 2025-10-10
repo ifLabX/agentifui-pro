@@ -83,7 +83,7 @@ All tests use `unittest.mock` to mock HTTP interactions. No real API calls are m
 from unittest.mock import Mock, patch
 import httpx
 
-def test_example(coze_client: Coze):
+def test_example(coze_client: Coze) -> None:
     # Configure mock response
     mock_response = Mock(spec=httpx.Response)
     mock_response.status_code = 200

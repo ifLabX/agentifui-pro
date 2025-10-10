@@ -55,7 +55,7 @@ git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 
 **Backend** (if `$HAS_BACKEND == true`):
 ```bash
-(cd api && uv run ruff check . --fix && uv run mypy . && uv run pytest --cov --cov-report=term-missing --cov-fail-under=80)
+(cd api && uv run ruff check . && uv run mypy . && uv run pytest --cov --cov-report=term-missing --cov-fail-under=80)
 ```
 
 **Frontend** (if `$HAS_FRONTEND == true`):

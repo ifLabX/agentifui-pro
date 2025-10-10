@@ -114,7 +114,7 @@ gh pr create \
 ✅ Pull Request Created Successfully
 
 Title: <type>: <description>
-Base:  $DEFAULT_BRANCH ← $CURRENT_BRANCH
+Base:  ${BASE_BRANCH:-$DEFAULT_BRANCH} ← $CURRENT_BRANCH
 URL:   <github-pr-url>
 Remote: <remote-name>
 

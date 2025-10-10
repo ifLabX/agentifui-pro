@@ -16,9 +16,9 @@ The test suite covers:
 tests/coze/
 ├── conftest.py                 # Shared fixtures and test configuration
 ├── test_coze_client.py         # Client initialization tests (6 tests)
-├── test_bot_client.py          # Bot operations tests (5 tests)
-├── test_chat_client.py         # Chat and conversation tests (7 tests)
-├── test_workflow_client.py     # Workflow execution tests (7 tests)
+├── test_coze_bot.py            # Bot operations tests (5 tests)
+├── test_coze_chat.py           # Chat and conversation tests (7 tests)
+├── test_coze_workflow.py       # Workflow execution tests (7 tests)
 └── README.md                   # This file
 ```
 
@@ -39,29 +39,36 @@ uv sync
 
 ```bash
 # From api/ directory
-DATABASE_URL="postgresql://test" uv run pytest tests/coze/ -v
+uv run pytest tests/coze/ -v
 ```
 
 ### Run Specific Test Module
 
 ```bash
 # Client initialization tests
-DATABASE_URL="postgresql://test" uv run pytest tests/coze/test_coze_client.py -v
+uv run pytest tests/coze/test_coze_client.py -v
 
 # Bot operations tests
-DATABASE_URL="postgresql://test" uv run pytest tests/coze/test_bot_client.py -v
+uv run pytest tests/coze/test_coze_bot.py -v
 
 # Chat operations tests
-DATABASE_URL="postgresql://test" uv run pytest tests/coze/test_chat_client.py -v
+uv run pytest tests/coze/test_coze_chat.py -v
 
 # Workflow operations tests
-DATABASE_URL="postgresql://test" uv run pytest tests/coze/test_workflow_client.py -v
+uv run pytest tests/coze/test_coze_workflow.py -v
 ```
 
 ### Run with Coverage
 
 ```bash
-DATABASE_URL="postgresql://test" uv run pytest tests/coze/ --cov=tests/coze --cov-report=term-missing
+uv run pytest tests/coze/ --cov=tests/coze --cov-report=term-missing
+```
+
+### Run All Project Tests
+
+```bash
+# Run all tests including Coze, Dify, and other tests
+uv run pytest -v
 ```
 
 ## Test Patterns

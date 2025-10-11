@@ -31,15 +31,7 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-Verify compliance with `.specify/memory/constitution.md`:
-
-- [ ] **Monorepo Consistency**: API contracts and shared concepts follow consistent naming
-- [ ] **Type Safety**: All new code will use TypeScript strict mode / Python type hints
-- [ ] **Test-First**: Tests will be written before implementation (Red-Green-Refactor)
-- [ ] **English-Only**: All code, comments, commits will be in English
-- [ ] **Convention**: Follows kebab-case (frontend) / snake_case (backend) naming patterns
-
-*Violations must be justified in Complexity Tracking section below.*
+[Gates determined based on constitution file]
 
 ## Project Structure
 

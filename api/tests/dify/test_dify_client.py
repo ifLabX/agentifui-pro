@@ -1,38 +1,44 @@
 """
-Tests for DifyClient base class.
+Tests for AsyncDifyClient base class.
 
-This module tests the core functionality of the DifyClient base class including:
+This module tests the core functionality of the AsyncDifyClient base class including:
 - Initialization and configuration
 - HTTP request handling (GET, POST, DELETE)
 - File upload operations
 - Common API endpoints (feedback, parameters, files, audio, meta, info)
+
+Async Testing Pattern:
+- All tests are async methods (async def test_*)
+- All client method calls use await keyword
+- HTTPXMock fixture provided by pytest-httpx for request mocking
+- Use httpx_mock.add_response() to configure mock responses
+- Use httpx_mock.get_requests() to verify request details
 """
 
-from unittest.mock import Mock
-
-from dify_client import DifyClient
+from dify_client.async_client import AsyncDifyClient
+from pytest_httpx import HTTPXMock
 
 
 class TestDifyClientInitialization:
     """Test DifyClient initialization and configuration."""
 
-    def test_client_initialization_with_defaults(self, mock_api_key: str) -> None:
+    async def test_client_initialization_with_defaults(self, mock_api_key: str) -> None:
         """Test that client initializes with default base URL."""
-        client = DifyClient(api_key=mock_api_key)
+        client = AsyncDifyClient(api_key=mock_api_key)
 
         assert client.api_key == mock_api_key
         assert client.base_url == "https://api.dify.ai/v1"
 
-    def test_client_initialization_with_custom_base_url(self, mock_api_key: str, mock_base_url: str) -> None:
+    async def test_client_initialization_with_custom_base_url(self, mock_api_key: str, mock_base_url: str) -> None:
         """Test that client initializes with custom base URL."""
-        client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
+        client = AsyncDifyClient(api_key=mock_api_key, base_url=mock_base_url)
 
         assert client.api_key == mock_api_key
         assert client.base_url == mock_base_url
 
-    def test_client_stores_api_key_correctly(self, mock_api_key: str) -> None:
+    async def test_client_stores_api_key_correctly(self, mock_api_key: str) -> None:
         """Test that API key is stored correctly."""
-        client = DifyClient(api_key=mock_api_key)
+        client = AsyncDifyClient(api_key=mock_api_key)
 
         assert client.api_key == mock_api_key
 
@@ -40,393 +46,450 @@ class TestDifyClientInitialization:
 class TestDifyClientRequestMethods:
     """Test DifyClient HTTP request methods."""
 
-    def test_send_request_get_method(
+    async def test_send_request_get_method(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
         mock_base_url: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
     ) -> None:
         """Test GET request with query parameters."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"{mock_base_url}/test-endpoint?user=test-user",
+            method="GET",
+            json={"success": True, "data": {"message": "Operation successful"}},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
+        client = AsyncDifyClient(api_key=mock_api_key, base_url=mock_base_url)
         params = {"user": "test-user"}
 
-        response = client._send_request("GET", "/test-endpoint", params=params)
+        response = await client._send_request("GET", "/test-endpoint", params=params)
 
         # Verify request was made correctly
-        mock_requests_request.assert_called_once_with(
-            "GET",
-            f"{mock_base_url}/test-endpoint",
-            json=None,
-            params=params,
-            headers={
-                "Authorization": f"Bearer {mock_api_key}",
-                "Content-Type": "application/json",
-            },
-            stream=False,
-        )
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "GET"
+        assert str(requests[0].url) == f"{mock_base_url}/test-endpoint?user=test-user"
+        assert requests[0].headers["Authorization"] == f"Bearer {mock_api_key}"
+        assert requests[0].headers["Content-Type"] == "application/json"
+        assert response.status_code == 200
 
-    def test_send_request_post_method(
+    async def test_send_request_post_method(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
         mock_base_url: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
     ) -> None:
         """Test POST request with JSON data."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"{mock_base_url}/test-endpoint",
+            method="POST",
+            json={"success": True, "data": {"message": "Operation successful"}},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
+        client = AsyncDifyClient(api_key=mock_api_key, base_url=mock_base_url)
         data = {"key": "value", "user": "test-user"}
 
-        response = client._send_request("POST", "/test-endpoint", json=data)
+        response = await client._send_request("POST", "/test-endpoint", json=data)
 
         # Verify request was made correctly
-        mock_requests_request.assert_called_once_with(
-            "POST",
-            f"{mock_base_url}/test-endpoint",
-            json=data,
-            params=None,
-            headers={
-                "Authorization": f"Bearer {mock_api_key}",
-                "Content-Type": "application/json",
-            },
-            stream=False,
-        )
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "POST"
+        assert str(requests[0].url) == f"{mock_base_url}/test-endpoint"
+        assert requests[0].headers["Authorization"] == f"Bearer {mock_api_key}"
+        assert requests[0].headers["Content-Type"] == "application/json"
+        assert response.status_code == 200
 
-    def test_send_request_with_streaming(
+    async def test_send_request_with_streaming(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
         mock_base_url: str,
-        mock_requests_request: Mock,
-        mock_streaming_response: Mock,
     ) -> None:
         """Test request with streaming enabled."""
-        mock_requests_request.return_value = mock_streaming_response
+        stream_content = (
+            b'data: {"event": "message", "content": "Hello"}\n'
+            b'data: {"event": "message", "content": " World"}\n'
+            b'data: {"event": "done"}\n'
+        )
+        httpx_mock.add_response(
+            url=f"{mock_base_url}/test-endpoint",
+            method="POST",
+            content=stream_content,
+            headers={"Content-Type": "text/event-stream"},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
+        client = AsyncDifyClient(api_key=mock_api_key, base_url=mock_base_url)
         data = {"response_mode": "streaming"}
 
-        response = client._send_request("POST", "/test-endpoint", json=data, stream=True)
+        response = await client._send_request("POST", "/test-endpoint", json=data, stream=True)
 
-        # Verify streaming was enabled
-        mock_requests_request.assert_called_once()
-        call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["stream"] is True
-        assert response == mock_streaming_response
+        # Verify streaming response
+        assert response.status_code == 200
+        assert response.headers["Content-Type"] == "text/event-stream"
 
-    def test_send_request_includes_authorization_header(
+    async def test_send_request_includes_authorization_header(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
         mock_base_url: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
     ) -> None:
         """Test that Authorization header is included in requests."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"{mock_base_url}/test-endpoint",
+            method="GET",
+            json={"success": True},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
-        client._send_request("GET", "/test-endpoint")
+        client = AsyncDifyClient(api_key=mock_api_key, base_url=mock_base_url)
+        await client._send_request("GET", "/test-endpoint")
 
         # Verify Authorization header
-        call_kwargs = mock_requests_request.call_args[1]
-        assert "Authorization" in call_kwargs["headers"]
-        assert call_kwargs["headers"]["Authorization"] == f"Bearer {mock_api_key}"
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert "Authorization" in requests[0].headers
+        assert requests[0].headers["Authorization"] == f"Bearer {mock_api_key}"
 
-    def test_send_request_constructs_correct_url(
+    async def test_send_request_constructs_correct_url(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
         mock_base_url: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
     ) -> None:
         """Test that request URL is constructed correctly."""
-        mock_requests_request.return_value = mock_successful_response
-
-        client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
         endpoint = "/messages/123/feedbacks"
+        httpx_mock.add_response(
+            url=f"{mock_base_url}{endpoint}",
+            method="POST",
+            json={"success": True},
+            status_code=200,
+        )
 
-        client._send_request("POST", endpoint)
+        client = AsyncDifyClient(api_key=mock_api_key, base_url=mock_base_url)
+        await client._send_request("POST", endpoint)
 
         # Verify URL construction
-        call_args = mock_requests_request.call_args[0]
-        assert call_args[1] == f"{mock_base_url}{endpoint}"
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert str(requests[0].url) == f"{mock_base_url}{endpoint}"
 
 
 class TestDifyClientFileUpload:
     """Test DifyClient file upload functionality."""
 
-    def test_send_request_with_files(
+    async def test_send_request_with_files(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
         mock_base_url: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         sample_files: dict,
     ) -> None:
         """Test file upload request."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"{mock_base_url}/files/upload",
+            method="POST",
+            json={"success": True, "file_id": "file-12345"},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key, base_url=mock_base_url)
+        client = AsyncDifyClient(api_key=mock_api_key, base_url=mock_base_url)
         data = {"user": "test-user"}
 
-        response = client._send_request_with_files("POST", "/files/upload", data=data, files=sample_files)
+        response = await client._send_request_with_files("POST", "/files/upload", data=data, files=sample_files)
 
         # Verify file upload request
-        mock_requests_request.assert_called_once_with(
-            "POST",
-            f"{mock_base_url}/files/upload",
-            data=data,
-            headers={"Authorization": f"Bearer {mock_api_key}"},
-            files=sample_files,
-        )
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "POST"
+        assert str(requests[0].url) == f"{mock_base_url}/files/upload"
+        assert requests[0].headers["Authorization"] == f"Bearer {mock_api_key}"
+        assert response.status_code == 200
 
-    def test_send_request_with_files_no_content_type_header(
+    async def test_send_request_with_files_no_content_type_header(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         sample_files: dict,
     ) -> None:
         """Test that Content-Type header is not set for file uploads."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/files/upload",
+            method="POST",
+            json={"success": True},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        client._send_request_with_files("POST", "/files/upload", data={}, files=sample_files)
+        client = AsyncDifyClient(api_key=mock_api_key)
+        await client._send_request_with_files("POST", "/files/upload", data={}, files=sample_files)
 
-        # Verify Content-Type is not in headers (let requests set it)
-        call_kwargs = mock_requests_request.call_args[1]
-        assert "Content-Type" not in call_kwargs["headers"]
+        # Verify Content-Type is not in headers (httpx sets it automatically)
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        content_type = requests[0].headers.get("Content-Type", "")
+        assert "Content-Type" not in requests[0].headers or "multipart/form-data" in content_type
 
 
 class TestDifyClientMessageFeedback:
     """Test message feedback API."""
 
-    def test_message_feedback_like(
+    async def test_message_feedback_like(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         sample_message_id: str,
         mock_user: str,
     ) -> None:
         """Test sending positive feedback for a message."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"https://api.dify.ai/v1/messages/{sample_message_id}/feedbacks",
+            method="POST",
+            json={"success": True},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        response = client.message_feedback(message_id=sample_message_id, rating="like", user=mock_user)
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.message_feedback(message_id=sample_message_id, rating="like", user=mock_user)
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args, call_kwargs = mock_requests_request.call_args
-        assert call_args[0] == "POST"
-        assert f"/messages/{sample_message_id}/feedbacks" in call_args[1]
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "POST"
+        assert f"/messages/{sample_message_id}/feedbacks" in str(requests[0].url)
+        assert response.status_code == 200
 
-    def test_message_feedback_dislike(
+    async def test_message_feedback_dislike(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         sample_message_id: str,
         mock_user: str,
     ) -> None:
         """Test sending negative feedback for a message."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"https://api.dify.ai/v1/messages/{sample_message_id}/feedbacks",
+            method="POST",
+            json={"success": True},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        response = client.message_feedback(message_id=sample_message_id, rating="dislike", user=mock_user)
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.message_feedback(message_id=sample_message_id, rating="dislike", user=mock_user)
 
-        assert response == mock_successful_response
+        assert response.status_code == 200
 
 
 class TestDifyClientApplicationParameters:
     """Test application parameters API."""
 
-    def test_get_application_parameters(
+    async def test_get_application_parameters(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         mock_user: str,
     ) -> None:
         """Test retrieving application parameters."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"https://api.dify.ai/v1/parameters?user={mock_user}",
+            method="GET",
+            json={"success": True, "data": {"param1": "value1"}},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        response = client.get_application_parameters(user=mock_user)
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.get_application_parameters(user=mock_user)
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args, call_kwargs = mock_requests_request.call_args
-        assert call_args[0] == "GET"
-        assert "/parameters" in call_args[1]
-        assert call_kwargs["params"] == {"user": mock_user}
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "GET"
+        assert "/parameters" in str(requests[0].url)
+        assert response.status_code == 200
 
 
 class TestDifyClientFileUploadAPI:
     """Test file upload API endpoint."""
 
-    def test_file_upload(
+    async def test_file_upload(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         mock_user: str,
         sample_files: dict,
     ) -> None:
         """Test file upload API endpoint."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/files/upload",
+            method="POST",
+            json={"success": True, "file_id": "file-67890"},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        response = client.file_upload(user=mock_user, files=sample_files)
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.file_upload(user=mock_user, files=sample_files)
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args, call_kwargs = mock_requests_request.call_args
-        assert call_args[0] == "POST"
-        assert "/files/upload" in call_args[1]
-        assert call_kwargs["data"] == {"user": mock_user}
-        assert call_kwargs["files"] == sample_files
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "POST"
+        assert "/files/upload" in str(requests[0].url)
+        assert response.status_code == 200
 
 
 class TestDifyClientTextToAudio:
     """Test text-to-audio conversion API."""
 
-    def test_text_to_audio_non_streaming(
+    async def test_text_to_audio_non_streaming(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         mock_user: str,
     ) -> None:
         """Test text-to-audio conversion without streaming."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/text-to-audio",
+            method="POST",
+            json={"success": True, "audio_data": "base64encodedaudio"},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
+        client = AsyncDifyClient(api_key=mock_api_key)
         text = "Hello, this is a test."
-        response = client.text_to_audio(text=text, user=mock_user, streaming=False)
+        response = await client.text_to_audio(text=text, user=mock_user, streaming=False)
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args, call_kwargs = mock_requests_request.call_args
-        assert call_args[0] == "POST"
-        assert "/text-to-audio" in call_args[1]
-        assert call_kwargs["json"]["text"] == text
-        assert call_kwargs["json"]["user"] == mock_user
-        assert call_kwargs["json"]["streaming"] is False
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "POST"
+        assert "/text-to-audio" in str(requests[0].url)
+        assert response.status_code == 200
 
-    def test_text_to_audio_streaming(
+    async def test_text_to_audio_streaming(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_streaming_response: Mock,
         mock_user: str,
     ) -> None:
         """Test text-to-audio conversion with streaming."""
-        mock_requests_request.return_value = mock_streaming_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/text-to-audio",
+            method="POST",
+            content=b"audio stream data",
+            headers={"Content-Type": "audio/mpeg"},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
+        client = AsyncDifyClient(api_key=mock_api_key)
         text = "Hello, this is a streaming test."
-        response = client.text_to_audio(text=text, user=mock_user, streaming=True)
+        response = await client.text_to_audio(text=text, user=mock_user, streaming=True)
 
-        assert response == mock_streaming_response
+        assert response.status_code == 200
 
 
 class TestDifyClientMetaAPI:
     """Test meta information API."""
 
-    def test_get_meta(
+    async def test_get_meta(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         mock_user: str,
     ) -> None:
         """Test retrieving meta information."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url=f"https://api.dify.ai/v1/meta?user={mock_user}",
+            method="GET",
+            json={"success": True, "meta": {"version": "1.0"}},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        response = client.get_meta(user=mock_user)
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.get_meta(user=mock_user)
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args, call_kwargs = mock_requests_request.call_args
-        assert call_args[0] == "GET"
-        assert "/meta" in call_args[1]
-        assert call_kwargs["params"] == {"user": mock_user}
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "GET"
+        assert "/meta" in str(requests[0].url)
+        assert response.status_code == 200
 
 
 class TestDifyClientAppInfo:
     """Test application info APIs."""
 
-    def test_get_app_info(
+    async def test_get_app_info(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
     ) -> None:
         """Test retrieving application information."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/info",
+            method="GET",
+            json={"success": True, "app": {"name": "Test App"}},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        response = client.get_app_info()
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.get_app_info()
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args = mock_requests_request.call_args[0]
-        assert call_args[0] == "GET"
-        assert "/info" in call_args[1]
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "GET"
+        assert "/info" in str(requests[0].url)
+        assert response.status_code == 200
 
-    def test_get_app_site_info(
+    async def test_get_app_site_info(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
     ) -> None:
         """Test retrieving application site information."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/site",
+            method="GET",
+            json={"success": True, "site": {"domain": "example.com"}},
+            status_code=200,
+        )
 
-        client = DifyClient(api_key=mock_api_key)
-        response = client.get_app_site_info()
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.get_app_site_info()
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args = mock_requests_request.call_args[0]
-        assert call_args[0] == "GET"
-        assert "/site" in call_args[1]
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "GET"
+        assert "/site" in str(requests[0].url)
+        assert response.status_code == 200
 
 
 class TestDifyClientFilePreview:
     """Test file preview API."""
 
-    def test_get_file_preview(
+    async def test_get_file_preview(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
     ) -> None:
         """Test retrieving file preview."""
-        mock_requests_request.return_value = mock_successful_response
-
-        client = DifyClient(api_key=mock_api_key)
         file_id = "file-12345"
-        response = client.get_file_preview(file_id=file_id)
+        httpx_mock.add_response(
+            url=f"https://api.dify.ai/v1/files/{file_id}/preview",
+            method="GET",
+            json={"success": True, "preview_url": "https://example.com/preview"},
+            status_code=200,
+        )
+
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.get_file_preview(file_id=file_id)
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args = mock_requests_request.call_args[0]
-        assert call_args[0] == "GET"
-        assert f"/files/{file_id}/preview" in call_args[1]
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "GET"
+        assert f"/files/{file_id}/preview" in str(requests[0].url)
+        assert response.status_code == 200

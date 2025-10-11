@@ -340,10 +340,8 @@ class TestKnowledgeBaseClientDocumentOperations:
     """Test general document operations."""
 
     async def test_list_documents_default(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test listing documents with default parameters."""
         httpx_mock.add_response(
             url=re.compile(rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/documents.*"),
@@ -362,10 +360,8 @@ class TestKnowledgeBaseClientDocumentOperations:
         assert response.status_code == 200
 
     async def test_list_documents_with_pagination(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test listing documents with pagination."""
         httpx_mock.add_response(
             url=re.compile(rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/documents.*"),
@@ -386,10 +382,8 @@ class TestKnowledgeBaseClientDocumentOperations:
         assert response.status_code == 200
 
     async def test_list_documents_with_keyword(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test listing documents with keyword filter."""
         httpx_mock.add_response(
             url=re.compile(rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/documents.*"),
@@ -409,11 +403,8 @@ class TestKnowledgeBaseClientDocumentOperations:
         assert response.status_code == 200
 
     async def test_delete_document(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_document_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_document_id: str
+    ) -> None:
         """Test deleting a document."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/documents/{sample_document_id}",
@@ -432,10 +423,8 @@ class TestKnowledgeBaseClientDocumentOperations:
         assert response.status_code == 200
 
     async def test_batch_indexing_status(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test getting batch indexing status."""
         batch_id = "batch-12345"
         httpx_mock.add_response(
@@ -464,7 +453,8 @@ class TestKnowledgeBaseClientSegmentOperations:
         mock_api_key: str,
         sample_dataset_id: str,
         sample_document_id: str,
-        sample_segment_data: dict) -> None:
+        sample_segment_data: dict,
+    ) -> None:
         """Test adding segments to a document."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/documents/{sample_document_id}/segments",
@@ -484,14 +474,13 @@ class TestKnowledgeBaseClientSegmentOperations:
         assert response.status_code == 200
 
     async def test_query_segments_default(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_document_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_document_id: str
+    ) -> None:
         """Test querying segments with default parameters."""
         httpx_mock.add_response(
-            url=re.compile(rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/documents/{re.escape(sample_document_id)}/segments.*"),
+            url=re.compile(
+                rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/documents/{re.escape(sample_document_id)}/segments.*"
+            ),
             method="GET",
             json={"data": []},
             status_code=200,
@@ -507,14 +496,13 @@ class TestKnowledgeBaseClientSegmentOperations:
         assert response.status_code == 200
 
     async def test_query_segments_with_filters(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_document_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_document_id: str
+    ) -> None:
         """Test querying segments with keyword and status filters."""
         httpx_mock.add_response(
-            url=re.compile(rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/documents/{re.escape(sample_document_id)}/segments.*"),
+            url=re.compile(
+                rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/documents/{re.escape(sample_document_id)}/segments.*"
+            ),
             method="GET",
             json={"data": []},
             status_code=200,
@@ -532,11 +520,8 @@ class TestKnowledgeBaseClientSegmentOperations:
         assert response.status_code == 200
 
     async def test_update_document_segment(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_document_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_document_id: str
+    ) -> None:
         """Test updating a document segment."""
         segment_id = "seg-123"
         httpx_mock.add_response(
@@ -564,11 +549,8 @@ class TestKnowledgeBaseClientSegmentOperations:
         assert response.status_code == 200
 
     async def test_delete_document_segment(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_document_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_document_id: str
+    ) -> None:
         """Test deleting a document segment."""
         segment_id = "seg-456"
         httpx_mock.add_response(
@@ -591,11 +573,7 @@ class TestKnowledgeBaseClientSegmentOperations:
 class TestKnowledgeBaseClientAdvancedFeatures:
     """Test advanced knowledge base features."""
 
-    async def test_hit_testing_minimal(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+    async def test_hit_testing_minimal(self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str) -> None:
         """Test hit testing with minimal parameters."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/hit-testing",
@@ -615,11 +593,8 @@ class TestKnowledgeBaseClientAdvancedFeatures:
         assert response.status_code == 200
 
     async def test_hit_testing_with_retrieval_model(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_retrieval_model: dict) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_retrieval_model: dict
+    ) -> None:
         """Test hit testing with retrieval model configuration."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/hit-testing",
@@ -643,11 +618,7 @@ class TestKnowledgeBaseClientAdvancedFeatures:
 class TestKnowledgeBaseClientMetadataAPIs:
     """Test metadata management APIs."""
 
-    async def test_get_dataset_metadata(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+    async def test_get_dataset_metadata(self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str) -> None:
         """Test getting dataset metadata."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/metadata",
@@ -666,11 +637,8 @@ class TestKnowledgeBaseClientMetadataAPIs:
         assert response.status_code == 200
 
     async def test_create_dataset_metadata(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_metadata: dict) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_metadata: dict
+    ) -> None:
         """Test creating dataset metadata."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/metadata",
@@ -689,11 +657,8 @@ class TestKnowledgeBaseClientMetadataAPIs:
         assert response.status_code == 200
 
     async def test_update_dataset_metadata(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_metadata: dict) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_metadata: dict
+    ) -> None:
         """Test updating dataset metadata."""
         metadata_id = "meta-123"
         httpx_mock.add_response(
@@ -713,10 +678,8 @@ class TestKnowledgeBaseClientMetadataAPIs:
         assert response.status_code == 200
 
     async def test_get_built_in_metadata(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test getting built-in metadata."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/metadata/built-in",
@@ -735,10 +698,8 @@ class TestKnowledgeBaseClientMetadataAPIs:
         assert response.status_code == 200
 
     async def test_manage_built_in_metadata(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test managing built-in metadata."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/metadata/built-in/enable",
@@ -759,10 +720,8 @@ class TestKnowledgeBaseClientMetadataAPIs:
         assert response.status_code == 200
 
     async def test_update_documents_metadata(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test updating metadata for multiple documents."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/documents/metadata",
@@ -788,10 +747,7 @@ class TestKnowledgeBaseClientMetadataAPIs:
 class TestKnowledgeBaseClientTagsAPIs:
     """Test dataset tags management APIs."""
 
-    async def test_list_dataset_tags(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str) -> None:
+    async def test_list_dataset_tags(self, httpx_mock: HTTPXMock, mock_api_key: str) -> None:
         """Test listing all dataset tags."""
         httpx_mock.add_response(
             url="https://api.dify.ai/v1/datasets/tags",
@@ -809,11 +765,7 @@ class TestKnowledgeBaseClientTagsAPIs:
         assert requests[0].method == "GET"
         assert response.status_code == 200
 
-    async def test_bind_dataset_tags(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+    async def test_bind_dataset_tags(self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str) -> None:
         """Test binding tags to dataset."""
         httpx_mock.add_response(
             url="https://api.dify.ai/v1/datasets/tags/binding",
@@ -832,11 +784,7 @@ class TestKnowledgeBaseClientTagsAPIs:
         assert requests[0].method == "POST"
         assert response.status_code == 200
 
-    async def test_unbind_dataset_tag(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+    async def test_unbind_dataset_tag(self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str) -> None:
         """Test unbinding a single tag from dataset."""
         tag_id = "tag-to-remove"
         httpx_mock.add_response(
@@ -855,11 +803,7 @@ class TestKnowledgeBaseClientTagsAPIs:
         assert requests[0].method == "POST"
         assert response.status_code == 200
 
-    async def test_get_dataset_tags(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+    async def test_get_dataset_tags(self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str) -> None:
         """Test getting tags for current dataset."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/tags",
@@ -882,13 +826,13 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
     """Test RAG pipeline APIs."""
 
     async def test_get_datasource_plugins(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str
+    ) -> None:
         """Test getting datasource plugins."""
         httpx_mock.add_response(
-            url=re.compile(rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/pipeline/datasource-plugins.*"),
+            url=re.compile(
+                rf"https://api\.dify\.ai/v1/datasets/{re.escape(sample_dataset_id)}/pipeline/datasource-plugins.*"
+            ),
             method="GET",
             json={"plugins": []},
             status_code=200,
@@ -904,11 +848,7 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         assert "is_published" in str(requests[0].url)
         assert response.status_code == 200
 
-    async def test_run_datasource_node(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str) -> None:
+    async def test_run_datasource_node(self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str) -> None:
         """Test running a datasource node."""
         node_id = "node-123"
         httpx_mock.add_response(
@@ -930,11 +870,8 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         assert response.status_code == 200
 
     async def test_run_rag_pipeline_blocking(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_rag_pipeline_data: dict) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_rag_pipeline_data: dict
+    ) -> None:
         """Test running RAG pipeline in blocking mode."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/pipeline/run",
@@ -959,11 +896,8 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         assert response.status_code == 200
 
     async def test_run_rag_pipeline_streaming(
-        self,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str,
-        sample_dataset_id: str,
-        sample_rag_pipeline_data: dict) -> None:
+        self, httpx_mock: HTTPXMock, mock_api_key: str, sample_dataset_id: str, sample_rag_pipeline_data: dict
+    ) -> None:
         """Test running RAG pipeline in streaming mode."""
         httpx_mock.add_response(
             url=f"https://api.dify.ai/v1/datasets/{sample_dataset_id}/pipeline/run",
@@ -989,11 +923,7 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
 
     @pytest.mark.skip(reason="File upload requires async file handling with aiofiles, beyond httpx_mock scope")
     @patch("builtins.open", new_callable=mock_open, read_data=b"file content")
-    async def test_upload_pipeline_file(
-        self,
-        mock_file,
-        httpx_mock: HTTPXMock,
-        mock_api_key: str) -> None:
+    async def test_upload_pipeline_file(self, mock_file, httpx_mock: HTTPXMock, mock_api_key: str) -> None:
         """Test uploading file for RAG pipeline."""
         httpx_mock.add_response(
             url="https://api.dify.ai/v1/datasets/pipeline/file-upload",

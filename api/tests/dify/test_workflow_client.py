@@ -56,6 +56,7 @@ class TestWorkflowClientRun:
         assert "/workflows/run" in str(request.url)
 
         import json
+
         request_body = json.loads(request.content)
         assert request_body["inputs"] == sample_inputs
         assert request_body["response_mode"] == "blocking"
@@ -88,6 +89,7 @@ class TestWorkflowClientRun:
         request = requests[0]
 
         import json
+
         request_body = json.loads(request.content)
         assert request_body["response_mode"] == "streaming"
         assert response.status_code == 200
@@ -115,6 +117,7 @@ class TestWorkflowClientRun:
         request = requests[0]
 
         import json
+
         request_body = json.loads(request.content)
         assert request_body["response_mode"] == "streaming"
         assert request_body["user"] == "abc-123"
@@ -150,6 +153,7 @@ class TestWorkflowClientStop:
         assert f"/workflows/tasks/{sample_task_id}/stop" in str(request.url)
 
         import json
+
         request_body = json.loads(request.content)
         assert request_body == {"user": mock_user}
         assert response.status_code == 200
@@ -402,6 +406,7 @@ class TestWorkflowClientRunSpecific:
         assert f"/workflows/{sample_workflow_id}/run" in str(request.url)
 
         import json
+
         request_body = json.loads(request.content)
         assert request_body["inputs"] == sample_inputs
         assert response.status_code == 200
@@ -460,6 +465,7 @@ class TestWorkflowClientRunSpecific:
         request = requests[0]
 
         import json
+
         request_body = json.loads(request.content)
         assert request_body["response_mode"] == "streaming"
         assert request_body["user"] == "abc-123"

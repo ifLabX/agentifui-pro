@@ -596,9 +596,7 @@ class TestChatClientAnnotationAPIs:
         assert "/apps/annotation-reply/disable" in str(request.url)
         assert response.status_code == 200
 
-    async def test_annotation_reply_action_with_none_values(
-        self, httpx_mock: HTTPXMock, mock_api_key: str
-    ) -> None:
+    async def test_annotation_reply_action_with_none_values(self, httpx_mock: HTTPXMock, mock_api_key: str) -> None:
         """Test that annotation reply action handles None values (validation deferred to API)."""
         # Mock the API response - it will handle validation server-side
         httpx_mock.add_response(

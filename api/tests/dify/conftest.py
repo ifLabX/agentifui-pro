@@ -88,8 +88,6 @@ def mock_user() -> str:
     return "test-user-123"
 
 
-
-
 @pytest.fixture
 def sample_inputs() -> dict[str, Any]:
     """Provide sample input data for testing."""

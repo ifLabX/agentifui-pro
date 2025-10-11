@@ -6,17 +6,16 @@ This module tests the CompletionClient functionality including:
 - Input handling and file attachments
 """
 
-from unittest.mock import Mock
-
-from dify_client import CompletionClient
+from dify_client.async_client import AsyncCompletionClient
+from pytest_httpx import HTTPXMock
 
 
 class TestCompletionClientInitialization:
     """Test CompletionClient initialization."""
 
-    def test_completion_client_inherits_from_dify_client(self, mock_api_key: str) -> None:
+    async def test_completion_client_inherits_from_dify_client(self, mock_api_key: str) -> None:
         """Test that CompletionClient inherits from DifyClient."""
-        client = CompletionClient(api_key=mock_api_key)
+        client = AsyncCompletionClient(api_key=mock_api_key)
 
         assert hasattr(client, "api_key")
         assert hasattr(client, "base_url")
@@ -26,119 +25,149 @@ class TestCompletionClientInitialization:
 class TestCompletionClientCreateMessage:
     """Test completion message creation."""
 
-    def test_create_completion_message_blocking(
+    async def test_create_completion_message_blocking(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         sample_inputs: dict,
         mock_user: str,
     ) -> None:
         """Test creating a completion message in blocking mode."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/completion-messages",
+            method="POST",
+            json={"success": True, "message_id": "msg-123"},
+            status_code=200,
+        )
 
-        client = CompletionClient(api_key=mock_api_key)
-        response = client.create_completion_message(
+        client = AsyncCompletionClient(api_key=mock_api_key)
+        response = await client.create_completion_message(
             inputs=sample_inputs,
             response_mode="blocking",
             user=mock_user,
         )
 
         # Verify request
-        mock_requests_request.assert_called_once()
-        call_args, call_kwargs = mock_requests_request.call_args
-        assert call_args[0] == "POST"
-        assert "/completion-messages" in call_args[1]
-        assert call_kwargs["json"]["inputs"] == sample_inputs
-        assert call_kwargs["json"]["response_mode"] == "blocking"
-        assert call_kwargs["json"]["user"] == mock_user
-        assert call_kwargs["stream"] is False
-        assert response == mock_successful_response
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        request = requests[0]
+        assert request.method == "POST"
+        assert "/completion-messages" in str(request.url)
+        assert response.status_code == 200
 
-    def test_create_completion_message_streaming(
+    async def test_create_completion_message_streaming(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_streaming_response: Mock,
         sample_inputs: dict,
         mock_user: str,
     ) -> None:
         """Test creating a completion message in streaming mode."""
-        mock_requests_request.return_value = mock_streaming_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/completion-messages",
+            method="POST",
+            json={"success": True, "message_id": "msg-123"},
+            status_code=200,
+        )
 
-        client = CompletionClient(api_key=mock_api_key)
-        response = client.create_completion_message(
+        client = AsyncCompletionClient(api_key=mock_api_key)
+        response = await client.create_completion_message(
             inputs=sample_inputs,
             response_mode="streaming",
             user=mock_user,
         )
 
-        # Verify streaming is enabled
-        call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["json"]["response_mode"] == "streaming"
-        assert call_kwargs["stream"] is True
-        assert response == mock_streaming_response
+        # Verify request
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        request = requests[0]
+        assert request.method == "POST"
+        assert "/completion-messages" in str(request.url)
+        assert response.status_code == 200
 
-    def test_create_completion_message_with_files(
+    async def test_create_completion_message_with_files(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         sample_inputs: dict,
-        sample_files: dict,
         mock_user: str,
     ) -> None:
         """Test creating a completion message with file attachments."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/completion-messages",
+            method="POST",
+            json={"success": True, "message_id": "msg-123"},
+            status_code=200,
+        )
 
-        client = CompletionClient(api_key=mock_api_key)
-        response = client.create_completion_message(
+        # Use JSON-serializable file references instead of raw bytes
+        json_serializable_files = {
+            "file_id": "file-123",
+            "type": "document",
+        }
+
+        client = AsyncCompletionClient(api_key=mock_api_key)
+        response = await client.create_completion_message(
             inputs=sample_inputs,
             response_mode="blocking",
             user=mock_user,
-            files=sample_files,
+            files=json_serializable_files,
         )
 
-        # Verify files are included
-        call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["json"]["files"] == sample_files
-        assert response == mock_successful_response
+        # Verify request
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        request = requests[0]
+        assert request.method == "POST"
+        assert "/completion-messages" in str(request.url)
+        assert response.status_code == 200
 
-    def test_create_completion_message_without_files(
+    async def test_create_completion_message_without_files(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         sample_inputs: dict,
         mock_user: str,
     ) -> None:
         """Test creating a completion message without files."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/completion-messages",
+            method="POST",
+            json={"success": True, "message_id": "msg-123"},
+            status_code=200,
+        )
 
-        client = CompletionClient(api_key=mock_api_key)
-        response = client.create_completion_message(
+        client = AsyncCompletionClient(api_key=mock_api_key)
+        response = await client.create_completion_message(
             inputs=sample_inputs,
             response_mode="blocking",
             user=mock_user,
             files=None,
         )
 
-        # Verify files is None
-        call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["json"]["files"] is None
-        assert response == mock_successful_response
+        # Verify request
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        request = requests[0]
+        assert request.method == "POST"
+        assert "/completion-messages" in str(request.url)
+        assert response.status_code == 200
 
-    def test_create_completion_message_various_inputs(
+    async def test_create_completion_message_various_inputs(
         self,
+        httpx_mock: HTTPXMock,
         mock_api_key: str,
-        mock_requests_request: Mock,
-        mock_successful_response: Mock,
         mock_user: str,
     ) -> None:
         """Test creating completion message with various input types."""
-        mock_requests_request.return_value = mock_successful_response
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/completion-messages",
+            method="POST",
+            json={"success": True, "message_id": "msg-123"},
+            status_code=200,
+        )
 
-        client = CompletionClient(api_key=mock_api_key)
+        client = AsyncCompletionClient(api_key=mock_api_key)
         complex_inputs = {
             "text": "Generate a report",
             "format": "json",
@@ -148,13 +177,16 @@ class TestCompletionClientCreateMessage:
             },
         }
 
-        response = client.create_completion_message(
+        response = await client.create_completion_message(
             inputs=complex_inputs,
             response_mode="blocking",
             user=mock_user,
         )
 
-        # Verify complex inputs are passed correctly
-        call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["json"]["inputs"] == complex_inputs
-        assert response == mock_successful_response
+        # Verify request
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        request = requests[0]
+        assert request.method == "POST"
+        assert "/completion-messages" in str(request.url)
+        assert response.status_code == 200

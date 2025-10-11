@@ -21,9 +21,9 @@
 
 **Purpose**: Install dependencies and configure pytest for async testing
 
-- [ ] T001 [Setup] Install pytest-httpx dependency in `api/pyproject.toml` using `uv add --dev "pytest-httpx>=0.30.0"`
-- [ ] T002 [Setup] Create/update `api/pytest.ini` with pytest-asyncio configuration (asyncio_mode=auto, asyncio_default_fixture_loop_scope=function)
-- [ ] T003 [Setup] Verify pytest discovers async tests by running `uv run pytest api/tests/dify/ --collect-only` (expect discovery errors, tests will fail until migration)
+- [x] T001 [Setup] Install pytest-httpx dependency in `api/pyproject.toml` using `uv add --dev "pytest-httpx>=0.30.0"`
+- [x] T002 [Setup] Create/update `api/pytest.ini` with pytest-asyncio configuration (asyncio_mode=auto, asyncio_default_fixture_loop_scope=function)
+- [x] T003 [Setup] Verify pytest discovers async tests by running `uv run pytest api/tests/dify/ --collect-only` (expect discovery errors, tests will fail until migration)
 
 **Checkpoint**: pytest-httpx installed, pytest.ini configured for async mode
 
@@ -35,10 +35,10 @@
 
 **⚠️ CRITICAL**: No test file migration can begin until this phase is complete
 
-- [ ] T004 [Foundation] Remove requests imports from `api/tests/dify/conftest.py` (lines 13, 80-83: `import requests`, `@pytest.fixture def mock_requests_request()`)
-- [ ] T005 [Foundation] Remove requests-based mock response fixtures from `api/tests/dify/conftest.py` (lines 35-46: `mock_successful_response`, lines 50-60: `mock_error_response`, lines 64-76: `mock_streaming_response`)
-- [ ] T006 [Foundation] Keep all existing sample data fixtures in `api/tests/dify/conftest.py` (mock_api_key, mock_base_url, mock_user, sample_inputs, sample_files, all ID fixtures - NO CHANGES to these)
-- [ ] T007 [Foundation] Add docstring to `api/tests/dify/conftest.py` explaining httpx_mock fixture is auto-provided by pytest-httpx (no manual fixture definition needed)
+- [x] T004 [Foundation] Remove requests imports from `api/tests/dify/conftest.py` (lines 13, 80-83: `import requests`, `@pytest.fixture def mock_requests_request()`)
+- [x] T005 [Foundation] Remove requests-based mock response fixtures from `api/tests/dify/conftest.py` (lines 35-46: `mock_successful_response`, lines 50-60: `mock_error_response`, lines 64-76: `mock_streaming_response`)
+- [x] T006 [Foundation] Keep all existing sample data fixtures in `api/tests/dify/conftest.py` (mock_api_key, mock_base_url, mock_user, sample_inputs, sample_files, all ID fixtures - NO CHANGES to these)
+- [x] T007 [Foundation] Add docstring to `api/tests/dify/conftest.py` explaining httpx_mock fixture is auto-provided by pytest-httpx (no manual fixture definition needed)
 
 **Checkpoint**: conftest.py updated with pytest-httpx patterns, all sample data fixtures preserved
 
@@ -54,13 +54,13 @@
 
 #### T008-T013: Migrate test_dify_client.py (Base Client - Start Here)
 
-- [ ] T008 [P] [US1] Update imports in `api/tests/dify/test_dify_client.py`: Remove `from unittest.mock import Mock`, add `from pytest_httpx import HTTPXMock`
-- [ ] T009 [P] [US1] Convert all test methods to async in `api/tests/dify/test_dify_client.py`: Change `def test_*` to `async def test_*` (approximately 5-8 test methods)
-- [ ] T010 [US1] Replace request mocking in `api/tests/dify/test_dify_client.py`: Replace `mock_requests_request` fixture parameter with `httpx_mock: HTTPXMock`
-- [ ] T011 [US1] Update response configuration in `api/tests/dify/test_dify_client.py`: Replace `mock_requests_request.return_value = mock_response` with `httpx_mock.add_response(json={...}, status_code=200)`
-- [ ] T012 [US1] Add await keywords in `api/tests/dify/test_dify_client.py`: Add `await` before all client method calls that make HTTP requests
-- [ ] T013 [US1] Update assertions in `api/tests/dify/test_dify_client.py`: Replace `mock_requests_request.assert_called_once()` with `requests = httpx_mock.get_requests(); assert len(requests) == 1`
-- [ ] T014 [US1] Run tests for test_dify_client.py only: Execute `cd api && uv run pytest tests/dify/test_dify_client.py -v` and verify 100% pass rate
+- [x] T008 [P] [US1] Update imports in `api/tests/dify/test_dify_client.py`: Remove `from unittest.mock import Mock`, add `from pytest_httpx import HTTPXMock`
+- [x] T009 [P] [US1] Convert all test methods to async in `api/tests/dify/test_dify_client.py`: Change `def test_*` to `async def test_*` (approximately 5-8 test methods)
+- [x] T010 [US1] Replace request mocking in `api/tests/dify/test_dify_client.py`: Replace `mock_requests_request` fixture parameter with `httpx_mock: HTTPXMock`
+- [x] T011 [US1] Update response configuration in `api/tests/dify/test_dify_client.py`: Replace `mock_requests_request.return_value = mock_response` with `httpx_mock.add_response(json={...}, status_code=200)`
+- [x] T012 [US1] Add await keywords in `api/tests/dify/test_dify_client.py`: Add `await` before all client method calls that make HTTP requests
+- [x] T013 [US1] Update assertions in `api/tests/dify/test_dify_client.py`: Replace `mock_requests_request.assert_called_once()` with `requests = httpx_mock.get_requests(); assert len(requests) == 1`
+- [x] T014 [US1] Run tests for test_dify_client.py only: Execute `cd api && uv run pytest tests/dify/test_dify_client.py -v` and verify 100% pass rate
 
 #### T015-T020: Migrate test_chat_client.py (Chat Operations)
 

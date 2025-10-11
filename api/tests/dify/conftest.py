@@ -1,16 +1,73 @@
-"""
+r"""
 Dify SDK test configuration and fixtures.
 
 This module provides shared test fixtures and utilities for testing Dify SDK clients.
 All tests use mocks to avoid making real API calls.
+
+HTTP Request Mocking:
+- This module uses pytest-httpx for mocking httpx.AsyncClient requests.
+- The `httpx_mock` fixture is automatically provided by pytest-httpx (no manual definition needed).
+- All tests should be async functions (`async def test_*`) due to pytest-asyncio auto mode.
+- Configure responses with: httpx_mock.add_response(url="...", method="POST", json={...}, status_code=200)
+- Verify requests with: httpx_mock.get_requests() or httpx_mock.get_request()
+
+Migration from requests to httpx:
+- Use async client classes: AsyncDifyClient, AsyncChatClient, AsyncWorkflowClient, etc.
+  from dify_client.async_client import AsyncDifyClient
+- All client method calls must use await keyword:
+  response = await client.operation()
+- Import json module for request body parsing in assertions:
+  import json
+  request_body = json.loads(request.content)
+- Use regex patterns for URLs with query parameters:
+  import re
+  httpx_mock.add_response(url=re.compile(r"https://api\.dify\.ai/v1/endpoint\?.*"), ...)
+
+Example async test pattern:
+    async def test_operation(httpx_mock: HTTPXMock, mock_api_key: str):
+        httpx_mock.add_response(
+            url="https://api.dify.ai/v1/endpoint",
+            method="POST",
+            json={"success": True},
+            status_code=200,
+        )
+        client = AsyncDifyClient(api_key=mock_api_key)
+        response = await client.operation()
+
+        # Verify request
+        requests = httpx_mock.get_requests()
+        assert len(requests) == 1
+        assert requests[0].method == "POST"
+        assert response.status_code == 200
+
+File Upload Tests:
+- File upload tests require special async file handling with aiofiles
+- Standard httpx_mock patterns may not work for multipart/form-data with file objects
+- Consider using async context managers for file operations in these tests
 """
 
-from collections.abc import Generator
+import os
 from typing import Any
-from unittest.mock import Mock, patch
 
 import pytest
-import requests
+
+
+@pytest.fixture(scope="session", autouse=True)
+def disable_proxy_for_tests():
+    """Disable proxy settings during tests to avoid SOCKS proxy issues with httpx."""
+    original_env = {}
+    proxy_vars = ["http_proxy", "https_proxy", "all_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"]
+
+    for var in proxy_vars:
+        if var in os.environ:
+            original_env[var] = os.environ[var]
+            del os.environ[var]
+
+    yield
+
+    # Restore original proxy settings
+    for var, value in original_env.items():
+        os.environ[var] = value
 
 
 @pytest.fixture
@@ -31,56 +88,6 @@ def mock_user() -> str:
     return "test-user-123"
 
 
-@pytest.fixture
-def mock_successful_response() -> Mock:
-    """Create a mock successful HTTP response."""
-    response = Mock(spec=requests.Response)
-    response.status_code = 200
-    response.json.return_value = {
-        "success": True,
-        "data": {"message": "Operation successful"},
-    }
-    response.text = '{"success": true}'
-    response.headers = {"Content-Type": "application/json"}
-    response.iter_lines = Mock(return_value=iter([]))
-    return response
-
-
-@pytest.fixture
-def mock_error_response() -> Mock:
-    """Create a mock error HTTP response."""
-    response = Mock(spec=requests.Response)
-    response.status_code = 400
-    response.json.return_value = {
-        "error": "Bad Request",
-        "message": "Invalid request parameters",
-    }
-    response.text = '{"error": "Bad Request"}'
-    response.headers = {"Content-Type": "application/json"}
-    return response
-
-
-@pytest.fixture
-def mock_streaming_response() -> Mock:
-    """Create a mock streaming HTTP response."""
-    response = Mock(spec=requests.Response)
-    response.status_code = 200
-    response.headers = {"Content-Type": "text/event-stream"}
-
-    streaming_data = [
-        b'data: {"event": "message", "content": "Hello"}',
-        b'data: {"event": "message", "content": " World"}',
-        b'data: {"event": "done"}',
-    ]
-    response.iter_lines = Mock(return_value=iter(streaming_data))
-    return response
-
-
-@pytest.fixture
-def mock_requests_request() -> Generator[Mock, None, None]:
-    """Mock requests.request to avoid real HTTP calls."""
-    with patch("requests.request") as mock_request:
-        yield mock_request
 
 
 @pytest.fixture

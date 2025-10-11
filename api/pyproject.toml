@@ -25,6 +25,7 @@ dev = [
     "psutil>=7.1.0",
     "mypy>=1.18.2",
     "types-psutil>=0.0.1",
+    "pytest-httpx>=0.30.0",
 ]
 
 [tool.pytest.ini_options]

@@ -4,6 +4,7 @@
  */
 
 import nextJest from "next/jest.js";
+import type { Config } from "jest";
 
 // https://nextjs.org/docs/app/building-your-application/testing/jest
 const createJestConfig = nextJest({
@@ -11,7 +12,7 @@ const createJestConfig = nextJest({
   dir: "./",
 });
 
-const config = {
+const config: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -150,7 +151,7 @@ const config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "@happy-dom/jest-environment",
+  testEnvironment: "jest-environment-jsdom",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

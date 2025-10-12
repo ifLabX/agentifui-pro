@@ -6,6 +6,8 @@ This module tests the CompletionClient functionality including:
 - Input handling and file attachments
 """
 
+import json
+
 from dify_client.async_client import AsyncCompletionClient
 from pytest_httpx import HTTPXMock
 
@@ -53,6 +55,11 @@ class TestCompletionClientCreateMessage:
         request = requests[0]
         assert request.method == "POST"
         assert "/completion-messages" in str(request.url)
+
+        request_body = json.loads(request.content)
+        assert request_body["inputs"] == sample_inputs
+        assert request_body["response_mode"] == "blocking"
+        assert request_body["user"] == mock_user
         assert response.status_code == 200
 
     async def test_create_completion_message_streaming(
@@ -83,6 +90,11 @@ class TestCompletionClientCreateMessage:
         request = requests[0]
         assert request.method == "POST"
         assert "/completion-messages" in str(request.url)
+
+        request_body = json.loads(request.content)
+        assert request_body["inputs"] == sample_inputs
+        assert request_body["response_mode"] == "streaming"
+        assert request_body["user"] == mock_user
         assert response.status_code == 200
 
     async def test_create_completion_message_with_files(
@@ -120,6 +132,12 @@ class TestCompletionClientCreateMessage:
         request = requests[0]
         assert request.method == "POST"
         assert "/completion-messages" in str(request.url)
+
+        request_body = json.loads(request.content)
+        assert request_body["inputs"] == sample_inputs
+        assert request_body["response_mode"] == "blocking"
+        assert request_body["user"] == mock_user
+        assert request_body["files"] == json_serializable_files
         assert response.status_code == 200
 
     async def test_create_completion_message_without_files(
@@ -151,6 +169,11 @@ class TestCompletionClientCreateMessage:
         request = requests[0]
         assert request.method == "POST"
         assert "/completion-messages" in str(request.url)
+
+        request_body = json.loads(request.content)
+        assert request_body["inputs"] == sample_inputs
+        assert request_body["response_mode"] == "blocking"
+        assert request_body["user"] == mock_user
         assert response.status_code == 200
 
     async def test_create_completion_message_various_inputs(
@@ -189,4 +212,9 @@ class TestCompletionClientCreateMessage:
         request = requests[0]
         assert request.method == "POST"
         assert "/completion-messages" in str(request.url)
+
+        request_body = json.loads(request.content)
+        assert request_body["inputs"] == complex_inputs
+        assert request_body["response_mode"] == "blocking"
+        assert request_body["user"] == mock_user
         assert response.status_code == 200

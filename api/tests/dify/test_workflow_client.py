@@ -7,6 +7,8 @@ This module tests the AsyncWorkflowClient functionality including:
 - Specific workflow execution
 """
 
+import json
+
 from dify_client.async_client import AsyncWorkflowClient
 from pytest_httpx import HTTPXMock
 
@@ -55,8 +57,6 @@ class TestWorkflowClientRun:
         assert request.method == "POST"
         assert "/workflows/run" in str(request.url)
 
-        import json
-
         request_body = json.loads(request.content)
         assert request_body["inputs"] == sample_inputs
         assert request_body["response_mode"] == "blocking"
@@ -88,8 +88,6 @@ class TestWorkflowClientRun:
         assert len(requests) == 1
         request = requests[0]
 
-        import json
-
         request_body = json.loads(request.content)
         assert request_body["response_mode"] == "streaming"
         assert response.status_code == 200
@@ -115,8 +113,6 @@ class TestWorkflowClientRun:
         requests = httpx_mock.get_requests()
         assert len(requests) == 1
         request = requests[0]
-
-        import json
 
         request_body = json.loads(request.content)
         assert request_body["response_mode"] == "streaming"
@@ -151,8 +147,6 @@ class TestWorkflowClientStop:
         request = requests[0]
         assert request.method == "POST"
         assert f"/workflows/tasks/{sample_task_id}/stop" in str(request.url)
-
-        import json
 
         request_body = json.loads(request.content)
         assert request_body == {"user": mock_user}
@@ -405,8 +399,6 @@ class TestWorkflowClientRunSpecific:
         assert request.method == "POST"
         assert f"/workflows/{sample_workflow_id}/run" in str(request.url)
 
-        import json
-
         request_body = json.loads(request.content)
         assert request_body["inputs"] == sample_inputs
         assert response.status_code == 200
@@ -463,8 +455,6 @@ class TestWorkflowClientRunSpecific:
         requests = httpx_mock.get_requests()
         assert len(requests) == 1
         request = requests[0]
-
-        import json
 
         request_body = json.loads(request.content)
         assert request_body["response_mode"] == "streaming"

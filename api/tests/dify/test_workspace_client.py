@@ -12,7 +12,7 @@ from pytest_httpx import HTTPXMock
 class TestWorkspaceClientInitialization:
     """Test AsyncWorkspaceClient initialization."""
 
-    def test_workspace_client_inherits_from_dify_client(self, mock_api_key: str) -> None:
+    async def test_workspace_client_inherits_from_dify_client(self, mock_api_key: str) -> None:
         """Test that AsyncWorkspaceClient inherits from AsyncDifyClient."""
         client = AsyncWorkspaceClient(api_key=mock_api_key)
 

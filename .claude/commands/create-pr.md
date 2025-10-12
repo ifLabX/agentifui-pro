@@ -47,9 +47,7 @@ git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 
 **Parse `$ARGUMENTS`:**
 - PR title (first quoted string)
-- Issue refs: `#123`, `Fixes #456`, `Closes #789`
 - Flags: `--draft`, `--base <branch>`, `--no-checks`, `--remote <name|url>`, `--reviewer <users>`
-- Branch name: Extract issue number from `feature/123-*` pattern
 
 ### 3. Run Quality Checks
 
@@ -74,7 +72,6 @@ Types: `feat|fix|refactor|docs|test|chore|perf|style|ci`
 - **MUST** read `.github/pull_request_template.md` for the template structure
 - Synthesize commit messages into Summary section
 - Auto-select Type checkbox based on commit type
-- Add `Fixes #<number>` if issue reference found
 - Fill in Changes section organized by scope (Backend/Frontend/Tests/Docs)
 - Mark quality checks checkbox if validation passed
 
@@ -141,8 +138,8 @@ Next: Review PR, monitor CI, add labels with gh pr edit <num> --add-label <label
 # Basic
 /create-pr
 
-# Custom title + issue
-/create-pr "feat: implement OAuth2" Fixes #123
+# Custom title
+/create-pr "feat: implement OAuth2"
 
 # Draft, skip checks
 /create-pr --draft --no-checks

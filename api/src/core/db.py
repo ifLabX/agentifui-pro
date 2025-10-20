@@ -3,15 +3,20 @@ Database connection and session management.
 
 This module provides async SQLAlchemy engine configuration, connection management,
 and session dependency injection for FastAPI using PostgreSQL with asyncpg driver.
+It also enforces multi-tenant and soft-delete policies at the ORM layer.
 """
 
 from collections.abc import AsyncGenerator
 from typing import Any, Optional
 
-from sqlalchemy import text
+from sqlalchemy import event, text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import Mapper, Session, with_loader_criteria
 from sqlalchemy.pool import NullPool
 from src.core.config import get_settings
+from src.core.context import get_request_context
+from src.core.exceptions import TenantContextError
+from src.models.base import Base, SoftDeleteMixin, TenantAwareMixin, VersionedAuditMixin
 
 # Global engine and session factory instances
 _engine: Optional[AsyncEngine] = None
@@ -221,6 +226,158 @@ def reset_session_factory() -> None:
     global _session_local
     _session_local = None
     reset_engine()  # Also reset the cached engine
+
+
+def _collect_tenant_selectables() -> set[Any]:
+    """
+    Gather all mapped selectables associated with tenant-aware entities.
+    """
+    selectables: set[Any] = set()
+    tenant_mappers: list[Mapper[Any]] = [
+        mapper for mapper in Base.registry.mappers if issubclass(mapper.class_, TenantAwareMixin)
+    ]
+
+    for mapper in tenant_mappers:
+        selectable = getattr(mapper, "persist_selectable", None)
+        if selectable is not None:
+            selectables.add(selectable)
+
+        selectable_attr = getattr(mapper, "selectable", None)
+        if selectable_attr is not None:
+            selectables.add(selectable_attr)
+
+        local_table = getattr(mapper, "local_table", None)
+        if local_table is not None:
+            selectables.add(local_table)
+
+    return selectables
+
+
+def _iter_selectable_family(selectable: Any) -> list[Any]:
+    """
+    Yield a selectable and all related children (aliases, joins, etc.).
+    """
+    stack = [selectable]
+    seen: set[Any] = set()
+
+    results: list[Any] = []
+    while stack:
+        current = stack.pop()
+        if current in seen:
+            continue
+        seen.add(current)
+        results.append(current)
+
+        for attr in ("element", "original", "left", "right"):
+            child = getattr(current, attr, None)
+            if child is not None and child is not current:
+                stack.append(child)
+
+    return results
+
+
+def _statement_targets_tenant_entities(statement: Any) -> bool:
+    """
+    Determine whether the given statement references tenant-aware entities.
+    """
+    if not hasattr(statement, "get_final_froms"):
+        return False
+
+    tenant_selectables = _collect_tenant_selectables()
+    if not tenant_selectables:
+        return False
+
+    try:
+        from_clauses = statement.get_final_froms()
+    except Exception:  # pragma: no cover - defensive against SQLAlchemy internals
+        return False
+
+    for from_clause in from_clauses:
+        for candidate in _iter_selectable_family(from_clause):
+            if candidate in tenant_selectables:
+                return True
+
+    return False
+
+
+@event.listens_for(Session, "do_orm_execute")
+def _inject_default_orm_filters(orm_execute_state: Any) -> None:
+    """
+    Apply soft-delete and tenant-aware filters to ORM SELECT statements.
+    """
+    if not orm_execute_state.is_select:
+        return
+
+    context = get_request_context()
+    statement = orm_execute_state.statement
+
+    if not context.include_deleted:
+        statement = statement.options(
+            with_loader_criteria(
+                SoftDeleteMixin,
+                lambda cls: cls.deleted_at.is_(None),
+                include_aliases=True,
+            )
+        )
+
+    targets_tenant_entities = _statement_targets_tenant_entities(statement)
+
+    if targets_tenant_entities and not context.allow_global_access:
+        tenant_id = context.tenant_id
+        if tenant_id is None:
+            raise TenantContextError("Tenant context is required for tenant-scoped queries")
+
+        def tenant_filter(entity: Any) -> Any:
+            return entity.tenant_id == tenant_id
+
+        statement = statement.options(
+            with_loader_criteria(
+                TenantAwareMixin,
+                tenant_filter,
+                include_aliases=True,
+            )
+        )
+
+    orm_execute_state.statement = statement
+
+
+@event.listens_for(Session, "before_flush")
+def _apply_audit_and_soft_delete_metadata(session: Session, flush_context: Any, instances: Any) -> None:
+    """
+    Populate audit metadata, enforce tenant scoping, and convert deletes to soft deletes.
+    """
+    context = get_request_context()
+    user_id = context.user_id
+    tenant_id = context.tenant_id
+
+    # Convert hard deletes into soft deletes
+    for instance in list(session.deleted):
+        if isinstance(instance, SoftDeleteMixin):
+            session.add(instance)
+            instance.soft_delete(deleted_by=user_id)
+
+    # Populate metadata for new instances
+    for instance in session.new:
+        if isinstance(instance, VersionedAuditMixin):
+            if instance.created_by is None:
+                instance.created_by = user_id
+            instance.updated_by = user_id if user_id is not None else instance.updated_by
+
+        if isinstance(instance, TenantAwareMixin):
+            if instance.tenant_id is None:
+                if tenant_id is None and not context.allow_global_access:
+                    raise TenantContextError(f"Tenant context is required to create {instance.__class__.__name__}")
+                if tenant_id is not None:
+                    instance.tenant_id = tenant_id
+
+            # Ensure tenant context matches when provided
+            if tenant_id is not None and not context.allow_global_access and instance.tenant_id != tenant_id:
+                raise TenantContextError(f"Tenant identifier mismatch for {instance.__class__.__name__}")
+
+    # Track updater metadata for modified instances
+    for instance in session.dirty:
+        if isinstance(instance, VersionedAuditMixin) and session.is_modified(instance, include_collections=False):
+            instance.updated_by = user_id if user_id is not None else instance.updated_by
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:

@@ -13,17 +13,24 @@ from src.models.errors import (
     ValidationError,
     ValidationErrorResponse,
 )
-
-# Import new database models here:
-# from models.user import User
+from src.models.tenant import (
+    Tenant,
+    TenantMember,
+    TenantMemberRole,
+    TenantMemberStatus,
+    TenantStatus,
+)
 
 __all__ = [
     "Base",
     "ErrorResponse",
     "ErrorType",
     "ServiceUnavailableError",
+    "Tenant",
+    "TenantMember",
+    "TenantMemberRole",
+    "TenantMemberStatus",
+    "TenantStatus",
     "ValidationError",
     "ValidationErrorResponse",
-    # Add new models to exports:
-    # "User",
 ]

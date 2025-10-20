@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError as PydanticValidationError
 from sqlalchemy.exc import DisconnectionError, SQLAlchemyError
 from src.core.config import get_settings
+from src.core.exceptions import TenantContextError
 from src.models.errors import (
     ErrorType,
     create_database_error,
@@ -66,6 +67,10 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
         except (SQLAlchemyError, DisconnectionError) as exc:
             # Handle database-related errors
             return await self._handle_database_error(request, exc)
+
+        except TenantContextError as exc:
+            # Handle missing or invalid tenant context
+            return await self._handle_tenant_context_error(request, exc)
 
         except Exception as exc:
             # Handle all other unexpected exceptions
@@ -168,6 +173,21 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
 
         return JSONResponse(
             status_code=503,
+            content=error_response.model_dump(),
+        )
+
+    async def _handle_tenant_context_error(self, request: Request, exc: TenantContextError) -> JSONResponse:
+        """
+        Handle tenant context errors stemming from multi-tenant enforcement.
+        """
+        error_response = create_error_response(
+            error_type=ErrorType.VALIDATION_ERROR,
+            message=str(exc),
+            request_id=self._get_request_id(request),
+        )
+
+        return JSONResponse(
+            status_code=400,
             content=error_response.model_dump(),
         )
 

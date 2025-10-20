@@ -14,6 +14,7 @@ from src.api.endpoints.health import router as health_router
 from src.core.config import get_settings
 from src.core.db import dispose_engine
 from src.middleware.error_handler import setup_error_handling
+from src.middleware.tenant_context import TenantContextMiddleware
 
 
 @asynccontextmanager
@@ -60,6 +61,9 @@ def create_app() -> FastAPI:
         allow_methods=settings.cors_allow_methods,
         allow_headers=settings.cors_allow_headers,
     )
+
+    # Attach tenant context middleware ahead of custom error handling
+    app.add_middleware(TenantContextMiddleware)
 
     # Setup error handling middleware
     setup_error_handling(app)

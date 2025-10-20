@@ -40,7 +40,7 @@ tenant_member_status_enum = postgresql.ENUM(
     "suspended",
     "removed",
     name="tenant_member_status",
-    create_type=False,
+    create_type=False,  # Prevent automatic creation of the enum type
 )
 
 

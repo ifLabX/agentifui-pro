@@ -36,9 +36,7 @@ class RequestContext:
             tenant_id=self.tenant_id if tenant_id is None else tenant_id,
             user_id=self.user_id if user_id is None else user_id,
             include_deleted=self.include_deleted if include_deleted is None else include_deleted,
-            allow_global_access=(
-                self.allow_global_access if allow_global_access is None else allow_global_access
-            ),
+            allow_global_access=(self.allow_global_access if allow_global_access is None else allow_global_access),
         )
 
 

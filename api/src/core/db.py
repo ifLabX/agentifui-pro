@@ -363,26 +363,20 @@ def _apply_audit_and_soft_delete_metadata(session: Session, flush_context: Any, 
         if isinstance(instance, TenantAwareMixin):
             if instance.tenant_id is None:
                 if tenant_id is None and not context.allow_global_access:
-                    raise TenantContextError(
-                        f"Tenant context is required to create {instance.__class__.__name__}"
-                    )
+                    raise TenantContextError(f"Tenant context is required to create {instance.__class__.__name__}")
                 if tenant_id is not None:
                     instance.tenant_id = tenant_id
 
             # Ensure tenant context matches when provided
-            if (
-                tenant_id is not None
-                and not context.allow_global_access
-                and instance.tenant_id != tenant_id
-            ):
-                raise TenantContextError(
-                    f"Tenant identifier mismatch for {instance.__class__.__name__}"
-                )
+            if tenant_id is not None and not context.allow_global_access and instance.tenant_id != tenant_id:
+                raise TenantContextError(f"Tenant identifier mismatch for {instance.__class__.__name__}")
 
     # Track updater metadata for modified instances
     for instance in session.dirty:
         if isinstance(instance, VersionedAuditMixin) and session.is_modified(instance, include_collections=False):
             instance.updated_by = user_id if user_id is not None else instance.updated_by
+
+
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     FastAPI dependency for getting database session.

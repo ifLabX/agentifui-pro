@@ -18,25 +18,28 @@ down_revision: Union[str, None] = "9814f556d003"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-tenant_status_enum = sa.Enum(
+tenant_status_enum = postgresql.ENUM(
     "active",
     "suspended",
     "deleted",
     name="tenant_status",
+    create_type=False,
 )
-tenant_member_role_enum = sa.Enum(
+tenant_member_role_enum = postgresql.ENUM(
     "owner",
     "admin",
     "member",
     "viewer",
     name="tenant_member_role",
+    create_type=False,
 )
-tenant_member_status_enum = sa.Enum(
+tenant_member_status_enum = postgresql.ENUM(
     "invited",
     "active",
     "suspended",
     "removed",
     name="tenant_member_status",
+    create_type=False,
 )
 
 

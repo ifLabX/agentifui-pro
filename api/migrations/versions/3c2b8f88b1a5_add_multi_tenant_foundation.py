@@ -23,7 +23,8 @@ tenant_status_enum = postgresql.ENUM(
     "suspended",
     "deleted",
     name="tenant_status",
-    create_type=False,
+    create_type=False,  # Prevent automatic creation of the enum type
+)
 )
 tenant_member_role_enum = postgresql.ENUM(
     "owner",

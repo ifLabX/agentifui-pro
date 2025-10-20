@@ -327,10 +327,13 @@ def _inject_default_orm_filters(orm_execute_state: Any) -> None:
         if tenant_id is None:
             raise TenantContextError("Tenant context is required for tenant-scoped queries")
 
+        def tenant_filter(entity: Any) -> Any:
+            return entity.tenant_id == tenant_id
+
         statement = statement.options(
             with_loader_criteria(
                 TenantAwareMixin,
-                lambda cls, tenant_id=tenant_id: cls.tenant_id == tenant_id,
+                tenant_filter,
                 include_aliases=True,
             )
         )

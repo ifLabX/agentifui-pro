@@ -90,7 +90,7 @@ class VersionedAuditMixin:
     )
 
     @declared_attr.directive
-    def __mapper_args__(cls) -> dict[str, Any]:  # type: ignore[override]  # noqa: N805
+    def __mapper_args__(cls) -> dict[str, Any]:  # noqa: N805
         """Enable SQLAlchemy's optimistic locking using the version column."""
         return {"version_id_col": cls.version}  # pragma: no cover - handled by SQLAlchemy
 

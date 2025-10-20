@@ -25,7 +25,7 @@ tenant_status_enum = postgresql.ENUM(
     name="tenant_status",
     create_type=False,  # Prevent automatic creation of the enum type
 )
-)
+
 tenant_member_role_enum = postgresql.ENUM(
     "owner",
     "admin",
@@ -34,7 +34,7 @@ tenant_member_role_enum = postgresql.ENUM(
     name="tenant_member_role",
     create_type=False,  # Prevent automatic creation of the enum type
 )
-)
+
 tenant_member_status_enum = postgresql.ENUM(
     "invited",
     "active",

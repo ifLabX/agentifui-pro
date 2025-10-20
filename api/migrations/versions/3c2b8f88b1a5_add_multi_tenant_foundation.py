@@ -86,14 +86,12 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["tenant_id"], ["tenants.id"], ondelete="CASCADE"),
         sa.UniqueConstraint("tenant_id", "user_id", name="uq_tenant_members_user"),
     )
-    op.create_index("ix_tenant_members_tenant_user", "tenant_members", ["tenant_id", "user_id"])
     op.create_index("ix_tenant_members_tenant_id", "tenant_members", ["tenant_id"])
 
 
 def downgrade() -> None:
     """Downgrade database schema."""
     op.drop_index("ix_tenant_members_tenant_id", table_name="tenant_members")
-    op.drop_index("ix_tenant_members_tenant_user", table_name="tenant_members")
     op.drop_table("tenant_members")
 
     op.drop_index("ix_tenants_status", table_name="tenants")

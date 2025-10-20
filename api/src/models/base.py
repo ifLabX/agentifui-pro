@@ -7,7 +7,7 @@ auditing metadata, tenant scoping, and soft-deletion helpers.
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy import DateTime, Integer, MetaData, func, text
@@ -127,7 +127,7 @@ class SoftDeleteMixin:
 
     def soft_delete(self, deleted_by: str | None = None) -> None:
         """Mark the record as deleted without removing it from the database."""
-        now = datetime.now(UTC)
+        now = datetime.now(timezone.utc)  # noqa: UP017
         self.deleted_at = now
         self.deleted_by = deleted_by
 

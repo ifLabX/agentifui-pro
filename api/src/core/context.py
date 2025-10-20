@@ -12,6 +12,8 @@ from contextlib import contextmanager
 from contextvars import ContextVar, Token
 from dataclasses import dataclass, replace
 
+from src.core.exceptions import TenantContextError
+
 
 @dataclass(frozen=True, slots=True)
 class RequestContext:
@@ -80,8 +82,6 @@ def require_tenant_id() -> str:
     """Fetch tenant identifier from context or raise a descriptive error."""
     tenant_id = get_request_context().tenant_id
     if tenant_id is None:
-        from src.core.exceptions import TenantContextError
-
         raise TenantContextError("Tenant context is required but was not provided")
     return tenant_id
 

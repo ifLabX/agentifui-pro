@@ -98,3 +98,7 @@ cover/
 .claude/settings.json
 **/claudedocs/
 .serena
+
+# Frontend overrides
+!web/lib/
+!web/lib/**

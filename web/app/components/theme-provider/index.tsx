@@ -10,7 +10,7 @@ import { Theme } from "@/types/app";
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider
-      attribute="data-theme"
+      attribute="class"
       defaultTheme={Theme.system}
       themes={[Theme.light, Theme.dark, Theme.system]}
       enableSystem

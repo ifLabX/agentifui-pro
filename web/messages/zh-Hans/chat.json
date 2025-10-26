@@ -1,0 +1,23 @@
+{
+  "input": {
+    "placeholder": "输入消息或粘贴图片..."
+  },
+  "dropzone": {
+    "label": "拖拽文件以上传"
+  },
+  "attachments": {
+    "upload-aria": "上传文件",
+    "add-aria": "添加附件",
+    "remove-aria": "移除附件",
+    "file-size-zero": "0 字节",
+    "units": {
+      "bytes": "字节",
+      "kilobytes": "KB",
+      "megabytes": "MB",
+      "gigabytes": "GB"
+    }
+  },
+  "submit": {
+    "aria-label": "发送消息"
+  }
+}

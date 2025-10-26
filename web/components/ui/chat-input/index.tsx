@@ -3,6 +3,7 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, FileText, ImageIcon, Paperclip, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,10 +26,12 @@ interface ChatInputProps {
 
 export function ChatInput({
   onSubmit,
-  placeholder = "Type a message or paste an image...",
+  placeholder,
   disabled = false,
   className,
 }: ChatInputProps) {
+  const t = useTranslations();
+  const resolvedPlaceholder = placeholder ?? t("chat.input.placeholder");
   const [message, setMessage] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -172,11 +175,19 @@ export function ChatInput({
   };
 
   const formatBytes = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return t("chat.attachments.file-size-zero");
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i)) + " " + sizes[i];
+    const sizes = [
+      t("chat.attachments.units.bytes"),
+      t("chat.attachments.units.kilobytes"),
+      t("chat.attachments.units.megabytes"),
+      t("chat.attachments.units.gigabytes"),
+    ];
+    const i = Math.min(
+      Math.floor(Math.log(bytes) / Math.log(k)),
+      sizes.length - 1
+    );
+    return `${Math.round(bytes / Math.pow(k, i))} ${sizes[i]}`;
   };
 
   const getFileIcon = (type: string) => {
@@ -207,7 +218,7 @@ export function ChatInput({
             <div className="flex flex-col items-center gap-2">
               <Paperclip className="h-8 w-8 text-chat-submit-bg" />
               <p className="font-serif text-sm font-medium text-chat-input-text">
-                Drop files to upload
+                {t("chat.dropzone.label")}
               </p>
             </div>
           </div>
@@ -261,7 +272,7 @@ export function ChatInput({
                       "bg-chat-attachment-remove-bg hover:bg-chat-attachment-remove-hover-bg",
                       "transition-colors"
                     )}
-                    aria-label="Remove attachment"
+                    aria-label={t("chat.attachments.remove-aria")}
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -279,7 +290,7 @@ export function ChatInput({
             onChange={e => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
-            placeholder={placeholder}
+            placeholder={resolvedPlaceholder}
             disabled={disabled}
             rows={1}
             className={cn(
@@ -302,7 +313,7 @@ export function ChatInput({
               multiple
               onChange={handleFileSelect}
               className="hidden"
-              aria-label="Upload files"
+              aria-label={t("chat.attachments.upload-aria")}
             />
             <Button
               type="button"
@@ -315,7 +326,7 @@ export function ChatInput({
                 "bg-chat-button-bg border border-chat-button-border",
                 "text-chat-button-text hover:bg-chat-button-hover-bg"
               )}
-              aria-label="Add attachment"
+              aria-label={t("chat.attachments.add-aria")}
             >
               <Paperclip className="h-4 w-4" />
             </Button>
@@ -334,7 +345,7 @@ export function ChatInput({
                 ? "bg-chat-submit-bg text-chat-submit-text hover:bg-chat-submit-hover-bg"
                 : "bg-chat-submit-disabled-bg text-chat-submit-disabled-text cursor-not-allowed"
             )}
-            aria-label="Send message"
+            aria-label={t("chat.submit.aria-label")}
           >
             <ArrowUp className="h-4 w-4" />
           </Button>

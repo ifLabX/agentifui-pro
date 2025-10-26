@@ -36,6 +36,7 @@ export function ChatInput({
   const [message, setMessage] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isComposing, setIsComposing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -90,7 +91,7 @@ export function ChatInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.nativeEvent.isComposing || e.isComposing) {
+    if (isComposing || e.nativeEvent.isComposing) {
       return;
     }
 
@@ -309,6 +310,8 @@ export function ChatInput({
             value={message}
             onChange={e => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
             onPaste={handlePaste}
             placeholder={resolvedPlaceholder}
             disabled={disabled}

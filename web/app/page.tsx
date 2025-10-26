@@ -15,13 +15,7 @@ export default function Home() {
           </p>
         </div>
 
-        <ChatInput
-          onSubmit={(message, attachments) => {
-            console.log("Message:", message);
-            console.log("Attachments:", attachments);
-          }}
-          placeholder="Type your message..."
-        />
+        <ChatInput placeholder="Type your message..." />
 
         <div className="text-center text-sm text-muted-foreground">
           <p>Press Enter to send • Shift + Enter for new line</p>

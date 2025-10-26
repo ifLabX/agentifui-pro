@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { ArrowUp, FileText, ImageIcon, Paperclip, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -244,10 +245,13 @@ export function ChatInput({
                   )}
                 >
                   {attachment.preview ? (
-                    <img
+                    <Image
                       src={attachment.preview || "/placeholder.svg"}
                       alt={attachment.name}
+                      width={32}
+                      height={32}
                       className="h-8 w-8 rounded object-cover flex-shrink-0"
+                      unoptimized
                     />
                   ) : (
                     <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-chat-button-bg text-chat-button-text">

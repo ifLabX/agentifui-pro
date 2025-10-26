@@ -39,6 +39,7 @@ export function ChatInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const attachmentIdRef = useRef(0);
 
   const hasContent = message.trim().length > 0 || attachments.length > 0;
 
@@ -53,15 +54,21 @@ export function ChatInput({
     textarea.style.height = `${newHeight}px`;
   }, [message]);
 
+  const attachmentsRef = useRef<Attachment[]>([]);
+
+  useEffect(() => {
+    attachmentsRef.current = attachments;
+  }, [attachments]);
+
   useEffect(() => {
     return () => {
-      attachments.forEach(attachment => {
+      attachmentsRef.current.forEach(attachment => {
         if (attachment.preview) {
           URL.revokeObjectURL(attachment.preview);
         }
       });
     };
-  }, [attachments]);
+  }, []);
 
   const handleSubmit = () => {
     if (!hasContent || disabled) return;
@@ -86,7 +93,7 @@ export function ChatInput({
   const processFiles = (files: File[]) => {
     const newAttachments: Attachment[] = files.map(file => {
       const attachment: Attachment = {
-        id: Math.random().toString(36).substring(7),
+        id: `attachment-${attachmentIdRef.current++}`,
         name: file.name,
         size: file.size,
         type: file.type,
@@ -143,8 +150,7 @@ export function ChatInput({
     e.preventDefault();
     e.stopPropagation();
 
-    // Only reset the drag state when the container loses hover
-    if (e.currentTarget === containerRef.current) {
+    if (!containerRef.current?.contains(e.relatedTarget as Node)) {
       setIsDragging(false);
     }
   };

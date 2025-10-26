@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
+import { geistMono, geistSans, inter, playfairDisplay } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/app/components/theme-provider";
-
-import { geistMono, geistSans, inter, playfairDisplay } from "../themes/fonts";
 
 import "./globals.css";
 
@@ -24,10 +24,15 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${playfairDisplay.variable}`}
+      className={cn(
+        geistSans.variable,
+        geistMono.variable,
+        inter.variable,
+        playfairDisplay.variable
+      )}
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased">
+      <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             {children}

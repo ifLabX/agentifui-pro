@@ -73,6 +73,12 @@ export function ChatInput({
   const handleSubmit = () => {
     if (!hasContent || disabled) return;
 
+    attachments.forEach(attachment => {
+      if (attachment.preview) {
+        URL.revokeObjectURL(attachment.preview);
+      }
+    });
+
     onSubmit?.(message, attachments);
     setMessage("");
     setAttachments([]);
@@ -84,6 +90,10 @@ export function ChatInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.nativeEvent.isComposing || e.isComposing) {
+      return;
+    }
+
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();

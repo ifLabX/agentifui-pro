@@ -1,0 +1,23 @@
+{
+  "input": {
+    "placeholder": "メッセージを入力するか画像を貼り付けてください..."
+  },
+  "dropzone": {
+    "label": "ファイルをドロップしてアップロード"
+  },
+  "attachments": {
+    "upload-aria": "ファイルをアップロード",
+    "add-aria": "添付ファイルを追加",
+    "remove-aria": "添付ファイルを削除",
+    "file-size-zero": "0 バイト",
+    "units": {
+      "bytes": "バイト",
+      "kilobytes": "KB",
+      "megabytes": "MB",
+      "gigabytes": "GB"
+    }
+  },
+  "submit": {
+    "aria-label": "メッセージを送信"
+  }
+}

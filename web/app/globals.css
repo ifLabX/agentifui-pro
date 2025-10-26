@@ -1,69 +1,228 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Adding chat-specific design tokens for stone color palette */
+
+  /* Base colors */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+
+  /* Chat input specific tokens */
+  --chat-input-bg: oklch(1 0 0);
+  --chat-input-border: oklch(0.88 0 0); /* stone-200 equivalent */
+  --chat-input-text: oklch(0.28 0 0); /* stone-900 equivalent */
+  --chat-input-placeholder: oklch(0.62 0 0); /* stone-500 equivalent */
+
+  /* Button tokens */
+  --chat-button-bg: transparent;
+  --chat-button-border: oklch(0.88 0 0); /* stone-200 */
+  --chat-button-text: oklch(0.52 0 0); /* stone-600 */
+  --chat-button-hover-bg: oklch(0.98 0 0); /* stone-50 */
+
+  /* Submit button tokens */
+  --chat-submit-bg: oklch(0.145 0 0); /* black */
+  --chat-submit-text: oklch(1 0 0); /* white */
+  --chat-submit-hover-bg: oklch(0.28 0 0); /* gray-800 */
+  --chat-submit-disabled-bg: oklch(0.88 0 0); /* gray-200 */
+  --chat-submit-disabled-text: oklch(0.62 0 0); /* gray-400 */
+
+  /* Attachment preview tokens */
+  --chat-attachment-bg: oklch(0.98 0 0); /* stone-100 */
+  --chat-attachment-border: oklch(0.88 0 0); /* stone-200 */
+  --chat-attachment-text: oklch(0.28 0 0); /* stone-900 */
+  --chat-attachment-text-secondary: oklch(0.62 0 0); /* stone-500 */
+  --chat-attachment-remove-bg: oklch(0.85 0 0 / 0.5); /* stone-300/50 */
+  --chat-attachment-remove-hover-bg: oklch(0.75 0 0 / 0.7); /* stone-400/70 */
+
+  /* Error state tokens */
+  --chat-error-border: oklch(0.7 0.15 25 / 0.3); /* red-400/30 */
+  --chat-error-text: oklch(0.5 0.2 25); /* red-500 */
+
+  /* Shadow tokens */
+  --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  /* Adding dark mode chat-specific tokens */
+
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+
+  /* Chat input dark mode tokens */
+  --chat-input-bg: oklch(0.35 0 0); /* stone-700 equivalent */
+  --chat-input-border: oklch(0.35 0 0 / 0.8); /* stone-700/80 */
+  --chat-input-text: oklch(0.98 0 0); /* stone-100 */
+  --chat-input-placeholder: oklch(0.62 0 0); /* stone-400 */
+
+  /* Button dark mode tokens */
+  --chat-button-bg: oklch(0.45 0 0 / 0.3); /* stone-600/30 */
+  --chat-button-border: oklch(0.45 0 0); /* stone-600 */
+  --chat-button-text: oklch(0.98 0 0); /* stone-100 */
+  --chat-button-hover-bg: oklch(0.45 0 0); /* stone-600 */
+
+  /* Submit button dark mode tokens */
+  --chat-submit-bg: oklch(0.22 0 0); /* stone-900 */
+  --chat-submit-text: oklch(1 0 0); /* white */
+  --chat-submit-hover-bg: oklch(0.28 0 0); /* stone-800 */
+  --chat-submit-disabled-bg: oklch(0.45 0 0); /* stone-600 */
+  --chat-submit-disabled-text: oklch(0.98 0 0); /* stone-100 */
+
+  /* Attachment preview dark mode tokens */
+  --chat-attachment-bg: oklch(0.28 0 0 / 0.9); /* stone-800/90 */
+  --chat-attachment-border: oklch(0.35 0 0 / 0.8); /* stone-700/80 */
+  --chat-attachment-text: oklch(0.98 0 0); /* stone-100 */
+  --chat-attachment-text-secondary: oklch(0.62 0 0); /* stone-400 */
+  --chat-attachment-remove-bg: oklch(0.35 0 0 / 0.8); /* stone-700/80 */
+  --chat-attachment-remove-hover-bg: oklch(0.45 0 0 / 0.8); /* stone-600/80 */
+
+  /* Error state dark mode tokens */
+  --chat-error-border: oklch(0.5 0.2 25 / 0.3); /* red-500/30 */
+  --chat-error-text: oklch(0.7 0.15 25); /* red-300 */
+
+  /* Shadow dark mode */
+  --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  /* Adding chat-specific color mappings to Tailwind */
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --font-serif: "Geist", "Geist Fallback";
+
+  /* Chat color mappings */
+  --color-chat-input-bg: var(--chat-input-bg);
+  --color-chat-input-border: var(--chat-input-border);
+  --color-chat-input-text: var(--chat-input-text);
+  --color-chat-input-placeholder: var(--chat-input-placeholder);
+  --color-chat-button-bg: var(--chat-button-bg);
+  --color-chat-button-border: var(--chat-button-border);
+  --color-chat-button-text: var(--chat-button-text);
+  --color-chat-button-hover-bg: var(--chat-button-hover-bg);
+  --color-chat-submit-bg: var(--chat-submit-bg);
+  --color-chat-submit-text: var(--chat-submit-text);
+  --color-chat-submit-hover-bg: var(--chat-submit-hover-bg);
+  --color-chat-submit-disabled-bg: var(--chat-submit-disabled-bg);
+  --color-chat-submit-disabled-text: var(--chat-submit-disabled-text);
+  --color-chat-attachment-bg: var(--chat-attachment-bg);
+  --color-chat-attachment-border: var(--chat-attachment-border);
+  --color-chat-attachment-text: var(--chat-attachment-text);
+  --color-chat-attachment-text-secondary: var(--chat-attachment-text-secondary);
+  --color-chat-attachment-remove-bg: var(--chat-attachment-remove-bg);
+  --color-chat-attachment-remove-hover-bg: var(
+    --chat-attachment-remove-hover-bg
+  );
+  --color-chat-error-border: var(--chat-error-border);
+  --color-chat-error-text: var(--chat-error-text);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
-
   body {
     @apply bg-background text-foreground;
-    font-feature-settings:
-      "rlig" 1,
-      "calt" 1;
   }
 }

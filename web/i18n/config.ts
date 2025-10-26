@@ -6,7 +6,7 @@ export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en-US";
 
 // Namespaces
-export const namespaces = ["common", "auth"] as const;
+export const namespaces = ["auth", "chat", "common"] as const;
 export type Namespace = (typeof namespaces)[number];
 
 // Locale display names

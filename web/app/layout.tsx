@@ -4,7 +4,7 @@ import { getLocale, getMessages } from "next-intl/server";
 
 import { geistMono, geistSans, inter, playfairDisplay } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/app/components/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
 

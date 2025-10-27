@@ -27,13 +27,13 @@ interface SpinnerProps
 const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
   ({ className, variant = "default", size, ...props }, ref) => {
     const Icon = variant === "loader" ? LoaderIcon : Loader2Icon;
-    const { role: _role, ...rest } = props;
+    const { "aria-label": ariaLabel = "Loading", role: _role, ...rest } = props;
 
     return (
       <Icon
         ref={ref}
         role="status"
-        aria-label="Loading"
+        aria-label={ariaLabel}
         className={cn(spinnerVariants({ size, className }))}
         {...rest}
       />

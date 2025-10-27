@@ -8,7 +8,7 @@ interface SpinnerProps extends React.ComponentProps<"svg"> {
 
 function Spinner({ className, variant = "default", ...props }: SpinnerProps) {
   const Icon = variant === "loader" ? LoaderIcon : Loader2Icon;
-  const { role, ...rest } = props;
+  const { role: _role, ...rest } = props;
 
   return (
     <Icon

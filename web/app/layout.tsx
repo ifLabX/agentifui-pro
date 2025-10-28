@@ -4,6 +4,7 @@ import { getLocale, getMessages } from "next-intl/server";
 
 import { geistMono, geistSans, inter, playfairDisplay } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
@@ -34,9 +35,11 @@ export default async function RootLayout({
     >
       <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            {children}
-          </NextIntlClientProvider>
+          <TooltipProvider delayDuration={100} skipDelayDuration={300}>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

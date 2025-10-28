@@ -90,6 +90,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@happy-dom/jest-environment": "^20.0.8",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@next/bundle-analyzer": "^15.5.4",
     "@tailwindcss/postcss": "^4.1.9",
@@ -105,9 +106,9 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "eslint-plugin-oxlint": "^1.16.0",
+    "happy-dom": "^20.0.8",
     "husky": "^9.1.7",
     "jest": "^30.0.5",
-    "jest-environment-jsdom": "^30.0.5",
     "lint-staged": "^16.1.5",
     "oxlint": "^1.23.0",
     "postcss": "^8.5.0",

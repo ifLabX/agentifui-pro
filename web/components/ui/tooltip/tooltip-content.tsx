@@ -8,7 +8,7 @@ export type TooltipContentProps = {
   className?: string;
 } & PropsWithChildren;
 
-export const ToolTipContent: FC<TooltipContentProps> = ({
+export const TooltipContent: FC<TooltipContentProps> = ({
   title,
   action,
   children,

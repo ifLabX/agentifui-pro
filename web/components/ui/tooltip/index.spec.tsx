@@ -11,6 +11,8 @@ import userEvent from "@testing-library/user-event";
 
 import "@testing-library/jest-dom";
 
+import type { TooltipProviderProps } from "@radix-ui/react-tooltip";
+
 import { Tooltip, TooltipProvider } from "./index";
 
 afterEach(cleanup);
@@ -29,8 +31,19 @@ beforeAll(() => {
   }
 });
 
-const renderWithProvider = (ui: React.ReactElement) => {
-  return render(<TooltipProvider>{ui}</TooltipProvider>);
+const renderWithProvider = (
+  ui: React.ReactElement,
+  providerProps?: Omit<TooltipProviderProps, "children">
+) => {
+  return render(
+    <TooltipProvider
+      delayDuration={100}
+      skipDelayDuration={300}
+      {...providerProps}
+    >
+      {ui}
+    </TooltipProvider>
+  );
 };
 
 describe("Tooltip", () => {
@@ -95,7 +108,8 @@ describe("Tooltip", () => {
         const { container } = renderWithProvider(
           <Tooltip content="Tooltip content" delayDuration={500}>
             <button>Trigger</button>
-          </Tooltip>
+          </Tooltip>,
+          { delayDuration: 100 }
         );
         const trigger = container.querySelector("button");
 
@@ -135,11 +149,11 @@ describe("Tooltip", () => {
       const user = userEvent.setup();
       await user.hover(trigger!);
       await waitFor(() => {
-        const contents = screen.getAllByText("Tooltip content");
-        const visibleContent = contents.find(el =>
-          el.className.includes("custom-popup")
-        );
-        expect(visibleContent).toBeDefined();
+        const content = screen.getByRole("tooltip", {
+          hidden: true,
+        }).parentElement;
+        expect(content).not.toBeNull();
+        expect(content).toHaveClass("custom-popup");
       });
     });
 

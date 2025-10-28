@@ -28,7 +28,7 @@ const TooltipArrow = React.forwardRef<
 ));
 TooltipArrow.displayName = TooltipPrimitive.Arrow.displayName;
 
-const TooltipContent = React.forwardRef<
+const TooltipPrimitiveContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
@@ -48,7 +48,7 @@ const TooltipContent = React.forwardRef<
     {...props}
   />
 ));
-TooltipContent.displayName = TooltipPrimitive.Content.displayName;
+TooltipPrimitiveContent.displayName = TooltipPrimitive.Content.displayName;
 
 export interface TooltipProps {
   children?: React.ReactNode;
@@ -63,7 +63,6 @@ export interface TooltipProps {
   onOpenChange?: (open: boolean) => void;
   disabled?: boolean;
   delayDuration?: number;
-  skipDelayDuration?: number;
   testId?: string;
 }
 
@@ -79,8 +78,7 @@ function Tooltip({
   defaultOpen,
   onOpenChange: controlledOnOpenChange,
   disabled = false,
-  delayDuration = 100,
-  skipDelayDuration = 300,
+  delayDuration,
   testId,
 }: TooltipProps) {
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen ?? false);
@@ -123,7 +121,10 @@ function Tooltip({
     return <>{children}</>;
   }
 
-  const triggerContent = children || (
+  const hasCustomTrigger = children !== undefined && children !== null;
+  const triggerContent = hasCustomTrigger ? (
+    children
+  ) : (
     <button
       type="button"
       data-testid={testId}
@@ -138,31 +139,31 @@ function Tooltip({
       <HelpCircle className="h-4 w-4" />
     </button>
   );
+  const triggerAsChild = hasCustomTrigger ? asChild : true;
 
   return (
-    <TooltipPrimitive.Provider
+    <TooltipRoot
+      open={isOpen}
+      onOpenChange={handleOpenChange}
       delayDuration={delayDuration}
-      skipDelayDuration={skipDelayDuration}
     >
-      <TooltipRoot open={isOpen} onOpenChange={handleOpenChange}>
-        <TooltipTrigger
-          asChild={asChild}
-          className={asChild ? undefined : className}
-          data-testid={testId}
+      <TooltipTrigger
+        asChild={triggerAsChild}
+        className={triggerAsChild ? undefined : className}
+        data-testid={testId}
+      >
+        {triggerContent}
+      </TooltipTrigger>
+      <TooltipPortal>
+        <TooltipPrimitiveContent
+          side={side}
+          align={align}
+          className={cn("max-w-xs", contentClassName)}
         >
-          {triggerContent}
-        </TooltipTrigger>
-        <TooltipPortal>
-          <TooltipContent
-            side={side}
-            align={align}
-            className={cn("max-w-xs", contentClassName)}
-          >
-            {content}
-          </TooltipContent>
-        </TooltipPortal>
-      </TooltipRoot>
-    </TooltipPrimitive.Provider>
+          {content}
+        </TooltipPrimitiveContent>
+      </TooltipPortal>
+    </TooltipRoot>
   );
 }
 
@@ -170,12 +171,12 @@ export {
   TooltipProvider,
   TooltipRoot,
   TooltipTrigger,
-  TooltipContent,
+  TooltipPrimitiveContent,
   TooltipPortal,
   TooltipArrow,
 };
 export { Tooltip };
-export { ToolTipContent } from "./tooltip-content";
+export { TooltipContent } from "./tooltip-content";
 export type { TooltipContentProps } from "./tooltip-content";
 export { TooltipWrapper } from "./tooltip-wrapper";
 export { tooltipManager } from "./tooltip-manager";

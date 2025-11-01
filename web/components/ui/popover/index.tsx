@@ -70,12 +70,7 @@ export const PopoverTrigger = React.forwardRef<
       ...props,
     }) as Record<string, unknown>;
 
-    if (
-      typeof child.type === "string" &&
-      child.type.toLowerCase() === "button" &&
-      referenceProps.type == null &&
-      childProps.type == null
-    ) {
+    if (referenceProps.type == null && childProps.type == null) {
       referenceProps.type = "button";
     }
 

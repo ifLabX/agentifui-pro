@@ -56,6 +56,14 @@ const config = {
     config.esbuild = config.esbuild || {};
     config.esbuild.jsx = "automatic";
 
+    // Define global process.env for Next.js compatibility
+    config.define = config.define || {};
+    config.define.process = {
+      env: {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || "development"),
+      },
+    };
+
     return config;
   },
 

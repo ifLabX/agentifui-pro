@@ -1,6 +1,7 @@
 import React from "react";
 import type { Preview } from "@storybook/react";
 import { NextIntlClientProvider } from "next-intl";
+import ResizeObserver from "resize-observer-polyfill";
 
 import "../app/globals.css";
 
@@ -78,11 +79,7 @@ if (typeof window !== "undefined") {
 
   // ResizeObserver polyfill
   if (!window.ResizeObserver) {
-    window.ResizeObserver = class ResizeObserver {
-      observe() {}
-      unobserve() {}
-      disconnect() {}
-    };
+    window.ResizeObserver = ResizeObserver as typeof window.ResizeObserver;
   }
 
   // URL.createObjectURL polyfill for file handling

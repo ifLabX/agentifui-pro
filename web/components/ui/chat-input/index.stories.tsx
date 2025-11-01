@@ -4,22 +4,6 @@ import { fn } from "@storybook/test";
 
 import { ChatInput } from "./index";
 
-// Mock translations for the component (kept for reference, used in preview.ts)
-
-const _mockTranslations = {
-  "chat.input.placeholder": "Type a message...",
-  "chat.dropzone.label": "Drop files here",
-  "chat.attachments.file-size-zero": "0 bytes",
-  "chat.attachments.units.bytes": "B",
-  "chat.attachments.units.kilobytes": "KB",
-  "chat.attachments.units.megabytes": "MB",
-  "chat.attachments.units.gigabytes": "GB",
-  "chat.attachments.remove-aria": "Remove attachment",
-  "chat.attachments.upload-aria": "Upload files",
-  "chat.attachments.add-aria": "Add attachments",
-  "chat.submit.aria-label": "Send message",
-};
-
 const meta = {
   title: "UI/ChatInput",
   component: ChatInput,
@@ -205,43 +189,4 @@ export const DragAndDropDemo: Story = {
       </div>
     </div>
   ),
-};
-
-export const AllStates: Story = {
-  render: () => {
-    const AllStatesDemo = () => {
-      const [state, setState] = useState<"empty" | "typing" | "disabled">(
-        "empty"
-      );
-
-      return (
-        <div className="flex flex-col gap-4">
-          <ChatInput disabled={state === "disabled"} onSubmit={fn()} />
-          <div className="flex gap-2">
-            <button
-              onClick={() => setState("empty")}
-              className="px-3 py-1 text-sm rounded border"
-            >
-              Empty
-            </button>
-            <button
-              onClick={() => setState("typing")}
-              className="px-3 py-1 text-sm rounded border"
-            >
-              Typing
-            </button>
-            <button
-              onClick={() => setState("disabled")}
-              className="px-3 py-1 text-sm rounded border"
-            >
-              Disabled
-            </button>
-          </div>
-          <div className="text-sm">Current state: {state}</div>
-        </div>
-      );
-    };
-
-    return <AllStatesDemo />;
-  },
 };

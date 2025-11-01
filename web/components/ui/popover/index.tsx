@@ -69,8 +69,17 @@ export const PopoverTrigger = React.forwardRef<
       ...childProps,
       ...props,
     }) as Record<string, unknown>;
+
+    if (
+      typeof child.type === "string" &&
+      child.type.toLowerCase() === "button" &&
+      referenceProps.type == null &&
+      childProps.type == null
+    ) {
+      referenceProps.type = "button";
+    }
+
     return React.cloneElement(child, {
-      ...childProps,
       ...referenceProps,
       "data-state": context.open ? "open" : "closed",
     });
@@ -270,14 +279,14 @@ export const PopoverHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, id, ...props }, ref) => {
-  const popover = usePopoverContext();
+  const { setLabelId } = usePopoverContext();
   const generatedId = React.useId();
   const headerId = id ?? generatedId;
 
   React.useEffect(() => {
-    popover.setLabelId(headerId);
-    return () => popover.setLabelId(undefined);
-  }, [popover, headerId]);
+    setLabelId(headerId);
+    return () => setLabelId(undefined);
+  }, [setLabelId, headerId]);
 
   return (
     <div
@@ -294,14 +303,14 @@ export const PopoverBody = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, id, ...props }, ref) => {
-  const popover = usePopoverContext();
+  const { setDescriptionId } = usePopoverContext();
   const generatedId = React.useId();
   const bodyId = id ?? generatedId;
 
   React.useEffect(() => {
-    popover.setDescriptionId(bodyId);
-    return () => popover.setDescriptionId(undefined);
-  }, [popover, bodyId]);
+    setDescriptionId(bodyId);
+    return () => setDescriptionId(undefined);
+  }, [setDescriptionId, bodyId]);
 
   return (
     <div ref={ref} id={bodyId} className={cn("p-3", className)} {...props} />

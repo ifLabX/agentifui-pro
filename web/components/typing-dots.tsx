@@ -39,7 +39,7 @@ export function TypingDots({ className, size = "md" }: TypingDotsProps) {
           className={cn(
             "rounded-full",
             currentSizeClasses.dot,
-            "bg-gray-700 dark:bg-gray-400",
+            "bg-muted-foreground",
             "animate-pulse"
           )}
           style={{

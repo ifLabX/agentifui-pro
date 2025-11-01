@@ -58,7 +58,7 @@ Browse all stories by running `pnpm storybook` and exploring the UI category in 
 ### Basic Story Example
 
 ```typescript
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { MyComponent } from "./my-component";
 

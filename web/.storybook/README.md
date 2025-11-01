@@ -16,67 +16,31 @@ Storybook runs on [http://localhost:6006](http://localhost:6006)
 
 ## Component Stories
 
-All UI components have corresponding `.stories.tsx` files with comprehensive examples:
+All UI components in `components/ui/` have corresponding `.stories.tsx` files that demonstrate:
 
-### Available Stories
+- All component variants and sizes
+- Interactive states (hover, focus, disabled, loading)
+- Controlled and uncontrolled examples
+- Edge cases and error states
+- Accessibility features
 
-- **Button** (`components/ui/button.stories.tsx`)
-  - All variants: default, destructive, outline, secondary, ghost, link
-  - All sizes: sm, default, lg, icon
-  - With icons and disabled states
-
-- **Dropdown Menu** (`components/ui/dropdown-menu.stories.tsx`)
-  - Basic menu
-  - With labels and keyboard shortcuts
-  - Checkbox items with state management
-  - Radio groups
-  - Nested submenus
-  - Disabled items
-
-- **Spinner** (`components/ui/spinner.stories.tsx`)
-  - Default and loader variants
-  - All sizes: sm, md, lg, xl
-  - With custom aria-labels
-  - Inline with text
-
-- **Popover** (`components/ui/popover/index.stories.tsx`)
-  - Uncontrolled and controlled states
-  - With header, body, and footer
-  - Modal variant with backdrop
-  - Custom width
-  - With icons
-  - Disabled items
-
-- **Tooltip** (`components/ui/tooltip/index.stories.tsx`)
-  - Default with help icon trigger
-  - Custom triggers
-  - All positions: top, right, bottom, left
-  - Different alignments
-  - Controlled state
-  - Tooltip manager (mutual exclusion)
-  - Variable delay duration
-  - SSR-safe wrapper variant
-
-- **ChatInput** (`components/ui/chat-input/index.stories.tsx`)
-  - Basic input with submit
-  - File upload via button
-  - Drag and drop
-  - Paste from clipboard
-  - Multiline text support
-  - Disabled state
-  - All interactive states
+Browse all stories by running `pnpm storybook` and exploring the UI category in the sidebar.
 
 ## Configuration
 
 ### Main Config (`.storybook/main.js`)
 
-- **Framework**: @storybook/nextjs
+- **Framework**: `@storybook/react-vite` (Vite builder for better Next.js 15 compatibility)
 - **Stories**: Automatically discovers `*.stories.tsx` in `components/` and `app/`
 - **Addons**:
   - `@storybook/addon-essentials` - Core addons (controls, actions, docs, etc.)
   - `@storybook/addon-interactions` - Interactive testing
   - `@storybook/addon-a11y` - Accessibility validation
-- **Path Aliases**: Configured to match Next.js `@/` alias
+- **Vite Configuration**:
+  - Path aliases matching Next.js (`@/`)
+  - Tailwind CSS v4 PostCSS integration
+  - Automatic JSX runtime for React
+  - Next.js compatibility polyfills (`process.env`)
 - **TypeScript**: React-docgen-typescript for automatic prop documentation
 
 ### Preview Config (`.storybook/preview.ts`)
@@ -142,41 +106,24 @@ export const Controlled: Story = {
 };
 ```
 
-## Known Issues
+## Technical Notes
 
-### Next.js 15 + Storybook 8 Compatibility
+### Next.js 15 + React 19 Compatibility
 
-There's a known webpack compatibility issue between Next.js 15 and Storybook 8.6.14:
+This setup uses `@storybook/react-vite` instead of `@storybook/nextjs` to avoid webpack compatibility issues with Next.js 15. Key configurations:
 
-```
-TypeError: Cannot read properties of undefined (reading 'tap')
-```
+- **Vite Builder**: Faster builds and better compatibility with modern tooling
+- **Tailwind CSS v4**: Inline PostCSS configuration for the new plugin format
+- **Process Polyfill**: Enables Next.js components (like `next/image`) to work in browser
+- **JSX Transform**: Automatic React JSX runtime (no manual React imports needed)
 
-**Workaround Options:**
+### Dependency Warnings
 
-1. **Use Dev Server** (Recommended):
+Some peer dependency warnings may appear but are non-blocking:
 
-   ```bash
-   pnpm storybook
-   ```
-
-   The development server works correctly for component development.
-
-2. **Wait for Updates**:
-   - Storybook 9+ will have better Next.js 15 support
-   - Next.js 15 is still relatively new, updates expected
-
-3. **Temporary Downgrade** (Not Recommended):
-   - Downgrade to Next.js 14.x for static builds
-   - Not recommended as it affects the main application
-
-### React 19 Compatibility
-
-Some warnings may appear about React 19 peer dependencies. These are non-blocking:
-
-- Radix UI components work correctly
-- Storybook 8.6.14 supports React 19
-- `vaul` package shows peer dependency warnings but functions normally
+- **React 19**: Storybook 8.6.14 fully supports React 19
+- **Radix UI**: All components work correctly despite version warnings
+- **vaul**: Peer dependency warning but functions normally
 
 ## Best Practices
 

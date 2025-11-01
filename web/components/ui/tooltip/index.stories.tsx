@@ -45,6 +45,9 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+type RenderStory = Omit<StoryObj<typeof meta>, "args"> & {
+  render: () => React.ReactElement;
+};
 
 export const Default: Story = {
   args: {
@@ -107,7 +110,7 @@ export const Disabled: Story = {
   },
 };
 
-export const Controlled: Story = {
+export const Controlled: RenderStory = {
   render: () => {
     const ControlledDemo = () => {
       const [open, setOpen] = useState(false);
@@ -138,7 +141,7 @@ export const Controlled: Story = {
   },
 };
 
-export const MultipleTooltips: Story = {
+export const MultipleTooltips: RenderStory = {
   render: () => (
     <div className="flex gap-4">
       <Tooltip content="First tooltip">
@@ -154,7 +157,7 @@ export const MultipleTooltips: Story = {
   ),
 };
 
-export const WithTooltipManager: Story = {
+export const WithTooltipManager: RenderStory = {
   render: () => (
     <div className="flex gap-4">
       <Tooltip content="Only one tooltip can be open at a time due to tooltip manager">
@@ -170,7 +173,7 @@ export const WithTooltipManager: Story = {
   ),
 };
 
-export const DifferentAlignments: Story = {
+export const DifferentAlignments: RenderStory = {
   render: () => (
     <div className="flex flex-col gap-4">
       <Tooltip content="Aligned to start" align="start" side="bottom">
@@ -186,7 +189,7 @@ export const DifferentAlignments: Story = {
   ),
 };
 
-export const WithTooltipWrapper: Story = {
+export const WithTooltipWrapper: RenderStory = {
   render: () => (
     <TooltipWrapper content="This uses TooltipWrapper for SSR safety">
       <Button variant="outline">Wrapped Tooltip</Button>
@@ -210,7 +213,7 @@ export const LongDelay: Story = {
   },
 };
 
-export const InlineText: Story = {
+export const InlineText: RenderStory = {
   render: () => (
     <p className="text-sm">
       This is some text with an{" "}

@@ -25,7 +25,9 @@ const meta = {
 } satisfies Meta<typeof Popover>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = Omit<StoryObj<typeof meta>, "args"> & {
+  render: () => React.ReactElement;
+};
 
 export const Basic: Story = {
   render: () => (

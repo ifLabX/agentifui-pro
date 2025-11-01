@@ -57,7 +57,7 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -77,6 +77,29 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Added stone design tokens for dialog components */
+  --dialog-border: oklch(0.88 0 0);
+  --dialog-bg: oklch(1 0 0 / 0.95);
+  --dialog-text: oklch(0.28 0 0);
+  --dialog-text-secondary: oklch(0.52 0 0);
+  --dialog-overlay: oklch(0 0 0 / 0.6);
+
+  --dialog-button-primary-bg: oklch(0.28 0 0);
+  --dialog-button-primary-hover-bg: oklch(0.15 0 0);
+  --dialog-button-secondary-bg: transparent;
+  --dialog-button-secondary-border: oklch(0.88 0 0);
+  /* Darkened secondary button text from oklch(0.52 0 0) to oklch(0.25 0 0) for better visibility */
+  --dialog-button-secondary-text: oklch(0.25 0 0);
+  --dialog-button-secondary-hover-bg: oklch(0.98 0 0);
+
+  --dialog-input-border: oklch(0.88 0 0);
+  --dialog-input-bg: oklch(0.98 0 0);
+  --dialog-input-text: oklch(0.28 0 0);
+  --dialog-input-placeholder: oklch(0.62 0 0);
+
+  --dialog-icon-bg: oklch(0.98 0 0);
+  --dialog-icon-text: oklch(0.52 0 0);
 }
 
 .dark {
@@ -151,6 +174,29 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+
+  /* Added dark mode stone design tokens for dialog components */
+  --dialog-border: oklch(0.35 0 0 / 0.6);
+  --dialog-bg: oklch(0.22 0 0 / 0.95);
+  --dialog-text: oklch(0.98 0 0);
+  --dialog-text-secondary: oklch(0.72 0 0);
+  --dialog-overlay: oklch(0 0 0 / 0.5);
+
+  --dialog-button-primary-bg: oklch(0.28 0 0);
+  --dialog-button-primary-hover-bg: oklch(0.35 0 0);
+  --dialog-button-secondary-bg: oklch(0.28 0 0 / 0.3);
+  --dialog-button-secondary-border: oklch(0.35 0 0);
+  /* Darkened dark mode secondary button text for better contrast */
+  --dialog-button-secondary-text: oklch(0.55 0 0);
+  --dialog-button-secondary-hover-bg: oklch(0.35 0 0);
+
+  --dialog-input-border: oklch(0.35 0 0);
+  --dialog-input-bg: oklch(0.28 0 0 / 0.5);
+  --dialog-input-text: oklch(0.98 0 0);
+  --dialog-input-placeholder: oklch(0.62 0 0);
+
+  --dialog-icon-bg: oklch(0.28 0 0);
+  --dialog-icon-text: oklch(0.72 0 0);
 }
 
 @theme inline {
@@ -222,6 +268,27 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-tooltip: var(--tooltip);
   --color-tooltip-foreground: var(--tooltip-foreground);
+
+  /* Map dialog color tokens to Tailwind theme */
+  --color-dialog-border: var(--dialog-border);
+  --color-dialog-bg: var(--dialog-bg);
+  --color-dialog-text: var(--dialog-text);
+  --color-dialog-text-secondary: var(--dialog-text-secondary);
+  --color-dialog-overlay: var(--dialog-overlay);
+  --color-dialog-button-primary-bg: var(--dialog-button-primary-bg);
+  --color-dialog-button-primary-hover-bg: var(--dialog-button-primary-hover-bg);
+  --color-dialog-button-secondary-bg: var(--dialog-button-secondary-bg);
+  --color-dialog-button-secondary-border: var(--dialog-button-secondary-border);
+  --color-dialog-button-secondary-text: var(--dialog-button-secondary-text);
+  --color-dialog-button-secondary-hover-bg: var(
+    --dialog-button-secondary-hover-bg
+  );
+  --color-dialog-input-border: var(--dialog-input-border);
+  --color-dialog-input-bg: var(--dialog-input-bg);
+  --color-dialog-input-text: var(--dialog-input-text);
+  --color-dialog-input-placeholder: var(--dialog-input-placeholder);
+  --color-dialog-icon-bg: var(--dialog-icon-bg);
+  --color-dialog-icon-text: var(--dialog-icon-text);
 }
 
 @layer base {

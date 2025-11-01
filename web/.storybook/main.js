@@ -8,7 +8,12 @@ const config = {
     "../app/**/*.stories.@(js|jsx|ts|tsx|mdx)",
   ],
 
-  addons: ["@storybook/addon-a11y", "@storybook/addon-docs"],
+  addons: [
+    "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
+    "@storybook/addon-a11y",
+    "@storybook/addon-docs",
+  ],
 
   framework: {
     name: "@storybook/react-vite",

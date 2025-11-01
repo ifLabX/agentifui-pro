@@ -1,6 +1,6 @@
 # Storybook Integration
 
-This project uses Storybook 8.6.14 for component development and documentation.
+This project uses Storybook for component development and documentation.
 
 ## Quick Start
 
@@ -33,9 +33,10 @@ Browse all stories by running `pnpm storybook` and exploring the UI category in 
 - **Framework**: `@storybook/react-vite` (Vite builder for better Next.js 15 compatibility)
 - **Stories**: Automatically discovers `*.stories.tsx` in `components/` and `app/`
 - **Addons**:
-  - `@storybook/addon-essentials` - Core addons (controls, actions, docs, etc.)
-  - `@storybook/addon-interactions` - Interactive testing
+  - `@storybook/addon-essentials` - Core tooling (controls, actions, backgrounds, docs, etc.)
+  - `@storybook/addon-interactions` - Interactive testing runner
   - `@storybook/addon-a11y` - Accessibility validation
+  - `@storybook/addon-docs` - Explicit docs integration
 - **Vite Configuration**:
   - Path aliases matching Next.js (`@/`)
   - Tailwind CSS v4 PostCSS integration

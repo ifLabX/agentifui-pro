@@ -106,10 +106,11 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      options: {
-        light: { name: "light", value: "#ffffff" },
-        dark: { name: "dark", value: "#1a1a1a" },
-      },
+      default: "light",
+      values: [
+        { name: "light", value: "#ffffff" },
+        { name: "dark", value: "#1a1a1a" },
+      ],
     },
   },
 
@@ -121,12 +122,6 @@ const preview: Preview = {
         React.createElement(Story)
       ),
   ],
-
-  initialGlobals: {
-    backgrounds: {
-      value: "light",
-    },
-  },
 };
 
 export default preview;

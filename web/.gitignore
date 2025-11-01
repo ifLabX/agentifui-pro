@@ -1,2 +1,5 @@
 tsconfig.tsbuildinfo
 coverage/
+
+# Storybook
+storybook-static/

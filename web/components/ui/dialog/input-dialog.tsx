@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/index";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -28,6 +28,8 @@ interface InputDialogProps {
   cancelText?: string;
   onConfirm?: (value: string) => void | Promise<void>;
   isLoading?: boolean;
+  showCloseButton?: boolean;
+  closeButtonLabel?: string;
   maxLength?: number;
   children?: React.ReactNode;
 }
@@ -44,6 +46,8 @@ export function InputDialog({
   cancelText = "Cancel",
   onConfirm,
   isLoading = false,
+  showCloseButton = true,
+  closeButtonLabel,
   maxLength = 100,
   children,
 }: InputDialogProps) {
@@ -80,7 +84,11 @@ export function InputDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        showCloseButton={showCloseButton}
+        closeButtonLabel={closeButtonLabel}
+      >
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>

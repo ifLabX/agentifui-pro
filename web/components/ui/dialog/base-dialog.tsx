@@ -2,6 +2,7 @@
 
 import React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -28,25 +29,52 @@ const DialogOverlay = React.forwardRef<
   />
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  showCloseButton?: boolean;
+  closeButtonLabel?: string;
+}
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-dialog-border bg-dialog-bg p-6 font-serif shadow-lg sm:rounded-lg",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
+  DialogContentProps
+>(
+  (
+    {
+      className,
+      children,
+      showCloseButton = true,
+      closeButtonLabel = "Close dialog",
+      ...props
+    },
+    ref
+  ) => (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          "fixed top-[50%] left-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-dialog-border bg-dialog-bg p-6 font-serif shadow-lg sm:rounded-lg",
+          className
+        )}
+        {...props}
+      >
+        {showCloseButton && (
+          <DialogClose
+            className={cn(
+              "absolute right-6 top-6 rounded-sm text-dialog-icon-text opacity-70 transition-opacity",
+              "hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-dialog-text/20"
+            )}
+            aria-label={closeButtonLabel}
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </DialogClose>
+        )}
+        {children}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  )
+);
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({

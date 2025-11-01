@@ -26,6 +26,8 @@ interface ConfirmDialogProps {
   cancelText?: string;
   onConfirm?: () => void | Promise<void>;
   variant?: ConfirmVariant;
+  showCloseButton?: boolean;
+  closeButtonLabel?: string;
   isLoading?: boolean;
   children?: React.ReactNode;
 }
@@ -39,6 +41,8 @@ export function ConfirmDialog({
   cancelText = "Cancel",
   onConfirm,
   variant = "default",
+  showCloseButton = true,
+  closeButtonLabel,
   isLoading = false,
   children,
 }: ConfirmDialogProps) {
@@ -57,7 +61,11 @@ export function ConfirmDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        showCloseButton={showCloseButton}
+        closeButtonLabel={closeButtonLabel}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

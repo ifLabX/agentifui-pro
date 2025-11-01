@@ -23,6 +23,8 @@ interface AlertDialogProps {
   confirmText?: string;
   cancelText?: string;
   onConfirm?: () => void | Promise<void>;
+  showCloseButton?: boolean;
+  closeButtonLabel?: string;
   isLoading?: boolean;
   children?: React.ReactNode;
 }
@@ -35,6 +37,8 @@ export function AlertDialog({
   confirmText = "Confirm",
   cancelText = "Cancel",
   onConfirm,
+  showCloseButton = true,
+  closeButtonLabel,
   isLoading = false,
   children,
 }: AlertDialogProps) {
@@ -55,7 +59,11 @@ export function AlertDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        showCloseButton={showCloseButton}
+        closeButtonLabel={closeButtonLabel}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

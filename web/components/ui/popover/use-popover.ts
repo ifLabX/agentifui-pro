@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   autoUpdate,
   flip,
@@ -50,7 +50,16 @@ export function usePopover({
   const [portalNode, setPortalNode] = useState<HTMLElement | null>(null);
 
   const open = controlledOpen ?? uncontrolledOpen;
-  const setOpen = setControlledOpen ?? setUncontrolledOpen;
+  const setOpen = useCallback(
+    (nextOpen: boolean) => {
+      setControlledOpen?.(nextOpen);
+
+      if (controlledOpen == null) {
+        setUncontrolledOpen(nextOpen);
+      }
+    },
+    [setControlledOpen, controlledOpen]
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;

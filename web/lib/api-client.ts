@@ -74,7 +74,7 @@ const mergeHeaders = (
 
 const createTimeoutController = (
   timeoutMs: number,
-  signal?: AbortSignal
+  signal?: AbortSignal | null
 ): AbortController => {
   const controller = new AbortController();
 

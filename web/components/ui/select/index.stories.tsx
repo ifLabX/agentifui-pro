@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   CalendarClock,
@@ -24,14 +24,16 @@ import {
   SelectValue,
 } from "./index";
 
-type SelectTriggerProps = React.ComponentProps<typeof SelectTrigger>;
-type SelectRootProps = React.ComponentProps<typeof Select>;
+type SelectTriggerProps = ComponentProps<typeof SelectTrigger>;
+type SelectRootProps = ComponentProps<typeof Select>;
 
 type Option = {
   value: string;
   label: string;
   description?: string;
-  icon?: ReactNode;
+  leadingIcon?: ReactNode;
+  indicator?: ReactNode;
+  hideIndicator?: boolean;
   group?: string;
 };
 
@@ -40,25 +42,25 @@ const productivityOptions: Option[] = [
     value: "raycast",
     label: "Raycast",
     description: "Spotlight replacement with rich extensions.",
-    icon: <Command className="size-4" />,
+    leadingIcon: <Command className="size-4" />,
   },
   {
     value: "linear",
     label: "Linear",
     description: "Opinionated issue tracking for product teams.",
-    icon: <Workflow className="size-4" />,
+    leadingIcon: <Workflow className="size-4" />,
   },
   {
     value: "notion",
     label: "Notion",
     description: "Docs, databases, and tasks under one workspace.",
-    icon: <Layers className="size-4" />,
+    leadingIcon: <Layers className="size-4" />,
   },
   {
     value: "height",
     label: "Height",
     description: "Collaborative project planning for async teams.",
-    icon: <Sparkles className="size-4" />,
+    leadingIcon: <Sparkles className="size-4" />,
   },
 ];
 
@@ -67,19 +69,19 @@ const themeOptions: Option[] = [
     value: "system",
     label: "Match system",
     description: "Follow the appearance defined by the OS.",
-    icon: <Monitor className="size-4" />,
+    leadingIcon: <Monitor className="size-4" />,
   },
   {
     value: "light",
     label: "Light mode",
     description: "Optimized contrast for daytime reading.",
-    icon: <Sun className="size-4" />,
+    leadingIcon: <Sun className="size-4" />,
   },
   {
     value: "dark",
     label: "Dark mode",
     description: "Dim palette to reduce glare at night.",
-    icon: <MoonStar className="size-4" />,
+    leadingIcon: <MoonStar className="size-4" />,
   },
 ];
 
@@ -88,19 +90,22 @@ const statusOptions: Option[] = [
     value: "draft",
     label: "Draft",
     description: "Still iterating and not ready for review.",
-    icon: <Palette className="size-4" />,
+    leadingIcon: <Palette className="size-4" />,
+    indicator: <Palette className="h-4 w-4" />,
   },
   {
     value: "scheduled",
     label: "Scheduled",
     description: "Has a launch date in the calendar.",
-    icon: <CalendarClock className="size-4" />,
+    leadingIcon: <CalendarClock className="size-4" />,
+    indicator: <CalendarClock className="h-4 w-4" />,
   },
   {
     value: "published",
     label: "Published",
     description: "Live for customers to experience.",
-    icon: <ShieldCheck className="size-4" />,
+    leadingIcon: <ShieldCheck className="size-4" />,
+    indicator: <ShieldCheck className="h-4 w-4" />,
   },
 ];
 
@@ -130,12 +135,14 @@ const timeZoneOptions: Option[] = [
   { value: "UTC+12", label: "New Zealand Time (UTC+12:00)" },
 ];
 
-interface SelectFieldProps extends SelectTriggerProps {
+interface SelectFieldProps {
   options: Option[];
   placeholder?: string;
   defaultValue?: string;
   contentClassName?: string;
   selectProps?: Omit<SelectRootProps, "children">;
+  triggerProps?: ComponentProps<typeof SelectTrigger>;
+  contentProps?: Omit<ComponentProps<typeof SelectContent>, "children" | "ref">;
 }
 
 const UNGROUPED_KEY = "__ungrouped";
@@ -146,7 +153,8 @@ function SelectField({
   defaultValue,
   contentClassName,
   selectProps,
-  ...triggerProps
+  triggerProps,
+  contentProps,
 }: SelectFieldProps) {
   const groupedOptions = options.reduce<Map<string, Option[]>>(
     (acc, option) => {
@@ -159,6 +167,7 @@ function SelectField({
     },
     new Map()
   );
+
   const groups = Array.from(groupedOptions.entries());
 
   return (
@@ -166,18 +175,20 @@ function SelectField({
       <SelectTrigger {...triggerProps}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className={contentClassName}>
+      <SelectContent className={contentClassName} {...contentProps}>
         {groups.map(([groupName, groupOptions], groupIndex) => (
           <SelectGroup key={`${groupName}-${groupIndex}`}>
-            {groupName !== UNGROUPED_KEY && (
+            {groupName !== UNGROUPED_KEY ? (
               <SelectLabel>{groupName}</SelectLabel>
-            )}
+            ) : null}
             {groupOptions.map(option => (
               <SelectItem
                 key={option.value}
                 value={option.value}
-                icon={option.icon}
+                leadingIcon={option.leadingIcon}
                 description={option.description}
+                indicator={option.indicator}
+                hideIndicator={option.hideIndicator}
                 textValue={option.label}
               >
                 {option.label}
@@ -196,34 +207,16 @@ const meta: Meta<SelectTriggerProps> = {
   component: SelectTrigger,
   tags: ["autodocs"],
   argTypes: {
-    variant: {
-      control: "inline-radio",
-      options: ["default", "outline", "subtle"],
-      description: "Visual style of the trigger surface.",
-    },
-    size: {
-      control: "inline-radio",
-      options: ["sm", "md", "lg"],
-      description: "Adjusts the trigger height and font size.",
-    },
-    state: {
-      control: "inline-radio",
-      options: ["default", "error"],
-      description: "Highlights validation state for the field.",
-    },
     disabled: {
       control: "boolean",
       description: "When true, the trigger cannot be interacted with.",
     },
     className: {
       control: "text",
-      description: "Width or layout classes applied to the trigger.",
+      description: "Utility classes applied to the trigger.",
     },
   },
   args: {
-    variant: "default",
-    size: "md",
-    state: "default",
     className: "w-[260px]",
   },
 };
@@ -235,7 +228,7 @@ type Story = StoryObj<SelectTriggerProps>;
 export const Playground: Story = {
   render: args => (
     <SelectField
-      {...args}
+      triggerProps={args}
       options={productivityOptions}
       placeholder="Pick a productivity tool"
       defaultValue="linear"
@@ -243,42 +236,21 @@ export const Playground: Story = {
   ),
 };
 
-export const SurfaceVariants: Story = {
+export const WithIconsAndDescriptions: Story = {
   render: () => (
-    <div className="grid gap-4 md:grid-cols-2">
-      <SelectField
-        variant="default"
-        size="md"
-        className="w-full"
-        options={productivityOptions}
-        placeholder="Default surface"
-        defaultValue="raycast"
-      />
-      <SelectField
-        variant="outline"
-        size="sm"
-        className="w-full"
-        options={themeOptions}
-        placeholder="Outline surface"
-        defaultValue="system"
-      />
-      <SelectField
-        variant="subtle"
-        size="lg"
-        className="md:col-span-2 w-full"
-        options={statusOptions}
-        placeholder="Muted surface"
-        defaultValue="published"
-      />
-    </div>
+    <SelectField
+      triggerProps={{ className: "w-[260px]" }}
+      options={themeOptions}
+      placeholder="Choose appearance"
+      defaultValue="system"
+    />
   ),
 };
 
 export const GroupedOptions: Story = {
   render: () => (
     <SelectField
-      variant="outline"
-      className="w-[300px]"
+      triggerProps={{ className: "w-[300px]" }}
       options={languageOptions}
       placeholder="Choose a language"
       defaultValue="en"
@@ -286,15 +258,53 @@ export const GroupedOptions: Story = {
   ),
 };
 
-export const ScrollableContent: Story = {
+export const WithoutIndicators: Story = {
   render: () => (
     <SelectField
-      variant="default"
-      className="w-[280px]"
+      triggerProps={{ className: "w-[240px]" }}
+      options={productivityOptions.map(option => ({
+        ...option,
+        hideIndicator: true,
+      }))}
+      placeholder="Quick actions"
+    />
+  ),
+};
+
+export const CustomIndicator: Story = {
+  render: () => (
+    <SelectField
+      triggerProps={{ className: "w-[260px]" }}
+      options={statusOptions}
+      placeholder="Workflow status"
+      defaultValue="draft"
+    />
+  ),
+};
+
+export const NoScrollIndicators: Story = {
+  render: () => (
+    <SelectField
+      triggerProps={{ className: "w-[280px]" }}
       options={timeZoneOptions}
       placeholder="Set your time zone"
-      contentClassName="max-h-60 w-[280px]"
-      defaultValue="UTC"
+      contentClassName="w-[280px] max-h-48"
+      contentProps={{ hideScrollIndicators: true }}
+    />
+  ),
+};
+
+export const WithScrollIndicators: Story = {
+  render: () => (
+    <SelectField
+      triggerProps={{ className: "w-[280px]" }}
+      options={[
+        ...timeZoneOptions,
+        { value: "UTC+13", label: "Tokelau Time (UTC+13:00)" },
+        { value: "UTC+14", label: "Line Islands Time (UTC+14:00)" },
+      ]}
+      placeholder="Browse time zones"
+      contentClassName="w-[280px] max-h-48"
     />
   ),
 };
@@ -306,13 +316,10 @@ export const Controlled: Story = {
     return (
       <div className="space-y-3">
         <SelectField
-          {...args}
+          triggerProps={args}
           options={statusOptions}
           placeholder="Workflow status"
-          selectProps={{
-            value,
-            onValueChange: setValue,
-          }}
+          selectProps={{ value, onValueChange: setValue }}
         />
         <p className="text-sm text-muted-foreground">
           Current status: <span className="font-medium">{value}</span>

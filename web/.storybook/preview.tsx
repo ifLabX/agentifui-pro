@@ -19,11 +19,10 @@ function GlobalStyles({ theme }: { theme?: string }) {
     document.body.style.color = textColor;
 
     // Also update the docs page if it exists
-    const docsRoot = document.querySelector(".docs-story");
-    if (docsRoot instanceof HTMLElement) {
-      docsRoot.style.backgroundColor = bgColor;
-      docsRoot.style.color = textColor;
-    }
+    document.querySelectorAll<HTMLElement>(".docs-story").forEach(storyEl => {
+      storyEl.style.backgroundColor = bgColor;
+      storyEl.style.color = textColor;
+    });
   }, [theme]);
 
   return null;

@@ -11,6 +11,16 @@ const messages = {
     navigation: {
       home: "Home",
     },
+    actions: {
+      save: "Save",
+      cancel: "Cancel",
+      delete: "Delete",
+      edit: "Edit",
+      submit: "Submit",
+      loading: "Loading...",
+      close: "Close",
+      confirm: "Confirm",
+    },
   },
   auth: {
     "sign-in": {

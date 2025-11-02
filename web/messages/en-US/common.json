@@ -11,7 +11,9 @@
     "delete": "Delete",
     "edit": "Edit",
     "submit": "Submit",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "close": "Close",
+    "confirm": "Confirm"
   },
   "messages": {
     "success": "Operation completed successfully",

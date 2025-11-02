@@ -370,3 +370,54 @@ export const ComparisonDefaultVsDanger: Story = {
     return <Demo />;
   },
 };
+
+export const AsAlertDialog: Story = {
+  args: undefined as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  render: () => {
+    const Demo = () => {
+      const [open, setOpen] = useState(false);
+
+      return (
+        <>
+          <Button onClick={() => setOpen(true)}>Show Information</Button>
+          <ConfirmDialog
+            open={open}
+            onOpenChange={setOpen}
+            title="Information"
+            description="This is an informational message. ConfirmDialog can be used as an alert dialog for notifications and information display."
+            confirmText="Got it"
+            cancelText="Close"
+            onConfirm={fn()}
+          />
+        </>
+      );
+    };
+
+    return <Demo />;
+  },
+};
+
+export const AsSuccessAlert: Story = {
+  args: undefined as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  render: () => {
+    const Demo = () => {
+      const [open, setOpen] = useState(false);
+
+      return (
+        <>
+          <Button onClick={() => setOpen(true)}>Show Success</Button>
+          <ConfirmDialog
+            open={open}
+            onOpenChange={setOpen}
+            title="Success"
+            description="Your changes have been saved successfully."
+            confirmText="OK"
+            onConfirm={fn()}
+          />
+        </>
+      );
+    };
+
+    return <Demo />;
+  },
+};

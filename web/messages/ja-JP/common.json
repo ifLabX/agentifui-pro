@@ -11,7 +11,9 @@
     "delete": "削除",
     "edit": "編集",
     "submit": "送信",
-    "loading": "読み込み中..."
+    "loading": "読み込み中...",
+    "close": "閉じる",
+    "confirm": "確認"
   },
   "messages": {
     "success": "操作が正常に完了しました",

@@ -280,4 +280,95 @@ describe("ConfirmDialog", () => {
       expect(handleOpenChange).toHaveBeenCalledWith(false);
     });
   });
+
+  describe("Alert Dialog Use Cases", () => {
+    it("works as an alert dialog for information display", async () => {
+      const handleOpenChange = jest.fn();
+
+      render(
+        <ConfirmDialog
+          open={true}
+          onOpenChange={handleOpenChange}
+          title="Information"
+          description="This is an informational message."
+          confirmText="Got it"
+          cancelText="Close"
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText("Information")).toBeInTheDocument();
+        expect(
+          screen.getByText("This is an informational message.")
+        ).toBeInTheDocument();
+        expect(screen.getByText("Got it")).toBeInTheDocument();
+        expect(screen.getByText("Close")).toBeInTheDocument();
+      });
+    });
+
+    it("works as an alert with single action button", async () => {
+      const user = userEvent.setup();
+      const handleConfirm = jest.fn();
+      const handleOpenChange = jest.fn();
+
+      render(
+        <ConfirmDialog
+          open={true}
+          onOpenChange={handleOpenChange}
+          onConfirm={handleConfirm}
+          title="Success"
+          description="Your changes have been saved successfully."
+          confirmText="OK"
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText("Success")).toBeInTheDocument();
+        expect(
+          screen.getByText("Your changes have been saved successfully.")
+        ).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText("OK"));
+
+      await waitFor(() => {
+        expect(handleConfirm).toHaveBeenCalled();
+        expect(handleOpenChange).toHaveBeenCalledWith(false);
+      });
+    });
+
+    it("prevents multiple confirms when rapidly clicked", async () => {
+      const user = userEvent.setup();
+      const handleConfirm = jest.fn(
+        () => new Promise<void>(resolve => setTimeout(resolve, 100))
+      );
+      const handleOpenChange = jest.fn();
+
+      render(
+        <ConfirmDialog
+          open={true}
+          onOpenChange={handleOpenChange}
+          onConfirm={handleConfirm}
+          title="Test"
+          description="Test description"
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText("Confirm")).toBeInTheDocument();
+      });
+
+      const confirmButton = screen.getByText("Confirm");
+
+      // Click multiple times rapidly
+      await user.click(confirmButton);
+      await user.click(confirmButton);
+      await user.click(confirmButton);
+
+      // Should only call once
+      await waitFor(() => {
+        expect(handleConfirm).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
 });

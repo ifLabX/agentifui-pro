@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button/index";
 
@@ -37,8 +38,8 @@ export function ConfirmDialog({
   onOpenChange,
   title,
   description,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   onConfirm,
   variant = "default",
   showCloseButton = true,
@@ -46,14 +47,28 @@ export function ConfirmDialog({
   isLoading = false,
   children,
 }: ConfirmDialogProps) {
+  const t = useTranslations("common");
   const [isConfirming, setIsConfirming] = useState(false);
 
+  const defaultConfirmText = t("actions.confirm");
+  const defaultCancelText = t("actions.cancel");
+  const loadingText = t("actions.loading");
+
   const handleConfirm = async () => {
-    setIsConfirming(true);
+    if (isLoading || isConfirming) {
+      return;
+    }
+
+    if (onConfirm) {
+      setIsConfirming(true);
+    }
+
     try {
       await onConfirm?.();
     } finally {
-      setIsConfirming(false);
+      if (onConfirm) {
+        setIsConfirming(false);
+      }
       onOpenChange?.(false);
     }
   };
@@ -78,14 +93,16 @@ export function ConfirmDialog({
             onClick={() => onOpenChange?.(false)}
             disabled={isLoading || isConfirming}
           >
-            {cancelText}
+            {cancelText ?? defaultCancelText}
           </Button>
           <Button
             variant={variant === "danger" ? "destructive" : "default"}
             onClick={handleConfirm}
             disabled={isLoading || isConfirming}
           >
-            {isLoading || isConfirming ? "Loading..." : confirmText}
+            {isLoading || isConfirming
+              ? loadingText
+              : (confirmText ?? defaultConfirmText)}
           </Button>
         </DialogFooter>
       </DialogContent>

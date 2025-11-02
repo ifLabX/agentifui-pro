@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button/index";
@@ -42,8 +43,8 @@ export function InputDialog({
   label,
   placeholder,
   defaultValue = "",
-  confirmText = "Save changes",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   onConfirm,
   isLoading = false,
   showCloseButton = true,
@@ -51,9 +52,14 @@ export function InputDialog({
   maxLength = 100,
   children,
 }: InputDialogProps) {
+  const t = useTranslations("common");
   const [inputValue, setInputValue] = useState(defaultValue);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const defaultConfirmText = t("actions.save");
+  const defaultCancelText = t("actions.cancel");
+  const loadingText = t("actions.loading");
 
   useEffect(() => {
     if (open) {
@@ -127,13 +133,15 @@ export function InputDialog({
               onClick={() => onOpenChange?.(false)}
               disabled={isLoading || isSubmitting}
             >
-              {cancelText}
+              {cancelText ?? defaultCancelText}
             </Button>
             <Button
               type="submit"
               disabled={isLoading || isSubmitting || !isInputValid}
             >
-              {isLoading || isSubmitting ? "Loading..." : confirmText}
+              {isLoading || isSubmitting
+                ? loadingText
+                : (confirmText ?? defaultConfirmText)}
             </Button>
           </DialogFooter>
         </form>

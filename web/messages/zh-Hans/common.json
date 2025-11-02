@@ -11,7 +11,9 @@
     "delete": "删除",
     "edit": "编辑",
     "submit": "提交",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "close": "关闭",
+    "confirm": "确认"
   },
   "messages": {
     "success": "操作成功完成",

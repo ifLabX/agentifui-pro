@@ -36,7 +36,7 @@ export const Basic: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open Menu</Button>
+        <Button>Open Menu</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem onClick={fn()}>Profile</DropdownMenuItem>
@@ -52,7 +52,7 @@ export const WithLabelsAndShortcuts: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Actions</Button>
+        <Button>Actions</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -91,7 +91,7 @@ export const WithCheckboxItems: Story = {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">View Options</Button>
+            <Button>View Options</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>Appearance</DropdownMenuLabel>
@@ -131,7 +131,7 @@ export const WithRadioGroup: Story = {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">Panel Position</Button>
+            <Button>Panel Position</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>Position</DropdownMenuLabel>
@@ -159,7 +159,7 @@ export const WithSubmenu: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Advanced Menu</Button>
+        <Button>Advanced Menu</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuItem onClick={fn()}>New Tab</DropdownMenuItem>
@@ -185,7 +185,7 @@ export const WithDisabledItems: Story = {
   render: () => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Options</Button>
+        <Button>Options</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuItem onClick={fn()}>Enabled Item</DropdownMenuItem>

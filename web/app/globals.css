@@ -86,35 +86,35 @@
   --foreground: oklch(0.937 0.011 71.9);
 
   /* Chat input dark mode tokens */
-  --chat-input-bg: oklch(0.35 0 0); /* stone-700 equivalent */
-  --chat-input-border: oklch(0.35 0 0 / 0.8); /* stone-700/80 */
+  --chat-input-bg: oklch(0.412 0.019 67.26);
+  --chat-input-border: oklch(0.439 0.019 60.97);
   --chat-input-text: oklch(0.98 0 0); /* stone-100 */
-  --chat-input-placeholder: oklch(0.62 0 0); /* stone-400 */
+  --chat-input-placeholder: oklch(0.862 0.022 65.28);
 
   /* Button dark mode tokens */
-  --chat-button-bg: oklch(0.45 0 0 / 0.3); /* stone-600/30 */
-  --chat-button-border: oklch(0.45 0 0); /* stone-600 */
+  --chat-button-bg: oklch(0.439 0.019 60.97 / 0.35);
+  --chat-button-border: oklch(0.439 0.019 60.97);
   --chat-button-text: oklch(0.98 0 0); /* stone-100 */
-  --chat-button-hover-bg: oklch(0.45 0 0); /* stone-600 */
+  --chat-button-hover-bg: oklch(0.491 0.021 59.14);
 
   /* Submit button dark mode tokens */
-  --chat-submit-bg: oklch(0.22 0 0); /* stone-900 */
+  --chat-submit-bg: oklch(0.438 0.023 56.76);
   --chat-submit-text: oklch(1 0 0); /* white */
-  --chat-submit-hover-bg: oklch(0.28 0 0); /* stone-800 */
-  --chat-submit-disabled-bg: oklch(0.45 0 0); /* stone-600 */
-  --chat-submit-disabled-text: oklch(0.98 0 0); /* stone-100 */
+  --chat-submit-hover-bg: oklch(0.545 0.023 57.76);
+  --chat-submit-disabled-bg: oklch(0.606 0.023 57.84);
+  --chat-submit-disabled-text: oklch(0.739 0.017 58.55);
 
   /* Attachment preview dark mode tokens */
-  --chat-attachment-bg: oklch(0.28 0 0 / 0.9); /* stone-800/90 */
-  --chat-attachment-border: oklch(0.35 0 0 / 0.8); /* stone-700/80 */
+  --chat-attachment-bg: oklch(0.496 0.023 54.8);
+  --chat-attachment-border: oklch(0.439 0.019 60.97);
   --chat-attachment-text: oklch(0.98 0 0); /* stone-100 */
-  --chat-attachment-text-secondary: oklch(0.62 0 0); /* stone-400 */
-  --chat-attachment-remove-bg: oklch(0.35 0 0 / 0.8); /* stone-700/80 */
-  --chat-attachment-remove-hover-bg: oklch(0.45 0 0 / 0.8); /* stone-600/80 */
+  --chat-attachment-text-secondary: oklch(0.758 0.023 65.22);
+  --chat-attachment-remove-bg: oklch(0.424 0.042 34.02 / 0.85);
+  --chat-attachment-remove-hover-bg: oklch(0.454 0.052 34.59);
 
   /* Error state dark mode tokens */
-  --chat-error-border: oklch(0.5 0.2 25 / 0.3); /* red-500/30 */
-  --chat-error-text: oklch(0.7 0.15 25); /* red-300 */
+  --chat-error-border: oklch(0.608 0.097 33.94 / 0.3);
+  --chat-error-text: oklch(0.715 0.089 35.26);
 
   /* Shadow dark mode */
   --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);

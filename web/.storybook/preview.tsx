@@ -1,9 +1,32 @@
-import React from "react";
+import { useEffect } from "react";
 import type { Preview } from "@storybook/react-vite";
 import { NextIntlClientProvider } from "next-intl";
 import ResizeObserver from "resize-observer-polyfill";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 import "../app/globals.css";
+
+// Global styles component to sync Storybook background with theme
+function GlobalStyles({ theme }: { theme?: string }) {
+  useEffect(() => {
+    const isDark = theme === "dark";
+    const bgColor = isDark ? "#352f2a" : "#f6f5f2";
+    const textColor = isDark ? "#efe9e2" : "#201c19";
+
+    // Update Storybook canvas background
+    document.body.style.backgroundColor = bgColor;
+    document.body.style.color = textColor;
+
+    // Also update the docs page if it exists
+    document.querySelectorAll<HTMLElement>(".docs-story").forEach(storyEl => {
+      storyEl.style.backgroundColor = bgColor;
+      storyEl.style.color = textColor;
+    });
+  }, [theme]);
+
+  return null;
+}
 
 // Mock next-intl messages for Storybook
 const messages = {
@@ -95,6 +118,21 @@ if (typeof window !== "undefined") {
 }
 
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      description: "Global theme for components",
+      toolbar: {
+        title: "Theme",
+        icon: "circle",
+        items: [
+          { value: "light", icon: "sun", title: "Light" },
+          { value: "dark", icon: "moon", title: "Dark" },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+
   parameters: {
     nextjs: {
       appDirectory: true,
@@ -105,22 +143,28 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    backgrounds: {
-      default: "light",
-      values: [
-        { name: "light", value: "#ffffff" },
-        { name: "dark", value: "#1a1a1a" },
-      ],
-    },
   },
 
   decorators: [
-    Story =>
-      React.createElement(
-        NextIntlClientProvider,
-        { locale: "en", messages },
-        React.createElement(Story)
-      ),
+    (Story, context) => {
+      const theme = (context.globals.theme as string) || "light";
+
+      return (
+        <>
+          <GlobalStyles theme={theme} />
+          <ThemeProvider
+            attribute="class"
+            forcedTheme={theme}
+            enableSystem={false}
+            storageKey="sb-theme"
+          >
+            <NextIntlClientProvider locale="en" messages={messages}>
+              <Story />
+            </NextIntlClientProvider>
+          </ThemeProvider>
+        </>
+      );
+    },
   ],
 };
 

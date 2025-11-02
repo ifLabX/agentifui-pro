@@ -33,7 +33,7 @@ export const Basic: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">Open Popover</Button>
+        <Button>Open Popover</Button>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverItem onClick={fn()}>Profile</PopoverItem>
@@ -49,7 +49,7 @@ export const Uncontrolled: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">Uncontrolled Popover</Button>
+        <Button>Uncontrolled Popover</Button>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverHeader>Actions</PopoverHeader>
@@ -73,7 +73,7 @@ export const Controlled: Story = {
         <div className="flex flex-col gap-4">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-              <Button variant="outline">Controlled Popover</Button>
+              <Button>Controlled Popover</Button>
             </PopoverTrigger>
             <PopoverContent>
               <PopoverHeader>Controlled Menu</PopoverHeader>
@@ -96,7 +96,7 @@ export const WithHeaderBodyFooter: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">Show Dialog</Button>
+        <Button>Show Dialog</Button>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverHeader>Confirm Action</PopoverHeader>
@@ -122,7 +122,7 @@ export const WithIcons: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">Options</Button>
+        <Button>Options</Button>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverItem

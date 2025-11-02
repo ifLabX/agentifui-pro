@@ -9,7 +9,12 @@ const config = {
   ],
 
   addons: [
-    "@storybook/addon-essentials",
+    {
+      name: "@storybook/addon-essentials",
+      options: {
+        backgrounds: false, // Disable backgrounds addon
+      },
+    },
     "@storybook/addon-interactions",
     "@storybook/addon-a11y",
     "@storybook/addon-docs",

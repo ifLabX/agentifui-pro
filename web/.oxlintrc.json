@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
   "rules": {
     "import/no-cycle": "error",
     "import/no-self-import": "error",
@@ -20,13 +21,21 @@
     "react/require-render-return": "error",
     "react/void-dom-elements-no-children": "error"
   },
-  "ignore": [
-    "node_modules/**",
+  "ignorePatterns": [
+    "storybook-static/**",
+    "coverage/**",
     ".next/**",
     "out/**",
     "build/**",
-    "coverage/**",
+    "dist/**",
+    "node_modules/**",
     "next-env.d.ts",
     "*.config.*"
-  ]
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true
+  },
+  "plugins": ["react", "jsx-a11y", "unicorn"]
 }

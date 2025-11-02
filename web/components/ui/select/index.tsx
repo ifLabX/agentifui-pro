@@ -161,7 +161,7 @@ const SelectItem = React.forwardRef<
           </SelectPrimitive.ItemIndicator>
         </span>
       ) : null}
-      <div className="flex w-full items-start gap-3 pr-2">
+      <div className="flex w-full items-start gap-3">
         {leadingIcon ? (
           <span className="mt-0.5 text-muted-foreground [&>svg]:h-4 [&>svg]:w-4 [&>svg]:shrink-0">
             {leadingIcon}

@@ -11,8 +11,8 @@ import "../app/globals.css";
 function GlobalStyles({ theme }: { theme?: string }) {
   useEffect(() => {
     const isDark = theme === "dark";
-    const bgColor = isDark ? "#0a0a0a" : "#ffffff";
-    const textColor = isDark ? "#ededed" : "#000000";
+    const bgColor = isDark ? "#352f2a" : "#f6f5f2";
+    const textColor = isDark ? "#efe9e2" : "#201c19";
 
     // Update Storybook canvas background
     document.body.style.backgroundColor = bgColor;

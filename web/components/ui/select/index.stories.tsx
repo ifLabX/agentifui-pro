@@ -205,6 +205,9 @@ function SelectField({
 const meta: Meta<SelectTriggerProps> = {
   title: "UI/Select",
   component: SelectTrigger,
+  parameters: {
+    layout: "centered",
+  },
   tags: ["autodocs"],
   argTypes: {
     disabled: {

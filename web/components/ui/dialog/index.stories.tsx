@@ -12,91 +12,95 @@ import {
   DialogTitle,
 } from "./index";
 
-const DialogDemo = () => {
+const meta = {
+  title: "UI/Dialog",
+  component: Dialog,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+} satisfies Meta<typeof Dialog>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+const DefaultDialogDemo = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      <Button onClick={() => setOpen(true)}>Open dialog</Button>
+    <div className="space-y-3">
+      <Button onClick={() => setOpen(true)}>Enable sync</Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enable multi-device sync</DialogTitle>
             <DialogDescription>
               Sync chat history and workspace preferences across every signed-in
-              device. The process usually completes in less than a minute.
+              device. We’ll email you when the first sync completes.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-muted-foreground">
             <p>
-              Your data is securely encrypted and never leaves our
-              infrastructure without your consent.
+              Syncing keeps your drafts and history aligned across desktop and
+              mobile apps. You can disable it at any time from settings.
             </p>
-            <p>Would you like to proceed?</p>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setOpen(false)}>Confirm</Button>
+            <Button onClick={() => setOpen(false)}>Enable sync</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 };
 
-const WithoutCloseButtonDemo = () => {
+export const Default: Story = {
+  render: () => <DefaultDialogDemo />,
+};
+
+const ForcedActionDialog = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      <Button onClick={() => setOpen(true)}>Open forced dialog</Button>
+    <div className="space-y-3">
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Force update
+      </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent showCloseButton={false}>
           <DialogHeader>
             <DialogTitle>Updating workspace</DialogTitle>
             <DialogDescription>
-              This dialog intentionally hides the close button for forced
-              actions.
+              This update introduces new permissions. You need to confirm before
+              continuing.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setOpen(false)}>
-              Keep draft
+              Review later
             </Button>
-            <Button onClick={() => setOpen(false)}>Continue</Button>
+            <Button onClick={() => setOpen(false)}>Apply update</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 };
 
-const meta: Meta<typeof DialogDemo> = {
-  title: "UI/Dialog",
-  component: DialogDemo,
-  tags: ["autodocs"],
-};
-
-export default meta;
-
-type Story = StoryObj<typeof DialogDemo>;
-
-export const Default: Story = {
-  render: () => <DialogDemo />,
-};
-
 export const WithoutCloseButton: Story = {
-  render: () => <WithoutCloseButtonDemo />,
+  render: () => <ForcedActionDialog />,
 };
 
-const LongContentDemo = () => {
+const ScrollableDialog = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      <Button onClick={() => setOpen(true)}>Open release notes</Button>
+    <div className="space-y-3">
+      <Button onClick={() => setOpen(true)}>View release notes</Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -112,23 +116,67 @@ const LongContentDemo = () => {
             {[...Array(6)].map((_, index) => (
               <p key={index}>
                 Version 3.{index + 1}.0 introduces advanced prompt history,
-                improved voice input, and updates to enterprise controls. Review
-                the settings page for the full breakdown.
+                improved voice input, analytics dashboards, and refreshed
+                workspace permissions. Visit settings for the full breakdown.
               </p>
             ))}
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setOpen(false)}>
-              Later
+              Dismiss
             </Button>
             <Button onClick={() => setOpen(false)}>Install update</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 };
 
 export const LongContent: Story = {
-  render: () => <LongContentDemo />,
+  render: () => <ScrollableDialog />,
+};
+
+const CustomActionsDialog = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="space-y-3">
+      <Button variant="secondary" onClick={() => setOpen(true)}>
+        Export transcript
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Export conversation transcript</DialogTitle>
+            <DialogDescription>
+              Choose the format and destination. Transcript includes attachments
+              and system messages.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 text-sm text-muted-foreground">
+            <p>Select export format:</p>
+            <div className="flex gap-2">
+              <Button variant="outline">Markdown</Button>
+              <Button variant="outline">PDF</Button>
+              <Button variant="outline">JSON</Button>
+            </div>
+          </div>
+          <DialogFooter className="sm:flex-row sm:justify-between">
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline">Send via email</Button>
+              <Button onClick={() => setOpen(false)}>Download</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export const CustomActions: Story = {
+  render: () => <CustomActionsDialog />,
 };

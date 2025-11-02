@@ -3,7 +3,13 @@ import deepmerge from "deepmerge";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 
-import { defaultLocale, locales, namespaces, type Locale } from "./config";
+import {
+  defaultLocale,
+  defaultTimeZone,
+  locales,
+  namespaces,
+  type Locale,
+} from "./config";
 
 // Flexible type to support any translation structure (strings, objects, arrays, ICU format, etc.)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,10 +60,12 @@ async function getLocaleFromStorage(): Promise<Locale> {
 
 export default getRequestConfig(async () => {
   const locale = await getLocaleFromStorage();
+  const messages = await loadMessages(locale);
 
   return {
     locale,
-    messages: await loadMessages(locale),
+    messages,
+    timeZone: defaultTimeZone,
     onError() {},
     getMessageFallback({ namespace, key }) {
       const path = [namespace, key].filter(part => part != null).join(".");

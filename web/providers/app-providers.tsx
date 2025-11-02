@@ -13,12 +13,14 @@ import { BrandingProvider } from "./branding-provider";
 type AppProvidersProps = PropsWithChildren<{
   locale: Locale;
   messages: AbstractIntlMessages;
+  timeZone: string;
 }>;
 
 export function AppProviders({
   children,
   locale,
   messages,
+  timeZone,
 }: AppProvidersProps) {
   const [queryClient] = useState(() => new QueryClient());
 
@@ -26,7 +28,11 @@ export function AppProviders({
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider delayDuration={100} skipDelayDuration={300}>
-          <NextIntlClientProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider
+            locale={locale}
+            messages={messages}
+            timeZone={timeZone}
+          >
             <BrandingProvider>{children}</BrandingProvider>
           </NextIntlClientProvider>
         </TooltipProvider>

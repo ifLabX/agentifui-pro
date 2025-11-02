@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AppProviders } from "@/providers/app-providers";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 
 import { geistMono, geistSans, inter, playfairDisplay } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
@@ -22,6 +22,7 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const timeZone = await getTimeZone();
 
   return (
     <html
@@ -35,7 +36,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-background font-sans antialiased">
-        <AppProviders locale={locale} messages={messages}>
+        <AppProviders locale={locale} messages={messages} timeZone={timeZone}>
           {children}
         </AppProviders>
       </body>

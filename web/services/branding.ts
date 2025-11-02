@@ -3,9 +3,7 @@ import type {
   BrandingPayload,
   BrandingResult,
 } from "@/types/branding";
-import { DEFAULT_BRANDING } from "@/config/branding";
-
-const BRANDING_ENDPOINT = "/api/system/branding";
+import { BRANDING_ENDPOINT, DEFAULT_BRANDING } from "@/config/branding";
 
 const normalisePayload = (payload: BrandingApiResponse): BrandingPayload => {
   const applicationTitle =

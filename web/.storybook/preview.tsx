@@ -1,7 +1,9 @@
-import React from "react";
 import type { Preview } from "@storybook/react-vite";
 import { NextIntlClientProvider } from "next-intl";
 import ResizeObserver from "resize-observer-polyfill";
+
+import { Theme } from "@/types/app";
+import { ThemeProvider } from "@/components/theme-provider";
 
 import "../app/globals.css";
 
@@ -95,6 +97,23 @@ if (typeof window !== "undefined") {
 }
 
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      name: "Theme",
+      description: "Global theme for components",
+      defaultValue: Theme.system,
+      toolbar: {
+        icon: "mirror",
+        items: [
+          { value: Theme.light, icon: "sun", title: "Light" },
+          { value: Theme.dark, icon: "moon", title: "Dark" },
+          { value: Theme.system, icon: "browser", title: "System" },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+
   parameters: {
     nextjs: {
       appDirectory: true,
@@ -106,21 +125,36 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      default: "light",
+      default: Theme.light,
       values: [
-        { name: "light", value: "#ffffff" },
-        { name: "dark", value: "#1a1a1a" },
+        { name: Theme.light, value: "#ffffff" },
+        { name: Theme.dark, value: "#1a1a1a" },
       ],
     },
   },
 
   decorators: [
-    Story =>
-      React.createElement(
-        NextIntlClientProvider,
-        { locale: "en", messages },
-        React.createElement(Story)
-      ),
+    (Story, context) => {
+      const activeTheme =
+        (context.globals.theme as Theme | undefined) ?? Theme.system;
+      const forcedTheme =
+        activeTheme === Theme.system ? undefined : activeTheme;
+
+      const backgroundName =
+        activeTheme === Theme.dark ? Theme.dark : Theme.light;
+
+      if (context.parameters.backgrounds) {
+        context.parameters.backgrounds.default = backgroundName;
+      }
+
+      return (
+        <ThemeProvider forcedTheme={forcedTheme}>
+          <NextIntlClientProvider locale="en" messages={messages}>
+            <Story />
+          </NextIntlClientProvider>
+        </ThemeProvider>
+      );
+    },
   ],
 };
 

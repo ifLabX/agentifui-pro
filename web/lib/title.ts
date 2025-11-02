@@ -19,19 +19,11 @@ export const formatTitle = ({
   const cleanedBrand = clean(brand);
   const cleanedSuffix = clean(suffix);
 
-  let composed = "";
+  const hasContent = (value: string) => value.length > 0;
 
-  if (cleanedTitle && cleanedBrand) {
-    composed = `${cleanedTitle}${separator}${cleanedBrand}`;
-  } else if (cleanedTitle) {
-    composed = cleanedTitle;
-  } else if (cleanedBrand) {
-    composed = cleanedBrand;
-  }
+  const titleAndBrand = [cleanedTitle, cleanedBrand]
+    .filter(hasContent)
+    .join(separator);
 
-  if (cleanedSuffix) {
-    composed = composed ? `${composed} ${cleanedSuffix}` : cleanedSuffix;
-  }
-
-  return composed;
+  return [titleAndBrand, cleanedSuffix].filter(hasContent).join(" ");
 };

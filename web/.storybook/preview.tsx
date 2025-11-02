@@ -1,11 +1,33 @@
+import { useEffect } from "react";
 import type { Preview } from "@storybook/react-vite";
 import { NextIntlClientProvider } from "next-intl";
 import ResizeObserver from "resize-observer-polyfill";
 
-import { Theme } from "@/types/app";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import "../app/globals.css";
+
+// Global styles component to sync Storybook background with theme
+function GlobalStyles({ theme }: { theme?: string }) {
+  useEffect(() => {
+    const isDark = theme === "dark";
+    const bgColor = isDark ? "#0a0a0a" : "#ffffff";
+    const textColor = isDark ? "#ededed" : "#000000";
+
+    // Update Storybook canvas background
+    document.body.style.backgroundColor = bgColor;
+    document.body.style.color = textColor;
+
+    // Also update the docs page if it exists
+    const docsRoot = document.querySelector(".docs-story");
+    if (docsRoot instanceof HTMLElement) {
+      docsRoot.style.backgroundColor = bgColor;
+      docsRoot.style.color = textColor;
+    }
+  }, [theme]);
+
+  return null;
+}
 
 // Mock next-intl messages for Storybook
 const messages = {
@@ -99,15 +121,13 @@ if (typeof window !== "undefined") {
 const preview: Preview = {
   globalTypes: {
     theme: {
-      name: "Theme",
       description: "Global theme for components",
-      defaultValue: Theme.system,
       toolbar: {
-        icon: "mirror",
+        title: "Theme",
+        icon: "circle",
         items: [
-          { value: Theme.light, icon: "sun", title: "Light" },
-          { value: Theme.dark, icon: "moon", title: "Dark" },
-          { value: Theme.system, icon: "browser", title: "System" },
+          { value: "light", icon: "sun", title: "Light" },
+          { value: "dark", icon: "moon", title: "Dark" },
         ],
         dynamicTitle: true,
       },
@@ -124,35 +144,26 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    backgrounds: {
-      default: Theme.light,
-      values: [
-        { name: Theme.light, value: "#ffffff" },
-        { name: Theme.dark, value: "#1a1a1a" },
-      ],
-    },
   },
 
   decorators: [
     (Story, context) => {
-      const activeTheme =
-        (context.globals.theme as Theme | undefined) ?? Theme.system;
-      const forcedTheme =
-        activeTheme === Theme.system ? undefined : activeTheme;
-
-      const backgroundName =
-        activeTheme === Theme.dark ? Theme.dark : Theme.light;
-
-      if (context.parameters.backgrounds) {
-        context.parameters.backgrounds.default = backgroundName;
-      }
+      const theme = (context.globals.theme as string) || "light";
 
       return (
-        <ThemeProvider forcedTheme={forcedTheme}>
-          <NextIntlClientProvider locale="en" messages={messages}>
-            <Story />
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <>
+          <GlobalStyles theme={theme} />
+          <ThemeProvider
+            attribute="class"
+            forcedTheme={theme}
+            enableSystem={false}
+            storageKey="sb-theme"
+          >
+            <NextIntlClientProvider locale="en" messages={messages}>
+              <Story />
+            </NextIntlClientProvider>
+          </ThemeProvider>
+        </>
       );
     },
   ],

@@ -3,7 +3,12 @@ import type {
   BrandingPayload,
   BrandingResult,
 } from "@/types/branding";
-import { BRANDING_ENDPOINT, DEFAULT_BRANDING } from "@/config/branding";
+import {
+  BRANDING_ENDPOINT,
+  BRANDING_QUERY_KEY,
+  DEFAULT_BRANDING,
+} from "@/config/branding";
+import { apiRequest } from "@/lib/api-client";
 
 const normalisePayload = (payload: BrandingApiResponse): BrandingPayload => {
   const applicationTitle =
@@ -51,17 +56,9 @@ const extractEnvironmentSuffix = (
 
 export const fetchBranding = async (): Promise<BrandingResult> => {
   try {
-    const response = await fetch(BRANDING_ENDPOINT, {
-      method: "GET",
-      credentials: "include",
+    const data = await apiRequest<BrandingApiResponse>(BRANDING_ENDPOINT, {
       cache: "no-store",
     });
-
-    if (!response.ok) {
-      throw new Error(`Branding fetch failed with status ${response.status}`);
-    }
-
-    const data = (await response.json()) as BrandingApiResponse;
 
     return {
       branding: normalisePayload(data),
@@ -75,3 +72,9 @@ export const fetchBranding = async (): Promise<BrandingResult> => {
     return { branding: DEFAULT_BRANDING, resolvedFromApi: false };
   }
 };
+
+export const brandingQueryOptions = () => ({
+  queryKey: BRANDING_QUERY_KEY,
+  queryFn: fetchBranding,
+  staleTime: 10 * 60 * 1000,
+});

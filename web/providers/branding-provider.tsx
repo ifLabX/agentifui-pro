@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, type PropsWithChildren } from "react";
-import { fetchBranding } from "@/services/branding";
+import { brandingQueryOptions } from "@/services/branding";
 import { useBrandingStore } from "@/stores/branding-store";
 import { useQuery } from "@tanstack/react-query";
 
-import { BRANDING_ENV_SUFFIX, BRANDING_QUERY_KEY } from "@/config/branding";
+import { BRANDING_ENV_SUFFIX } from "@/config/branding";
 
 export function BrandingProvider({ children }: PropsWithChildren) {
   const setBranding = useBrandingStore(state => state.setBranding);
@@ -13,11 +13,7 @@ export function BrandingProvider({ children }: PropsWithChildren) {
   const setEnvironmentSuffix = useBrandingStore(
     state => state.setEnvironmentSuffix
   );
-  const { data, isPending, error } = useQuery({
-    queryKey: BRANDING_QUERY_KEY,
-    queryFn: fetchBranding,
-    staleTime: 10 * 60 * 1000,
-  });
+  const { data, isPending, error } = useQuery(brandingQueryOptions());
 
   useEffect(() => {
     setLoading(isPending);

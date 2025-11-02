@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/index";
 
 import {
   Dialog,
@@ -13,9 +13,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./base-dialog";
+} from "../dialog/index";
 
-interface AlertDialogProps {
+type ConfirmVariant = "default" | "danger";
+
+interface ConfirmDialogProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   title: string;
@@ -23,13 +25,14 @@ interface AlertDialogProps {
   confirmText?: string;
   cancelText?: string;
   onConfirm?: () => void | Promise<void>;
+  variant?: ConfirmVariant;
   showCloseButton?: boolean;
   closeButtonLabel?: string;
   isLoading?: boolean;
   children?: React.ReactNode;
 }
 
-export function AlertDialog({
+export function ConfirmDialog({
   open,
   onOpenChange,
   title,
@@ -37,22 +40,21 @@ export function AlertDialog({
   confirmText = "Confirm",
   cancelText = "Cancel",
   onConfirm,
+  variant = "default",
   showCloseButton = true,
   closeButtonLabel,
   isLoading = false,
   children,
-}: AlertDialogProps) {
+}: ConfirmDialogProps) {
   const [isConfirming, setIsConfirming] = useState(false);
 
   const handleConfirm = async () => {
-    if (onConfirm) {
-      setIsConfirming(true);
-      try {
-        await onConfirm();
-      } finally {
-        setIsConfirming(false);
-        onOpenChange?.(false);
-      }
+    setIsConfirming(true);
+    try {
+      await onConfirm?.();
+    } finally {
+      setIsConfirming(false);
+      onOpenChange?.(false);
     }
   };
 
@@ -78,7 +80,11 @@ export function AlertDialog({
           >
             {cancelText}
           </Button>
-          <Button onClick={handleConfirm} disabled={isLoading || isConfirming}>
+          <Button
+            variant={variant === "danger" ? "destructive" : "default"}
+            onClick={handleConfirm}
+            disabled={isLoading || isConfirming}
+          >
             {isLoading || isConfirming ? "Loading..." : confirmText}
           </Button>
         </DialogFooter>

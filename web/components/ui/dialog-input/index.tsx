@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./base-dialog";
+} from "../dialog/index";
 
 interface InputDialogProps {
   open?: boolean;

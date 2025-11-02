@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    "storybook-static/**",
+    "coverage/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "dist/**",
+    "node_modules/**"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true
+  },
+  "plugins": ["react", "jsx-a11y", "unicorn"]
+}

@@ -131,6 +131,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,mjs}": [
+      "oxlint",
       "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix"
     ],
     "**/*.{js,jsx,ts,tsx,mjs,json,css,md}": [

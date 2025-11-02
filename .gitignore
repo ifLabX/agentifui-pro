@@ -4,6 +4,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Frontend build outputs
+web/storybook-static/
+
 # Environment
 .env
 .env.local

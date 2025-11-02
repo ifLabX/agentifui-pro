@@ -87,7 +87,7 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+export type Story = StoryObj<typeof meta>;
 
 const groupActions = (query: string) => {
   if (!query.trim()) return actions;
@@ -103,150 +103,143 @@ const groupActions = (query: string) => {
   });
 };
 
-export const CommandPalette: Story = {
-  render: () => {
-    const Palette = () => {
-      const [open, setOpen] = useState(false);
-      const [query, setQuery] = useState("");
+function CommandPaletteStory() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
-      const filtered = useMemo(() => groupActions(query), [query]);
-      const grouped = useMemo(() => {
-        return filtered.reduce<Record<string, CommandAction[]>>(
-          (acc, action) => {
-            if (!acc[action.group]) {
-              acc[action.group] = [];
-            }
-            acc[action.group].push(action);
-            return acc;
-          },
-          {}
-        );
-      }, [filtered]);
+  const filtered = useMemo(() => groupActions(query), [query]);
+  const grouped = useMemo(() => {
+    return filtered.reduce<Record<string, CommandAction[]>>((acc, action) => {
+      if (!acc[action.group]) {
+        acc[action.group] = [];
+      }
+      acc[action.group].push(action);
+      return acc;
+    }, {});
+  }, [filtered]);
 
-      return (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-medium">Command palette demo</p>
-              <p className="text-sm text-muted-foreground">
-                Try typing keywords or use arrow keys to explore actions.
-              </p>
-            </div>
-            <Button onClick={() => setOpen(true)}>Open palette</Button>
-          </div>
-
-          <CommandDialog
-            open={open}
-            onOpenChange={setOpen}
-            commandProps={{ loop: true, vimBindings: true }}
-          >
-            <CommandInput
-              placeholder="Search actions..."
-              value={query}
-              onValueChange={setQuery}
-            />
-            <CommandList>
-              <CommandEmpty>No commands matched “{query || "…"}”.</CommandEmpty>
-              {Object.entries(grouped).map(([group, items]) => (
-                <CommandGroup key={group} heading={group}>
-                  {items.map(item => (
-                    <CommandItem
-                      key={item.value}
-                      value={item.value}
-                      onSelect={() => {
-                        setOpen(false);
-                        setQuery("");
-                      }}
-                    >
-                      <span>{item.label}</span>
-                      {item.shortcut ? (
-                        <CommandShortcut>{item.shortcut}</CommandShortcut>
-                      ) : null}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ))}
-              <CommandSeparator />
-              <CommandGroup heading="Tips">
-                <CommandItem disabled>Use arrow keys to navigate</CommandItem>
-                <CommandItem disabled>
-                  Press Enter to run the command
-                </CommandItem>
-              </CommandGroup>
-            </CommandList>
-          </CommandDialog>
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium">Command palette demo</p>
+          <p className="text-sm text-muted-foreground">
+            Try typing keywords or use arrow keys to explore actions.
+          </p>
         </div>
-      );
-    };
+        <Button onClick={() => setOpen(true)}>Open palette</Button>
+      </div>
 
-    return <Palette />;
-  },
+      <CommandDialog
+        open={open}
+        onOpenChange={value => {
+          if (!value) {
+            setOpen(false);
+          }
+        }}
+        commandProps={{ loop: true, vimBindings: true }}
+      >
+        <CommandInput
+          placeholder="Search actions..."
+          value={query}
+          onValueChange={setQuery}
+        />
+        <CommandList>
+          <CommandEmpty>No commands matched “{query || "…"}”.</CommandEmpty>
+          {Object.entries(grouped).map(([group, items]) => (
+            <CommandGroup key={group} heading={group}>
+              {items.map(item => (
+                <CommandItem
+                  key={item.value}
+                  value={item.value}
+                  onSelect={() => {
+                    setOpen(false);
+                    setQuery("");
+                  }}
+                >
+                  <span>{item.label}</span>
+                  {item.shortcut ? (
+                    <CommandShortcut>{item.shortcut}</CommandShortcut>
+                  ) : null}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          ))}
+          <CommandSeparator />
+          <CommandGroup heading="Tips">
+            <CommandItem disabled>Use arrow keys to navigate</CommandItem>
+            <CommandItem disabled>Press Enter to run the command</CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </div>
+  );
+}
+
+function KeyboardOnlyStory() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="space-y-3">
+      <Button onClick={() => setOpen(true)}>Keyboard-only palette</Button>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        commandProps={{ disablePointerSelection: true }}
+      >
+        <CommandInput placeholder="Only keyboard input works here" />
+        <CommandList>
+          <CommandGroup heading="Shortcuts">
+            <CommandItem onSelect={() => setOpen(false)}>
+              Toggle theme
+              <CommandShortcut>⌘ + T</CommandShortcut>
+            </CommandItem>
+            <CommandItem disabled>Delete workspace (disabled)</CommandItem>
+            <CommandItem onSelect={() => setOpen(false)}>
+              Toggle sidebar
+              <CommandShortcut>⌘ + B</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </div>
+  );
+}
+
+function EmptyStateStory() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="space-y-3">
+      <Button variant="secondary" onClick={() => setOpen(true)}>
+        Open empty state
+      </Button>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        commandProps={{ loop: true }}
+      >
+        <CommandInput placeholder="Search..." value="zzzzz" />
+        <CommandList>
+          <CommandEmpty>
+            Nothing matched your search. Try a different keyword.
+          </CommandEmpty>
+        </CommandList>
+      </CommandDialog>
+    </div>
+  );
+}
+
+export const CommandPalette: Story = {
+  render: () => <CommandPaletteStory />,
 };
 
 export const KeyboardOnly: Story = {
-  render: () => {
-    const KeyboardPalette = () => {
-      const [open, setOpen] = useState(false);
-
-      return (
-        <div className="space-y-3">
-          <Button onClick={() => setOpen(true)}>Keyboard-only palette</Button>
-          <CommandDialog
-            open={open}
-            onOpenChange={setOpen}
-            commandProps={{ disablePointerSelection: true }}
-          >
-            <CommandInput placeholder="Only keyboard input works here" />
-            <CommandList>
-              <CommandGroup heading="Shortcuts">
-                <CommandItem onSelect={() => setOpen(false)}>
-                  Toggle theme
-                  <CommandShortcut>⌘ + T</CommandShortcut>
-                </CommandItem>
-                <CommandItem disabled>Delete workspace (disabled)</CommandItem>
-                <CommandItem onSelect={() => setOpen(false)}>
-                  Toggle sidebar
-                  <CommandShortcut>⌘ + B</CommandShortcut>
-                </CommandItem>
-              </CommandGroup>
-            </CommandList>
-          </CommandDialog>
-        </div>
-      );
-    };
-
-    return <KeyboardPalette />;
-  },
+  render: () => <KeyboardOnlyStory />,
 };
 
 export const EmptyState: Story = {
-  render: () => {
-    const EmptyPalette = () => {
-      const [open, setOpen] = useState(false);
-
-      return (
-        <div className="space-y-3">
-          <Button variant="secondary" onClick={() => setOpen(true)}>
-            Open empty state
-          </Button>
-          <CommandDialog
-            open={open}
-            onOpenChange={setOpen}
-            commandProps={{ loop: true }}
-          >
-            <CommandInput placeholder="Search..." value="zzzzz" />
-            <CommandList>
-              <CommandEmpty>
-                Nothing matched your search. Try a different keyword.
-              </CommandEmpty>
-            </CommandList>
-          </CommandDialog>
-        </div>
-      );
-    };
-
-    return <EmptyPalette />;
-  },
+  render: () => <EmptyStateStory />,
 };
 
 export const Standalone: Story = {

@@ -81,6 +81,9 @@ const config: Config = {
           "var(--chat-attachment-remove-hover-bg)",
         "chat-error-border": "var(--chat-error-border)",
         "chat-error-text": "var(--chat-error-text)",
+        "kbd-bg": "var(--kbd-bg)",
+        "kbd-border": "var(--kbd-border)",
+        "kbd-text": "var(--kbd-text)",
       },
       fontFamily: {
         sans: [

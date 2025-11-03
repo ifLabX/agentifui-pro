@@ -74,6 +74,11 @@ export function ConfirmDialog({
       <DialogContent
         showCloseButton={false}
         className="max-w-md space-y-4 border-border/70"
+        onInteractOutside={event => {
+          if (disableCancel || isLoading) {
+            event.preventDefault();
+          }
+        }}
       >
         <DialogHeader className="space-y-3 text-left">
           {fallbackIcon ? (

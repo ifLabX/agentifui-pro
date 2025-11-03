@@ -16,6 +16,10 @@ const meta = {
     children: {
       control: "text",
     },
+    size: {
+      control: { type: "select" },
+      options: ["default", "sm"],
+    },
   },
 } satisfies Meta<typeof Kbd>;
 
@@ -26,6 +30,7 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {
   args: {
     children: "Ctrl",
+    size: "default",
   },
 };
 
@@ -53,16 +58,16 @@ export const WithButton: Story = {
 export const CompactVariants: Story = {
   render: () => (
     <div className="flex flex-col gap-3">
-      <KbdGroup className="gap-0.5 [&_kbd]:scale-90 [&_kbd]:transform [&_kbd]:origin-center">
-        <Kbd>⌘</Kbd>
-        <Kbd>K</Kbd>
+      <KbdGroup className="gap-0.5">
+        <Kbd size="sm">⌘</Kbd>
+        <Kbd size="sm">K</Kbd>
       </KbdGroup>
 
       <Button variant="outline" className="justify-between w-48">
         <span>Search...</span>
-        <KbdGroup className="gap-0.5 [&_kbd]:scale-90 [&_kbd]:transform [&_kbd]:origin-center">
-          <Kbd>⌘</Kbd>
-          <Kbd>F</Kbd>
+        <KbdGroup className="gap-0.5">
+          <Kbd size="sm">⌘</Kbd>
+          <Kbd size="sm">F</Kbd>
         </KbdGroup>
       </Button>
     </div>
@@ -113,9 +118,9 @@ export const WithTooltip: Story = {
         content={
           <div className="flex items-center gap-2">
             <span className="text-xs leading-tight">Open command palette</span>
-            <KbdGroup className="gap-1 [&_kbd]:h-4 [&_kbd]:w-4 [&_kbd]:text-[9px]">
-              <Kbd>⌘</Kbd>
-              <Kbd>K</Kbd>
+            <KbdGroup className="gap-1">
+              <Kbd size="sm">⌘</Kbd>
+              <Kbd size="sm">K</Kbd>
             </KbdGroup>
           </div>
         }

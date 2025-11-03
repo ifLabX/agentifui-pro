@@ -37,28 +37,26 @@ export const useDocumentTitle = ({
 
   const computedSuffix = suffix ?? environmentSuffix;
 
+  const brand = disableBranding ? undefined : branding.applicationTitle;
+
+  const formattedTitle = useMemo(
+    () =>
+      formatTitle({
+        title,
+        brand,
+        suffix: computedSuffix,
+        separator,
+      }),
+    [title, brand, computedSuffix, separator]
+  );
+
   const resolvedTitle = useMemo(() => {
     if (isLoading) {
-      return loadingTitle ?? "";
+      return loadingTitle ?? formattedTitle;
     }
 
-    const brand = disableBranding ? undefined : branding.applicationTitle;
-
-    return formatTitle({
-      title,
-      brand,
-      suffix: computedSuffix,
-      separator,
-    });
-  }, [
-    isLoading,
-    loadingTitle,
-    disableBranding,
-    branding.applicationTitle,
-    title,
-    computedSuffix,
-    separator,
-  ]);
+    return formattedTitle;
+  }, [isLoading, loadingTitle, formattedTitle]);
 
   useTitle(resolvedTitle);
 

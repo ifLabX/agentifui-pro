@@ -50,6 +50,7 @@ const config: Config = {
         card: {
           DEFAULT: "var(--card)",
           foreground: "var(--card-foreground)",
+          border: "var(--card-border)",
         },
         chart: {
           1: "var(--chart-1)",

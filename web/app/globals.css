@@ -29,6 +29,19 @@
   --chat-submit-disabled-bg: oklch(0.88 0 0); /* gray-200 */
   --chat-submit-disabled-text: oklch(0.62 0 0); /* gray-400 */
 
+  /* Input tokens */
+  --input-background: var(--background);
+  --input-foreground: var(--foreground);
+  --input-placeholder: var(--muted-foreground);
+  --input-border: var(--input);
+  --input-ring: var(--ring);
+  --input-disabled-background: var(--muted);
+  --input-disabled-foreground: var(--muted-foreground);
+  --input-invalid-border: var(--chat-error-border);
+  --input-invalid-ring: var(--chat-error-text);
+  --input-shadow: var(--chat-shadow);
+  --input-shadow-focus: 0 0 24px rgba(0, 0, 0, 0.15);
+
   /* Attachment preview tokens */
   --chat-attachment-bg: oklch(0.98 0 0); /* stone-100 */
   --chat-attachment-border: oklch(0.88 0 0); /* stone-200 */
@@ -109,6 +122,19 @@
   --chat-submit-hover-bg: oklch(0.545 0.023 57.76);
   --chat-submit-disabled-bg: oklch(0.606 0.023 57.84);
   --chat-submit-disabled-text: oklch(0.739 0.017 58.55);
+
+  /* Input dark mode tokens */
+  --input-background: var(--background);
+  --input-foreground: var(--foreground);
+  --input-placeholder: var(--muted-foreground);
+  --input-border: var(--input);
+  --input-ring: var(--ring);
+  --input-disabled-background: var(--muted);
+  --input-disabled-foreground: var(--muted-foreground);
+  --input-invalid-border: var(--chat-error-border);
+  --input-invalid-ring: var(--chat-error-text);
+  --input-shadow: var(--chat-shadow);
+  --input-shadow-focus: 0 0 28px rgba(0, 0, 0, 0.28);
 
   /* Attachment preview dark mode tokens */
   --chat-attachment-bg: oklch(0.496 0.023 54.8);
@@ -195,6 +221,17 @@
   );
   --color-chat-error-border: var(--chat-error-border);
   --color-chat-error-text: var(--chat-error-text);
+
+  /* Input color mappings */
+  --color-input-background: var(--input-background);
+  --color-input-foreground: var(--input-foreground);
+  --color-input-placeholder: var(--input-placeholder);
+  --color-input-border: var(--input-border);
+  --color-input-ring: var(--input-ring);
+  --color-input-disabled-background: var(--input-disabled-background);
+  --color-input-disabled-foreground: var(--input-disabled-foreground);
+  --color-input-invalid-border: var(--input-invalid-border);
+  --color-input-invalid-ring: var(--input-invalid-ring);
 
   /* Kbd color mappings */
   --color-kbd-bg: var(--kbd-bg);

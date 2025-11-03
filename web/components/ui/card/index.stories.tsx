@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 import {
   Card,
@@ -114,10 +115,14 @@ export const SignIn: Story = {
             Enter your email below to login to your account.
           </CardDescription>
         </div>
-        <CardAction className="self-start text-sm font-medium text-primary">
-          <button type="button" className="hover:underline whitespace-nowrap">
+        <CardAction className="self-start">
+          <Button
+            variant="link"
+            type="button"
+            className="h-auto p-0 text-sm font-medium text-primary hover:underline whitespace-nowrap"
+          >
             Sign Up
-          </button>
+          </Button>
         </CardAction>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -125,29 +130,22 @@ export const SignIn: Story = {
           <label className="font-medium text-foreground" htmlFor="email">
             Email
           </label>
-          <input
-            id="email"
-            className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            placeholder="m@example.com"
-          />
+          <Input id="email" className="text-sm" placeholder="m@example.com" />
         </div>
         <div className="space-y-2 text-sm">
           <div className="flex items-center justify-between font-medium">
             <label className="text-foreground" htmlFor="password">
               Password
             </label>
-            <button
+            <Button
+              variant="link"
               type="button"
-              className="text-sm text-muted-foreground hover:text-foreground"
+              className="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
             >
               Forgot your password?
-            </button>
+            </Button>
           </div>
-          <input
-            id="password"
-            type="password"
-            className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
+          <Input id="password" type="password" className="text-sm" />
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">

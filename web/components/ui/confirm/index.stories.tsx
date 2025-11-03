@@ -104,6 +104,27 @@ export const Destructive: Story = {
     ),
 };
 
+export const CancelDisabled: Story = {
+  args: {
+    open: false,
+    title: "Require explicit acknowledgment?",
+    description:
+      "Users must confirm before leaving. Outside clicks and ESC are disabled to prevent accidental closure.",
+    confirmText: "I understand",
+    cancelText: "Cancel",
+    disableCancel: true,
+  },
+  render: args =>
+    ManagedDialog(
+      ({ onOpen }) => (
+        <Button variant="secondary" onClick={onOpen}>
+          Review warning
+        </Button>
+      ),
+      { ...args }
+    ),
+};
+
 export const WithAdditionalContext: Story = {
   args: {
     open: false,

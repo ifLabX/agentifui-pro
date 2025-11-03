@@ -10,7 +10,7 @@ const baseInputClasses = [
   "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-input-foreground",
   "placeholder:text-input-placeholder",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-input-ring focus-visible:ring-offset-2 focus-visible:shadow-[var(--input-shadow-focus)]",
-  "disabled:cursor-not-allowed disabled:border-input disabled:bg-input-disabled disabled:text-input-disabled-foreground disabled:placeholder:text-input-disabled-foreground disabled:opacity-50",
+  "disabled:cursor-not-allowed disabled:bg-input-disabled disabled:text-input-disabled-foreground disabled:placeholder:text-input-disabled-foreground disabled:opacity-50",
   "aria-[invalid=true]:border-input-invalid aria-[invalid=true]:focus-visible:ring-input-invalid-ring",
   "md:text-sm",
 ] as const;

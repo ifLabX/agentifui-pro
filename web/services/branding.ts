@@ -45,13 +45,13 @@ const normalisePayload = (payload: BrandingApiResponse): BrandingPayload => {
 const extractEnvironmentSuffix = (
   payload: BrandingApiResponse
 ): string | undefined => {
-  return (
-    (
-      payload.environmentSuffix ??
-      payload.environment_suffix ??
-      undefined
-    )?.trim() || undefined
-  );
+  const suffix = payload.environmentSuffix ?? payload.environment_suffix;
+
+  if (suffix === undefined || suffix === null) {
+    return undefined;
+  }
+
+  return suffix.trim();
 };
 
 export const fetchBranding = async (): Promise<BrandingResult> => {

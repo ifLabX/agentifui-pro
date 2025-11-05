@@ -54,6 +54,16 @@
   --chat-error-border: oklch(0.7 0.15 25 / 0.3); /* red-400/30 */
   --chat-error-text: oklch(0.5 0.2 25); /* red-500 */
 
+  /* Badge tokens */
+  --badge-success-bg: oklch(0.95 0.051 163.05);
+  --badge-success-foreground: oklch(0.432 0.086 166.91);
+  --badge-warning-bg: oklch(0.962 0.058 95.62);
+  --badge-warning-foreground: oklch(0.473 0.125 46.2);
+  --badge-info-bg: oklch(0.932 0.032 255.59);
+  --badge-info-foreground: oklch(0.424 0.181 265.64);
+  --badge-purple-bg: oklch(0.946 0.033 307.17);
+  --badge-purple-foreground: oklch(0.438 0.198 303.72);
+
   /* Shadow tokens */
   --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 
@@ -147,6 +157,16 @@
   /* Error state dark mode tokens */
   --chat-error-border: oklch(0.608 0.097 33.94 / 0.3);
   --chat-error-text: oklch(0.715 0.089 35.26);
+
+  /* Badge dark mode tokens */
+  --badge-success-bg: oklch(0.378 0.073 168.94 / 0.3);
+  --badge-success-foreground: oklch(0.773 0.153 163.22);
+  --badge-warning-bg: oklch(0.414 0.105 45.9 / 0.3);
+  --badge-warning-foreground: oklch(0.837 0.164 84.43);
+  --badge-info-bg: oklch(0.379 0.138 265.52 / 0.3);
+  --badge-info-foreground: oklch(0.714 0.143 254.62);
+  --badge-purple-bg: oklch(0.381 0.166 304.99 / 0.3);
+  --badge-purple-foreground: oklch(0.722 0.177 305.5);
 
   /* Shadow dark mode */
   --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);

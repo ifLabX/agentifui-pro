@@ -14,20 +14,20 @@ describe("Badge", () => {
   });
 
   test.each([
-    ["secondary", "bg-secondary"],
-    ["destructive", "bg-destructive"],
-    ["outline", "text-foreground"],
-    ["success", "bg-emerald-100"],
-    ["warning", "bg-amber-100"],
-    ["info", "bg-blue-100"],
-    ["purple", "bg-purple-100"],
+    ["secondary", ["bg-secondary", "text-secondary-foreground"]],
+    ["destructive", ["bg-destructive", "text-destructive-foreground"]],
+    ["outline", ["text-foreground"]],
+    ["success", ["bg-badge-success", "text-badge-success-foreground"]],
+    ["warning", ["bg-badge-warning", "text-badge-warning-foreground"]],
+    ["info", ["bg-badge-info", "text-badge-info-foreground"]],
+    ["purple", ["bg-badge-purple", "text-badge-purple-foreground"]],
   ] as const)(
     "renders correctly with variant '%s'",
-    (variant, expectedClass) => {
+    (variant, expectedClasses) => {
       render(<Badge variant={variant}>{variant}</Badge>);
       const badge = screen.getByText(variant);
       expect(badge).toBeInTheDocument();
-      expect(badge).toHaveClass(expectedClass);
+      expect(badge).toHaveClass(...expectedClasses);
     }
   );
 

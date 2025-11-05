@@ -52,6 +52,24 @@ const config: Config = {
           foreground: "var(--card-foreground)",
           border: "var(--card-border)",
         },
+        badge: {
+          success: {
+            DEFAULT: "var(--badge-success-bg)",
+            foreground: "var(--badge-success-foreground)",
+          },
+          warning: {
+            DEFAULT: "var(--badge-warning-bg)",
+            foreground: "var(--badge-warning-foreground)",
+          },
+          info: {
+            DEFAULT: "var(--badge-info-bg)",
+            foreground: "var(--badge-info-foreground)",
+          },
+          purple: {
+            DEFAULT: "var(--badge-purple-bg)",
+            foreground: "var(--badge-purple-foreground)",
+          },
+        },
         chart: {
           1: "var(--chart-1)",
           2: "var(--chart-2)",

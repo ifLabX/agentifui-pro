@@ -12,23 +12,23 @@ describe("Badge", () => {
     expect(badge).toHaveClass("bg-primary", "text-primary-foreground");
   });
 
-  test("renders with different variants", () => {
-    const variants = [
-      "secondary",
-      "destructive",
-      "outline",
-      "success",
-      "warning",
-      "info",
-      "purple",
-    ] as const;
-
-    variants.forEach(variant => {
-      const { container } = render(<Badge variant={variant}>{variant}</Badge>);
-      const badge = container.querySelector("div");
+  test.each([
+    ["secondary", "bg-secondary"],
+    ["destructive", "bg-destructive"],
+    ["outline", "text-foreground"],
+    ["success", "bg-emerald-100"],
+    ["warning", "bg-amber-100"],
+    ["info", "bg-blue-100"],
+    ["purple", "bg-purple-100"],
+  ] as const)(
+    "renders correctly with variant '%s'",
+    (variant, expectedClass) => {
+      render(<Badge variant={variant}>{variant}</Badge>);
+      const badge = screen.getByText(variant);
       expect(badge).toBeInTheDocument();
-    });
-  });
+      expect(badge).toHaveClass(expectedClass);
+    }
+  );
 
   test("merges custom className correctly", () => {
     render(<Badge className="custom-class">Custom</Badge>);
@@ -55,5 +55,12 @@ describe("Badge", () => {
     );
     expect(screen.getByText("Icon")).toBeInTheDocument();
     expect(screen.getByText("Text")).toBeInTheDocument();
+  });
+
+  test("forwards ref correctly", () => {
+    const ref = { current: null as HTMLDivElement | null };
+    render(<Badge ref={ref}>Badge with ref</Badge>);
+    expect(ref.current).toBeInstanceOf(HTMLDivElement);
+    expect(ref.current).toHaveTextContent("Badge with ref");
   });
 });

@@ -16,7 +16,7 @@ describe("Badge", () => {
   test.each([
     ["secondary", ["bg-secondary", "text-secondary-foreground"]],
     ["destructive", ["bg-destructive", "text-destructive-foreground"]],
-    ["outline", ["text-foreground"]],
+    ["outline", ["text-foreground", "border-border"]],
     ["success", ["bg-badge-success", "text-badge-success-foreground"]],
     ["warning", ["bg-badge-warning", "text-badge-warning-foreground"]],
     ["info", ["bg-badge-info", "text-badge-info-foreground"]],

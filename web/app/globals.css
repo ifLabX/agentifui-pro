@@ -241,6 +241,14 @@
   );
   --color-chat-error-border: var(--chat-error-border);
   --color-chat-error-text: var(--chat-error-text);
+  --color-badge-success: var(--badge-success-bg);
+  --color-badge-success-foreground: var(--badge-success-foreground);
+  --color-badge-warning: var(--badge-warning-bg);
+  --color-badge-warning-foreground: var(--badge-warning-foreground);
+  --color-badge-info: var(--badge-info-bg);
+  --color-badge-info-foreground: var(--badge-info-foreground);
+  --color-badge-purple: var(--badge-purple-bg);
+  --color-badge-purple-foreground: var(--badge-purple-foreground);
 
   /* Input color mappings */
   --color-input-background: var(--input-background);

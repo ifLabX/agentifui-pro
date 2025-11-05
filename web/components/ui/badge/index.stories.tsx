@@ -1,6 +1,6 @@
-import { action } from "@storybook/addon-actions";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AlertCircleIcon, CheckIcon, InfoIcon, XIcon } from "lucide-react";
+import { fn } from "storybook/test";
 
 import { Badge } from "./index";
 
@@ -117,14 +117,14 @@ export const Interactive: Story = {
       <Badge
         variant="default"
         className="cursor-pointer hover:opacity-80"
-        onClick={action("badge-click")}
+        onClick={fn()}
       >
         Clickable badge
       </Badge>
       <Badge
         variant="secondary"
         className="cursor-pointer hover:opacity-80"
-        onClick={action("filter-remove")}
+        onClick={fn()}
       >
         Filter: Active
         <XIcon className="ml-1 h-3 w-3" />
@@ -132,7 +132,7 @@ export const Interactive: Story = {
       <Badge
         variant="outline"
         className="cursor-pointer hover:opacity-80"
-        onClick={action("tag-remove")}
+        onClick={fn()}
       >
         Tag: React
         <XIcon className="ml-1 h-3 w-3" />

@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 
 import "@testing-library/jest-dom";
@@ -58,9 +59,9 @@ describe("Badge", () => {
   });
 
   test("forwards ref correctly", () => {
-    const ref = { current: null as HTMLDivElement | null };
+    const ref = createRef<HTMLSpanElement>();
     render(<Badge ref={ref}>Badge with ref</Badge>);
-    expect(ref.current).toBeInstanceOf(HTMLDivElement);
+    expect(ref.current).toBeInstanceOf(HTMLSpanElement);
     expect(ref.current).toHaveTextContent("Badge with ref");
   });
 });

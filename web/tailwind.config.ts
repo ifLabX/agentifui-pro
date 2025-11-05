@@ -52,22 +52,22 @@ const config: Config = {
           foreground: "var(--card-foreground)",
           border: "var(--card-border)",
         },
-        badge: {
+        status: {
           success: {
-            DEFAULT: "var(--badge-success-bg)",
-            foreground: "var(--badge-success-foreground)",
+            DEFAULT: "var(--status-success-surface)",
+            foreground: "var(--status-success-text)",
           },
           warning: {
-            DEFAULT: "var(--badge-warning-bg)",
-            foreground: "var(--badge-warning-foreground)",
+            DEFAULT: "var(--status-warning-surface)",
+            foreground: "var(--status-warning-text)",
           },
           info: {
-            DEFAULT: "var(--badge-info-bg)",
-            foreground: "var(--badge-info-foreground)",
+            DEFAULT: "var(--status-info-surface)",
+            foreground: "var(--status-info-text)",
           },
           purple: {
-            DEFAULT: "var(--badge-purple-bg)",
-            foreground: "var(--badge-purple-foreground)",
+            DEFAULT: "var(--status-purple-surface)",
+            foreground: "var(--status-purple-text)",
           },
         },
         chart: {

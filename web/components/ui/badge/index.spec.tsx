@@ -17,10 +17,10 @@ describe("Badge", () => {
     ["secondary", ["bg-secondary", "text-secondary-foreground"]],
     ["destructive", ["bg-destructive", "text-destructive-foreground"]],
     ["outline", ["text-foreground", "border-border"]],
-    ["success", ["bg-badge-success", "text-badge-success-foreground"]],
-    ["warning", ["bg-badge-warning", "text-badge-warning-foreground"]],
-    ["info", ["bg-badge-info", "text-badge-info-foreground"]],
-    ["purple", ["bg-badge-purple", "text-badge-purple-foreground"]],
+    ["success", ["bg-status-success", "text-status-success-foreground"]],
+    ["warning", ["bg-status-warning", "text-status-warning-foreground"]],
+    ["info", ["bg-status-info", "text-status-info-foreground"]],
+    ["purple", ["bg-status-purple", "text-status-purple-foreground"]],
   ] as const)(
     "renders correctly with variant '%s'",
     (variant, expectedClasses) => {

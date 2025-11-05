@@ -50,6 +50,7 @@ const config: Config = {
         card: {
           DEFAULT: "var(--card)",
           foreground: "var(--card-foreground)",
+          border: "var(--card-border)",
         },
         chart: {
           1: "var(--chart-1)",
@@ -84,6 +85,14 @@ const config: Config = {
         "kbd-bg": "var(--kbd-bg)",
         "kbd-border": "var(--kbd-border)",
         "kbd-text": "var(--kbd-text)",
+        "input-background": "var(--input-background)",
+        "input-foreground": "var(--input-foreground)",
+        "input-placeholder": "var(--input-placeholder)",
+        "input-ring": "var(--input-ring)",
+        "input-disabled": "var(--input-disabled-background)",
+        "input-disabled-foreground": "var(--input-disabled-foreground)",
+        "input-invalid": "var(--input-invalid-border)",
+        "input-invalid-ring": "var(--input-invalid-ring)",
       },
       fontFamily: {
         sans: [

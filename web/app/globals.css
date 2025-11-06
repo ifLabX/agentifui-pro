@@ -54,6 +54,16 @@
   --chat-error-border: oklch(0.7 0.15 25 / 0.3); /* red-400/30 */
   --chat-error-text: oklch(0.5 0.2 25); /* red-500 */
 
+  /* Status tokens */
+  --status-success-surface: oklch(0.95 0.051 163.05);
+  --status-success-text: oklch(0.432 0.086 166.91);
+  --status-warning-surface: oklch(0.962 0.058 95.62);
+  --status-warning-text: oklch(0.473 0.125 46.2);
+  --status-info-surface: oklch(0.932 0.032 255.59);
+  --status-info-text: oklch(0.424 0.181 265.64);
+  --status-purple-surface: oklch(0.946 0.033 307.17);
+  --status-purple-text: oklch(0.438 0.198 303.72);
+
   /* Shadow tokens */
   --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 
@@ -148,6 +158,16 @@
   --chat-error-border: oklch(0.608 0.097 33.94 / 0.3);
   --chat-error-text: oklch(0.715 0.089 35.26);
 
+  /* Status dark mode tokens */
+  --status-success-surface: oklch(0.378 0.073 168.94 / 0.3);
+  --status-success-text: oklch(0.773 0.153 163.22);
+  --status-warning-surface: oklch(0.414 0.105 45.9 / 0.3);
+  --status-warning-text: oklch(0.837 0.164 84.43);
+  --status-info-surface: oklch(0.379 0.138 265.52 / 0.3);
+  --status-info-text: oklch(0.714 0.143 254.62);
+  --status-purple-surface: oklch(0.381 0.166 304.99 / 0.3);
+  --status-purple-text: oklch(0.722 0.177 305.5);
+
   /* Shadow dark mode */
   --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 
@@ -221,6 +241,14 @@
   );
   --color-chat-error-border: var(--chat-error-border);
   --color-chat-error-text: var(--chat-error-text);
+  --color-status-success: var(--status-success-surface);
+  --color-status-success-foreground: var(--status-success-text);
+  --color-status-warning: var(--status-warning-surface);
+  --color-status-warning-foreground: var(--status-warning-text);
+  --color-status-info: var(--status-info-surface);
+  --color-status-info-foreground: var(--status-info-text);
+  --color-status-purple: var(--status-purple-surface);
+  --color-status-purple-foreground: var(--status-purple-text);
 
   /* Input color mappings */
   --color-input-background: var(--input-background);

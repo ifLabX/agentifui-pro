@@ -65,25 +65,25 @@
   --status-purple-text: oklch(0.438 0.198 303.72);
 
   /* Toast tokens */
-  --toast-neutral-surface: oklch(0.964 0.005 95);
-  --toast-neutral-border: oklch(0.882 0.005 95);
-  --toast-neutral-text: oklch(0.302 0.015 63);
+  --toast-neutral-surface: oklch(0.964 0.009 95);
+  --toast-neutral-border: oklch(0.882 0.01 95);
+  --toast-neutral-text: oklch(0.29 0.02 63);
 
-  --toast-success-surface: oklch(0.93 0.04 150);
-  --toast-success-border: oklch(0.862 0.032 148);
-  --toast-success-text: oklch(0.374 0.07 152);
+  --toast-success-surface: oklch(0.925 0.06 150);
+  --toast-success-border: oklch(0.86 0.05 150);
+  --toast-success-text: oklch(0.39 0.09 152);
 
-  --toast-info-surface: oklch(0.94 0.034 250);
-  --toast-info-border: oklch(0.868 0.028 250);
-  --toast-info-text: oklch(0.343 0.06 252);
+  --toast-info-surface: oklch(0.93 0.07 250);
+  --toast-info-border: oklch(0.86 0.06 250);
+  --toast-info-text: oklch(0.34 0.1 252);
 
-  --toast-warning-surface: oklch(0.944 0.045 82);
-  --toast-warning-border: oklch(0.868 0.038 82);
-  --toast-warning-text: oklch(0.404 0.075 76);
+  --toast-warning-surface: oklch(0.938 0.07 82);
+  --toast-warning-border: oklch(0.868 0.06 82);
+  --toast-warning-text: oklch(0.41 0.1 78);
 
-  --toast-error-surface: oklch(0.932 0.05 25);
-  --toast-error-border: oklch(0.852 0.048 23);
-  --toast-error-text: oklch(0.382 0.098 20);
+  --toast-error-surface: oklch(0.924 0.08 25);
+  --toast-error-border: oklch(0.84 0.075 23);
+  --toast-error-text: oklch(0.376 0.13 20);
 
   /* Shadow tokens */
   --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -203,25 +203,25 @@
   --status-purple-text: oklch(0.722 0.177 305.5);
 
   /* Toast tokens */
-  --toast-neutral-surface: oklch(0.37 0.01 62.17);
-  --toast-neutral-border: oklch(0.432 0.013 60.12);
-  --toast-neutral-text: oklch(0.91 0.012 72);
+  --toast-neutral-surface: oklch(0.39 0.018 62.17);
+  --toast-neutral-border: oklch(0.46 0.02 60.12);
+  --toast-neutral-text: oklch(0.92 0.02 72);
 
-  --toast-success-surface: oklch(0.44 0.05 151);
-  --toast-success-border: oklch(0.502 0.048 150);
-  --toast-success-text: oklch(0.85 0.046 158);
+  --toast-success-surface: oklch(0.46 0.08 151);
+  --toast-success-border: oklch(0.52 0.08 150);
+  --toast-success-text: oklch(0.86 0.065 158);
 
-  --toast-info-surface: oklch(0.422 0.047 247);
-  --toast-info-border: oklch(0.486 0.045 247);
-  --toast-info-text: oklch(0.848 0.041 254);
+  --toast-info-surface: oklch(0.44 0.075 247);
+  --toast-info-border: oklch(0.5 0.075 247);
+  --toast-info-text: oklch(0.85 0.06 254);
 
-  --toast-warning-surface: oklch(0.448 0.056 82);
-  --toast-warning-border: oklch(0.512 0.055 84);
-  --toast-warning-text: oklch(0.88 0.042 92);
+  --toast-warning-surface: oklch(0.47 0.085 82);
+  --toast-warning-border: oklch(0.53 0.085 84);
+  --toast-warning-text: oklch(0.88 0.065 92);
 
-  --toast-error-surface: oklch(0.435 0.074 28);
-  --toast-error-border: oklch(0.498 0.072 30);
-  --toast-error-text: oklch(0.87 0.054 25);
+  --toast-error-surface: oklch(0.455 0.11 28);
+  --toast-error-border: oklch(0.52 0.11 30);
+  --toast-error-text: oklch(0.87 0.08 25);
 
   /* Shadow dark mode */
   --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);

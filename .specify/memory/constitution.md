@@ -1,6 +1,6 @@
 <!--
 Sync Impact Report:
-- Version change: 0.0.0 → 1.0.0
+- Version change: 1.2.0 → 2.0.0
 - Modified principles:
   - Template principle 1 → I. Dual-Stack Monorepo Integrity
   - Template principle 2 → II. Continuous Quality Gates
@@ -71,4 +71,4 @@ Rationale: Secure-by-default practices and observability safeguard the platform 
 - Compliance reviews happen during PRs and at quarterly retrospectives; non-compliance must raise corrective tasks within one sprint.
 - Post-amendment, update affected templates, runtime guidance, and tooling instructions before the change is considered ratified.
 
-**Version**: 1.0.0 | **Ratified**: 2025-11-05 | **Last Amended**: 2025-11-05
+**Version**: 2.0.0 | **Ratified**: 2025-11-05 | **Last Amended**: 2025-11-05

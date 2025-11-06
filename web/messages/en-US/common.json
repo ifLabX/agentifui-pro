@@ -18,5 +18,10 @@
     "error": "An error occurred",
     "not-found": "Not found",
     "unauthorized": "Unauthorized access"
+  },
+  "layout": {
+    "divider-overview": "Overview",
+    "divider-details": "Details",
+    "divider-insights": "Insights"
   }
 }

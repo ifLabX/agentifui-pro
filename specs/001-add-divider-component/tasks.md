@@ -16,8 +16,8 @@
 
 **Purpose**: Ensure the frontend workspace and Storybook environment are ready for component work.
 
-- [ ] T001 Install frontend dependencies via pnpm in `web/package.json`
-- [ ] T002 Run Storybook smoke test using the `storybook` script defined in `web/package.json`
+- [X] T001 Install frontend dependencies via pnpm in `web/package.json`
+- [X] T002 Run Storybook smoke test using the `storybook` script defined in `web/package.json`
 
 ---
 
@@ -25,7 +25,7 @@
 
 **Purpose**: Align shared design tokens before building the new component.
 
-- [ ] T003 Audit and add divider-specific tokens (if missing) in `web/app/globals.css` to cover default, muted, and emphasized separators
+- [X] T003 Audit and add divider-specific tokens (if missing) in `web/app/globals.css` to cover default, muted, and emphasized separators
 
 **Checkpoint**: Design tokens confirmed; user story work can now begin.
 
@@ -39,8 +39,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T004 [US1] Implement the Divider component wrapping Radix `Separator` with horizontal defaults in `web/components/ui/divider/index.tsx`
-- [ ] T005 [US1] Define CVA variant logic for orientation, weight, inset, and length using token-based classes in `web/components/ui/divider/index.tsx`
+- [X] T004 [US1] Implement the Divider component wrapping Radix `Separator` with horizontal defaults in `web/components/ui/divider/index.tsx`
+- [X] T005 [US1] Define CVA variant logic for orientation, weight, inset, and length using token-based classes in `web/components/ui/divider/index.tsx`
 
 **Checkpoint**: Divider renders consistently in light/dark themes with default spacing.
 
@@ -54,8 +54,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T006 [US2] Author `web/components/ui/divider/index.stories.tsx` with meta, default story, and controls for orientation, inset, weight, and length props
-- [ ] T007 [US2] Add design notes and best-practice guidance to the docs tab in `web/components/ui/divider/index.stories.tsx`
+- [X] T006 [US2] Author `web/components/ui/divider/index.stories.tsx` with meta, default story, and controls for orientation, inset, weight, and length props
+- [X] T007 [US2] Add design notes and best-practice guidance to the docs tab in `web/components/ui/divider/index.stories.tsx`
 
 **Checkpoint**: Designers can review Divider behavior and guidance entirely within Storybook.
 
@@ -69,10 +69,10 @@
 
 ### Implementation for User Story 3
 
-- [ ] T008 [US3] Enhance `web/components/ui/divider/index.tsx` to render optional labels with proper `role="separator"` and `aria-orientation` semantics
-- [ ] T009 [US3] Adjust variant logic in `web/components/ui/divider/index.tsx` to support inset spacing and vertical length options without layout collisions
-- [ ] T010 [P] [US3] Add localized sample label strings to `web/messages/en-US/common.json` (and mirror to other active locales) for Storybook demonstrations
-- [ ] T011 [US3] Expand `web/components/ui/divider/index.stories.tsx` with labeled, inset, and vertical scenarios highlighting accessibility callouts
+- [X] T008 [US3] Enhance `web/components/ui/divider/index.tsx` to render optional labels with proper `role="separator"` and `aria-orientation` semantics
+- [X] T009 [US3] Adjust variant logic in `web/components/ui/divider/index.tsx` to support inset spacing and vertical length options without layout collisions
+- [X] T010 [P] [US3] Add localized sample label strings to `web/messages/en-US/common.json` (and mirror to other active locales) for Storybook demonstrations
+- [X] T011 [US3] Expand `web/components/ui/divider/index.stories.tsx` with labeled, inset, and vertical scenarios highlighting accessibility callouts
 
 **Checkpoint**: Divider variants cover complex layouts and remain accessible across locales.
 
@@ -82,10 +82,10 @@
 
 **Purpose**: Final validation, documentation, and quality gates across the feature.
 
-- [ ] T012 Run `pnpm test` within `web/package.json` to confirm component coverage remains green
-- [ ] T013 Run `pnpm type-check` within `web/package.json` to validate strict TypeScript compliance
-- [ ] T014 Run `pnpm quality` within `web/package.json` to satisfy linting and formatting gates
-- [ ] T015 [P] Update `specs/001-add-divider-component/contracts/divider-component.md` to reflect final prop defaults and variant behaviors
+- [X] T012 Run `pnpm test` within `web/package.json` to confirm component coverage remains green
+- [X] T013 Run `pnpm type-check` within `web/package.json` to validate strict TypeScript compliance
+- [X] T014 Run `pnpm quality` within `web/package.json` to satisfy linting and formatting gates
+- [X] T015 [P] Update `specs/001-add-divider-component/contracts/divider-component.md` to reflect final prop defaults and variant behaviors
 
 ---
 

@@ -62,16 +62,19 @@ const dividerVariants = cva(
       {
         orientation: "vertical",
         inset: "sm",
+        length: "content",
         class: "my-4",
       },
       {
         orientation: "vertical",
         inset: "md",
+        length: "content",
         class: "my-6",
       },
       {
         orientation: "vertical",
         inset: "lg",
+        length: "content",
         class: "my-8",
       },
       {
@@ -144,6 +147,7 @@ export interface DividerProps
   orientation?: "horizontal" | "vertical";
   label?: string;
   labelPosition?: "start" | "center" | "end";
+  lineClassName?: string;
 }
 
 export const Divider = React.forwardRef<
@@ -153,6 +157,7 @@ export const Divider = React.forwardRef<
   (
     {
       className,
+      lineClassName,
       orientation = "horizontal",
       weight,
       inset,
@@ -160,7 +165,7 @@ export const Divider = React.forwardRef<
       decorative = true,
       label,
       labelPosition = "center",
-      ...props
+      ...restProps
     },
     ref
   ) => {
@@ -177,9 +182,10 @@ export const Divider = React.forwardRef<
           className={cn(
             orientationStyles[orientation],
             dividerVariants({ orientation, weight, inset, length }),
+            lineClassName,
             className
           )}
-          {...props}
+          {...restProps}
         />
       );
     }
@@ -189,7 +195,9 @@ export const Divider = React.forwardRef<
     const wrapperInsetClass =
       orientation === "horizontal"
         ? horizontalInsetPadding[normalizedInset]
-        : verticalInsetPadding[normalizedInset];
+        : normalizedLength === "content"
+          ? verticalInsetPadding[normalizedInset]
+          : undefined;
     const wrapperLengthClass =
       orientation === "horizontal"
         ? horizontalLengthClasses[normalizedLength]
@@ -211,7 +219,7 @@ export const Divider = React.forwardRef<
       }),
       contentLengthFallbackClass,
       lineShouldGrow ? "flex-1" : undefined,
-      className
+      lineClassName
     );
 
     const accessibleSeparator = (
@@ -221,7 +229,6 @@ export const Divider = React.forwardRef<
         orientation={orientation}
         aria-labelledby={labelId}
         className="sr-only"
-        {...props}
       />
     );
 
@@ -239,8 +246,10 @@ export const Divider = React.forwardRef<
             "flex items-center gap-3",
             wrapperInsetClass,
             wrapperLengthClass,
-            horizontalJustifyClass
+            horizontalJustifyClass,
+            className
           )}
+          {...restProps}
         >
           {labelPosition !== "start" ? (
             <SeparatorPrimitive.Root
@@ -280,8 +289,10 @@ export const Divider = React.forwardRef<
           "flex-col",
           verticalJustifyClass,
           wrapperInsetClass,
-          wrapperLengthClass
+          wrapperLengthClass,
+          className
         )}
+        {...restProps}
       >
         {labelPosition !== "start" ? (
           <SeparatorPrimitive.Root

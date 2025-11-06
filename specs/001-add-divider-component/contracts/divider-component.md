@@ -16,7 +16,8 @@ Defines the public interface for the shared Divider component consumed across fr
 | `length` | `'full' \| 'content'` | No (defaults to `full`) | Determines physical length; for vertical orientation, `content` collapses to the label stack. |
 | `label` | `string` | No | Translation key providing contextual text alongside the separator. Pass the translated string (e.g. `t('common.layout.divider-overview')`). |
 | `labelPosition` | `'start' \| 'center' \| 'end'` | No (defaults to `center`) | Places optional label relative to divider line. |
-| `className` | `string` | No | Utility classes merged onto the visual rule. When a label is present, the value is applied to each rendered rule segment. |
+| `className` | `string` | No | Utility classes merged onto the wrapper when a label is present, otherwise applied to the separator element directly. |
+| `lineClassName` | `string` | No | Additional classes merged into the rendered rule element(s) for labeled dividers. Ignored when no label is provided. |
 | `id` | `string` | No | DOM identifier used for automated testing hooks. |
 | `decorative` | `boolean` | No (defaults to `true`) | Forwards the Radix `decorative` prop. Automatically forced to `false` when a label is provided so assistive tech announces context. |
 

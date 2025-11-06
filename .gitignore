@@ -97,7 +97,7 @@ coverage.xml
 .pytest_cache/
 cover/
 
-#claude
+# claude
 .claude/settings.json
 **/claudedocs/
 .serena
@@ -105,3 +105,8 @@ cover/
 # Frontend overrides
 !web/lib/
 !web/lib/**
+
+# codex
+.codex/*
+!.codex/prompts/
+!.codex/prompts/**

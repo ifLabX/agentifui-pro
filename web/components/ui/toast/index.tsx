@@ -90,7 +90,7 @@ const Toaster = forwardRef<HTMLElement, ToasterProps>(
       <Sonner
         ref={ref}
         theme={theme as ToasterProps["theme"]}
-        className={cn("toaster group", className)}
+        className={cn("toaster group ui-toast", className)}
         toastOptions={mergedToastOptions}
         {...props}
       />

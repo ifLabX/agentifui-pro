@@ -34,6 +34,19 @@ describe("Divider", () => {
     expect(decorativeSegments.length).toBeGreaterThanOrEqual(2);
   });
 
+  it("keeps labelled content-length separators visible without flex fill", () => {
+    const { container } = render(<Divider label="Overview" length="content" />);
+
+    const decorativeSegments = container.querySelectorAll(
+      '[aria-hidden="true"]'
+    );
+    expect(decorativeSegments).toHaveLength(2);
+    decorativeSegments.forEach(segment => {
+      expect(segment).toHaveClass("min-w-8");
+      expect(segment).not.toHaveClass("flex-1");
+    });
+  });
+
   it("supports vertical layout with inset padding and content length", () => {
     render(
       <Divider
@@ -56,5 +69,9 @@ describe("Divider", () => {
       '[aria-hidden="true"]'
     );
     expect(decorativeSegments?.length).toBe(1);
+    if (decorativeSegments?.[0]) {
+      expect(decorativeSegments[0]).toHaveClass("min-h-8");
+      expect(decorativeSegments[0]).not.toHaveClass("flex-1");
+    }
   });
 });

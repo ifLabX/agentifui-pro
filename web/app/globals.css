@@ -207,14 +207,18 @@
   --border: oklch(0.391 0.018 57.15);
   --divider-muted-color: color-mix(
     in oklch,
-    var(--border) 65%,
-    var(--background) 35%
+    var(--border) 40%,
+    var(--foreground) 60%
   );
-  --divider-default-color: var(--border);
+  --divider-default-color: color-mix(
+    in oklch,
+    var(--border) 25%,
+    var(--foreground) 75%
+  );
   --divider-emphasized-color: color-mix(
     in oklch,
-    var(--foreground) 75%,
-    var(--border) 25%
+    var(--border) 10%,
+    var(--foreground) 90%
   );
   --divider-default-thickness: 1px;
   --divider-emphasized-thickness: 2px;

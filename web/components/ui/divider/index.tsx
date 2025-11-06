@@ -84,16 +84,6 @@ const dividerVariants = cva(
         length: "full",
         class: "h-full",
       },
-      {
-        orientation: "horizontal",
-        length: "content",
-        class: "w-fit",
-      },
-      {
-        orientation: "vertical",
-        length: "content",
-        class: "h-fit",
-      },
     ],
     defaultVariants: {
       orientation: "horizontal",
@@ -205,6 +195,12 @@ export const Divider = React.forwardRef<
         ? horizontalLengthClasses[normalizedLength]
         : verticalLengthClasses[normalizedLength];
     const lineShouldGrow = normalizedLength !== "content";
+    const contentLengthFallbackClass =
+      normalizedLength === "content"
+        ? orientation === "horizontal"
+          ? "min-w-8"
+          : "min-h-8"
+        : undefined;
     const sharedLineClass = cn(
       orientationStyles[orientation],
       dividerVariants({
@@ -213,6 +209,7 @@ export const Divider = React.forwardRef<
         inset: "none",
         length: normalizedLength,
       }),
+      contentLengthFallbackClass,
       lineShouldGrow ? "flex-1" : undefined,
       className
     );

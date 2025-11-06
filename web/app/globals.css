@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../components/ui/toast/toast.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -63,6 +64,27 @@
   --status-info-text: oklch(0.424 0.181 265.64);
   --status-purple-surface: oklch(0.946 0.033 307.17);
   --status-purple-text: oklch(0.438 0.198 303.72);
+
+  /* Toast tokens */
+  --toast-neutral-surface: oklch(0.964 0.014 95);
+  --toast-neutral-border: oklch(0.882 0.015 95);
+  --toast-neutral-text: oklch(0.284 0.03 63);
+
+  --toast-success-surface: oklch(0.92 0.085 150);
+  --toast-success-border: oklch(0.842 0.075 150);
+  --toast-success-text: oklch(0.378 0.135 152);
+
+  --toast-info-surface: oklch(0.924 0.09 250);
+  --toast-info-border: oklch(0.848 0.08 250);
+  --toast-info-text: oklch(0.332 0.145 252);
+
+  --toast-warning-surface: oklch(0.928 0.095 82);
+  --toast-warning-border: oklch(0.856 0.085 82);
+  --toast-warning-text: oklch(0.398 0.14 78);
+
+  --toast-error-surface: oklch(0.912 0.11 25);
+  --toast-error-border: oklch(0.832 0.1 23);
+  --toast-error-text: oklch(0.366 0.17 20);
 
   /* Shadow tokens */
   --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -180,6 +202,27 @@
   --status-info-text: oklch(0.714 0.143 254.62);
   --status-purple-surface: oklch(0.381 0.166 304.99 / 0.3);
   --status-purple-text: oklch(0.722 0.177 305.5);
+
+  /* Toast tokens */
+  --toast-neutral-surface: oklch(0.395 0.035 62.17);
+  --toast-neutral-border: oklch(0.472 0.038 60.12);
+  --toast-neutral-text: oklch(0.928 0.04 72);
+
+  --toast-success-surface: oklch(0.452 0.12 151);
+  --toast-success-border: oklch(0.514 0.12 150);
+  --toast-success-text: oklch(0.862 0.095 158);
+
+  --toast-info-surface: oklch(0.43 0.12 247);
+  --toast-info-border: oklch(0.494 0.12 247);
+  --toast-info-text: oklch(0.856 0.09 254);
+
+  --toast-warning-surface: oklch(0.448 0.13 82);
+  --toast-warning-border: oklch(0.512 0.13 84);
+  --toast-warning-text: oklch(0.884 0.09 92);
+
+  --toast-error-surface: oklch(0.44 0.165 28);
+  --toast-error-border: oklch(0.508 0.165 30);
+  --toast-error-text: oklch(0.876 0.12 25);
 
   /* Shadow dark mode */
   --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);

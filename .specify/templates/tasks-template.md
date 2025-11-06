@@ -1,4 +1,5 @@
 ---
+
 description: "Task list template for feature implementation"
 ---
 
@@ -7,16 +8,19 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification. Always plan the `uv run pytest`, `pnpm test`, `pnpm type-check`, and `pnpm quality` executions needed to satisfy constitution quality gates.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
 ## Format: `[ID] [P?] [Story] Description`
+
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
 - Include exact file paths in descriptions
+- Add explicit tasks for translation keys (`web/app/(locale)/...`), schema updates (`api/app/...`), and observability hooks when applicable.
 
 ## Path Conventions
+
 - **Single project**: `src/`, `tests/` at repository root
 - **Web app**: `backend/src/`, `frontend/src/`
 - **Mobile**: `api/src/`, `ios/src/` or `android/src/`
@@ -45,9 +49,9 @@ description: "Task list template for feature implementation"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T001 Ensure `api/` and `web/` directories required for the feature exist and are documented in plan.md
+- [ ] T002 Initialize language/framework dependencies via `uv` (backend) or `pnpm` (frontend) as needed
+- [ ] T003 [P] Configure linting, formatting, and type-checking workflows for the touched stack(s)
 
 ---
 
@@ -59,12 +63,12 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T004 Update or create Pydantic schemas in `api/app/` with full type hints and docstrings
+- [ ] T005 [P] Establish or extend API routing/middleware in `api/app/api/` with contract documentation
+- [ ] T006 [P] Configure Next.js data layer or server components in `web/app/` for the feature
+- [ ] T007 Create database migrations under `api/alembic/` documenting `uuidv7()` usage when needed
+- [ ] T008 Configure structured logging and metrics for new services
+- [ ] T009 Document environment variables and secrets required for the feature
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -78,19 +82,19 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
 
-**NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
 - [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T012 [P] [US1] Create/extend Pydantic models in `api/app/schemas/[name].py`
+- [ ] T013 [P] [US1] Implement service logic in `api/app/services/[name].py` with async functions
+- [ ] T014 [US1] Expose FastAPI endpoint in `api/app/api/[route].py` and document contract changes
+- [ ] T015 [US1] Implement Next.js component or route in `web/app/[path]/page.tsx` with server component preference
+- [ ] T016 [US1] Wire `next-intl` translation keys for UI copy in `web/messages/[namespace].json`
+- [ ] T017 [US1] Add logging/metrics for user story 1 operations and verify no secrets leak
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -109,10 +113,11 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T020 [P] [US2] Extend database models/migrations in `api/alembic/` or `api/app/models/`
+- [ ] T021 [US2] Implement supporting services in `api/app/services/[service].py`
+- [ ] T022 [US2] Deliver frontend experience in `web/app/[path]/page.tsx` or `web/components/[name].tsx` with proper types
+- [ ] T023 [US2] Integrate translation keys and update `web/messages/[namespace].json`
+- [ ] T024 [US2] Sync telemetry hooks or feature flags needed for cross-story behavior
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -131,9 +136,10 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T026 [P] [US3] Extend typed contracts in `api/app/schemas/[name].py` or `web/lib/[name].ts`
+- [ ] T027 [US3] Implement service/controller logic spanning API and frontend layers
+- [ ] T028 [US3] Provide localized UI interactions and ensure fallbacks exist for missing locales
+- [ ] T029 [US3] Validate observability coverage (logs, metrics, traces) remains intact for new flows
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -246,5 +252,3 @@ With multiple developers:
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
-
-

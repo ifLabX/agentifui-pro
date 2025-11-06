@@ -52,6 +52,24 @@ const config: Config = {
           foreground: "var(--card-foreground)",
           border: "var(--card-border)",
         },
+        status: {
+          success: {
+            DEFAULT: "var(--status-success-surface)",
+            foreground: "var(--status-success-text)",
+          },
+          warning: {
+            DEFAULT: "var(--status-warning-surface)",
+            foreground: "var(--status-warning-text)",
+          },
+          info: {
+            DEFAULT: "var(--status-info-surface)",
+            foreground: "var(--status-info-text)",
+          },
+          purple: {
+            DEFAULT: "var(--status-purple-surface)",
+            foreground: "var(--status-purple-text)",
+          },
+        },
         chart: {
           1: "var(--chart-1)",
           2: "var(--chart-2)",

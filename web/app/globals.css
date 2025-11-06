@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../components/ui/toast/toast.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -54,6 +55,37 @@
   --chat-error-border: oklch(0.7 0.15 25 / 0.3); /* red-400/30 */
   --chat-error-text: oklch(0.5 0.2 25); /* red-500 */
 
+  /* Status tokens */
+  --status-success-surface: oklch(0.95 0.051 163.05);
+  --status-success-text: oklch(0.432 0.086 166.91);
+  --status-warning-surface: oklch(0.962 0.058 95.62);
+  --status-warning-text: oklch(0.473 0.125 46.2);
+  --status-info-surface: oklch(0.932 0.032 255.59);
+  --status-info-text: oklch(0.424 0.181 265.64);
+  --status-purple-surface: oklch(0.946 0.033 307.17);
+  --status-purple-text: oklch(0.438 0.198 303.72);
+
+  /* Toast tokens */
+  --toast-neutral-surface: oklch(0.964 0.014 95);
+  --toast-neutral-border: oklch(0.882 0.015 95);
+  --toast-neutral-text: oklch(0.284 0.03 63);
+
+  --toast-success-surface: oklch(0.92 0.085 150);
+  --toast-success-border: oklch(0.842 0.075 150);
+  --toast-success-text: oklch(0.378 0.135 152);
+
+  --toast-info-surface: oklch(0.924 0.09 250);
+  --toast-info-border: oklch(0.848 0.08 250);
+  --toast-info-text: oklch(0.332 0.145 252);
+
+  --toast-warning-surface: oklch(0.928 0.095 82);
+  --toast-warning-border: oklch(0.856 0.085 82);
+  --toast-warning-text: oklch(0.398 0.14 78);
+
+  --toast-error-surface: oklch(0.912 0.11 25);
+  --toast-error-border: oklch(0.832 0.1 23);
+  --toast-error-text: oklch(0.366 0.17 20);
+
   /* Shadow tokens */
   --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 
@@ -78,6 +110,19 @@
   --destructive: oklch(0.56 0.2 27.08);
   --destructive-foreground: oklch(0.99 0.005 83.38);
   --border: oklch(0.839 0.018 64.89);
+  --divider-muted-color: color-mix(
+    in oklch,
+    var(--border) 60%,
+    var(--background) 40%
+  );
+  --divider-default-color: var(--border);
+  --divider-emphasized-color: color-mix(
+    in oklch,
+    var(--foreground) 85%,
+    var(--border) 15%
+  );
+  --divider-default-thickness: 1px;
+  --divider-emphasized-thickness: 2px;
   --input: oklch(0.839 0.018 64.89);
   --ring: oklch(0.731 0.048 73.37);
   --chart-1: oklch(0.677 0.124 40.31);
@@ -148,6 +193,37 @@
   --chat-error-border: oklch(0.608 0.097 33.94 / 0.3);
   --chat-error-text: oklch(0.715 0.089 35.26);
 
+  /* Status dark mode tokens */
+  --status-success-surface: oklch(0.378 0.073 168.94 / 0.3);
+  --status-success-text: oklch(0.773 0.153 163.22);
+  --status-warning-surface: oklch(0.414 0.105 45.9 / 0.3);
+  --status-warning-text: oklch(0.837 0.164 84.43);
+  --status-info-surface: oklch(0.379 0.138 265.52 / 0.3);
+  --status-info-text: oklch(0.714 0.143 254.62);
+  --status-purple-surface: oklch(0.381 0.166 304.99 / 0.3);
+  --status-purple-text: oklch(0.722 0.177 305.5);
+
+  /* Toast tokens */
+  --toast-neutral-surface: oklch(0.395 0.035 62.17);
+  --toast-neutral-border: oklch(0.472 0.038 60.12);
+  --toast-neutral-text: oklch(0.928 0.04 72);
+
+  --toast-success-surface: oklch(0.452 0.12 151);
+  --toast-success-border: oklch(0.514 0.12 150);
+  --toast-success-text: oklch(0.862 0.095 158);
+
+  --toast-info-surface: oklch(0.43 0.12 247);
+  --toast-info-border: oklch(0.494 0.12 247);
+  --toast-info-text: oklch(0.856 0.09 254);
+
+  --toast-warning-surface: oklch(0.448 0.13 82);
+  --toast-warning-border: oklch(0.512 0.13 84);
+  --toast-warning-text: oklch(0.884 0.09 92);
+
+  --toast-error-surface: oklch(0.44 0.165 28);
+  --toast-error-border: oklch(0.508 0.165 30);
+  --toast-error-text: oklch(0.876 0.12 25);
+
   /* Shadow dark mode */
   --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 
@@ -172,6 +248,23 @@
   --destructive: oklch(0.66 0.2 27.08);
   --destructive-foreground: oklch(0.21 0.04 29.88);
   --border: oklch(0.391 0.018 57.15);
+  --divider-muted-color: color-mix(
+    in oklch,
+    var(--border) 40%,
+    var(--foreground) 60%
+  );
+  --divider-default-color: color-mix(
+    in oklch,
+    var(--border) 25%,
+    var(--foreground) 75%
+  );
+  --divider-emphasized-color: color-mix(
+    in oklch,
+    var(--border) 10%,
+    var(--foreground) 90%
+  );
+  --divider-default-thickness: 1px;
+  --divider-emphasized-thickness: 2px;
   --input: oklch(0.391 0.018 57.15);
   --ring: oklch(0.794 0.048 70.22);
   --tooltip: var(--popover);
@@ -221,6 +314,14 @@
   );
   --color-chat-error-border: var(--chat-error-border);
   --color-chat-error-text: var(--chat-error-text);
+  --color-status-success: var(--status-success-surface);
+  --color-status-success-foreground: var(--status-success-text);
+  --color-status-warning: var(--status-warning-surface);
+  --color-status-warning-foreground: var(--status-warning-text);
+  --color-status-info: var(--status-info-surface);
+  --color-status-info-foreground: var(--status-info-text);
+  --color-status-purple: var(--status-purple-surface);
+  --color-status-purple-foreground: var(--status-purple-text);
 
   /* Input color mappings */
   --color-input-background: var(--input-background);

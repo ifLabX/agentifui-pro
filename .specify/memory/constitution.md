@@ -1,6 +1,6 @@
 <!--
 Sync Impact Report:
-- Version change: 0.0.0 → 1.0.0
+- Version change: 1.2.0 → 2.0.0
 - Modified principles:
   - Template principle 1 → I. Dual-Stack Monorepo Integrity
   - Template principle 2 → II. Continuous Quality Gates

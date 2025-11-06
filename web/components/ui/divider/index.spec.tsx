@@ -74,4 +74,24 @@ describe("Divider", () => {
       expect(decorativeSegments[0]).not.toHaveClass("flex-1");
     }
   });
+
+  it("forwards separator props to the accessible root when labelled", () => {
+    const { container } = render(
+      <Divider
+        label="Overview"
+        aria-describedby="details"
+        data-testid="divider"
+      />
+    );
+
+    const wrapper = screen.getByTestId("divider");
+    expect(wrapper).toBeTruthy();
+    expect(wrapper).not.toHaveAttribute("aria-describedby");
+
+    const accessibleSeparator = container.querySelector('[role="separator"]');
+    expect(accessibleSeparator).toHaveAttribute("aria-describedby", "details");
+
+    expect(accessibleSeparator).not.toHaveAttribute("data-testid");
+    expect(wrapper).toContainElement(accessibleSeparator);
+  });
 });

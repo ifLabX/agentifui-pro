@@ -148,6 +148,10 @@ const verticalLengthClasses: Record<
 const labelBaseClass =
   "text-xs font-medium uppercase tracking-wide text-muted-foreground";
 
+type SeparatorRootProps = React.ComponentPropsWithoutRef<
+  typeof SeparatorPrimitive.Root
+>;
+
 export interface DividerProps
   extends Omit<
       React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>,
@@ -175,6 +179,7 @@ export const Divider = React.forwardRef<
       decorative = true,
       label,
       labelPosition = "center",
+      style,
       ...restProps
     },
     ref
@@ -208,10 +213,46 @@ export const Divider = React.forwardRef<
             lineClassName,
             className
           )}
+          style={style}
           {...restProps}
         />
       );
     }
+
+    const restEntries = Object.entries(restProps) as Array<
+      [
+        keyof Omit<SeparatorRootProps, "orientation">,
+        Omit<SeparatorRootProps, "orientation">[keyof Omit<
+          SeparatorRootProps,
+          "orientation"
+        >],
+      ]
+    >;
+
+    const accessibleEntries: typeof restEntries = [];
+    const wrapperEntries: typeof restEntries = [];
+
+    restEntries.forEach(([key, value]) => {
+      if (key === "asChild") {
+        return;
+      }
+      if (typeof key === "string" && key.startsWith("aria-")) {
+        accessibleEntries.push([key, value]);
+        return;
+      }
+      if (key === "role") {
+        accessibleEntries.push([key, value]);
+        return;
+      }
+      wrapperEntries.push([key, value]);
+    });
+
+    const accessibleProps = Object.fromEntries(accessibleEntries) as Partial<
+      Omit<SeparatorRootProps, "orientation">
+    >;
+    const wrapperProps = Object.fromEntries(
+      wrapperEntries
+    ) as React.HTMLAttributes<HTMLDivElement>;
 
     const normalizedInset = inset ?? "none";
     const wrapperInsetClass =
@@ -247,9 +288,10 @@ export const Divider = React.forwardRef<
     const accessibleSeparator = (
       <SeparatorPrimitive.Root
         ref={ref}
-        decorative={false}
         orientation={orientation}
+        {...accessibleProps}
         aria-labelledby={labelId}
+        decorative={false}
         className="sr-only"
       />
     );
@@ -271,7 +313,8 @@ export const Divider = React.forwardRef<
             horizontalJustifyClass,
             className
           )}
-          {...restProps}
+          {...wrapperProps}
+          style={style}
         >
           {labelPosition !== "start" ? (
             <SeparatorPrimitive.Root
@@ -314,7 +357,8 @@ export const Divider = React.forwardRef<
           wrapperLengthClass,
           className
         )}
-        {...restProps}
+        {...wrapperProps}
+        style={style}
       >
         {labelPosition !== "start" ? (
           <SeparatorPrimitive.Root

@@ -18,10 +18,5 @@
     "error": "发生错误",
     "not-found": "未找到",
     "unauthorized": "未经授权的访问"
-  },
-  "layout": {
-    "divider-overview": "概览",
-    "divider-details": "详细信息",
-    "divider-insights": "洞察"
   }
 }

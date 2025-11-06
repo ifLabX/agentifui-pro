@@ -1,4 +1,3 @@
-import commonEn from "@/messages/en-US/common.json";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import Divider from "./index";
@@ -145,25 +144,16 @@ export const Weights: Story = {
 export const LabeledDividers: Story = {
   render: () => (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-6 text-sm text-muted-foreground">
-      <Divider
-        label={commonEn.layout["divider-overview"]}
-        labelPosition="center"
-      />
-      <Divider
-        label={commonEn.layout["divider-details"]}
-        labelPosition="start"
-      />
-      <Divider
-        label={commonEn.layout["divider-insights"]}
-        labelPosition="end"
-      />
+      <Divider label="Overview" labelPosition="center" />
+      <Divider label="Details" labelPosition="start" />
+      <Divider label="Insights" labelPosition="end" />
     </div>
   ),
   parameters: {
     docs: {
       description: {
         story:
-          "Labels automatically switch the separator into an announced role. Keep copy short and pass localized strings (e.g. `t('common.layout.divider-overview')`) so assistive tech and designers receive consistent guidance.",
+          "Labels automatically switch the separator into an announced role. Keep copy short and localize the text through your feature namespace so assistive tech and designers receive consistent guidance.",
       },
     },
   },
@@ -206,7 +196,7 @@ export const VerticalLabeled: Story = {
       <Divider
         orientation="vertical"
         length="full"
-        label={commonEn.layout["divider-overview"]}
+        label="Overview"
         labelPosition="center"
       />
     </div>

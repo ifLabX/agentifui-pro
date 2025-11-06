@@ -18,10 +18,5 @@
     "error": "エラーが発生しました",
     "not-found": "見つかりません",
     "unauthorized": "許可されていないアクセス"
-  },
-  "layout": {
-    "divider-overview": "概要",
-    "divider-details": "詳細",
-    "divider-insights": "洞察"
   }
 }

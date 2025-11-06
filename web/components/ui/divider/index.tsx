@@ -83,9 +83,19 @@ const dividerVariants = cva(
         class: "w-full",
       },
       {
+        orientation: "horizontal",
+        length: "content",
+        class: "w-fit",
+      },
+      {
         orientation: "vertical",
         length: "full",
         class: "h-full",
+      },
+      {
+        orientation: "vertical",
+        length: "content",
+        class: "h-fit",
       },
     ],
     defaultVariants: {
@@ -172,6 +182,13 @@ export const Divider = React.forwardRef<
     const labelId = React.useId();
     const hasLabel = Boolean(label);
     const finalDecorative = hasLabel ? false : decorative;
+    const normalizedLength = length ?? "full";
+    const unlabeledContentLengthFallback =
+      !hasLabel && normalizedLength === "content"
+        ? orientation === "horizontal"
+          ? "min-w-8"
+          : "min-h-8"
+        : undefined;
 
     if (!hasLabel) {
       return (
@@ -181,7 +198,13 @@ export const Divider = React.forwardRef<
           orientation={orientation}
           className={cn(
             orientationStyles[orientation],
-            dividerVariants({ orientation, weight, inset, length }),
+            dividerVariants({
+              orientation,
+              weight,
+              inset,
+              length: normalizedLength,
+            }),
+            unlabeledContentLengthFallback,
             lineClassName,
             className
           )}
@@ -191,7 +214,6 @@ export const Divider = React.forwardRef<
     }
 
     const normalizedInset = inset ?? "none";
-    const normalizedLength = length ?? "full";
     const wrapperInsetClass =
       orientation === "horizontal"
         ? horizontalInsetPadding[normalizedInset]

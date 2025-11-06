@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -62,14 +64,32 @@ const dividerVariants = cva(
       {
         orientation: "vertical",
         inset: "sm",
+        length: "full",
+        class: "my-4",
+      },
+      {
+        orientation: "vertical",
+        inset: "sm",
         length: "content",
         class: "my-4",
       },
       {
         orientation: "vertical",
         inset: "md",
+        length: "full",
+        class: "my-6",
+      },
+      {
+        orientation: "vertical",
+        inset: "md",
         length: "content",
         class: "my-6",
+      },
+      {
+        orientation: "vertical",
+        inset: "lg",
+        length: "full",
+        class: "my-8",
       },
       {
         orientation: "vertical",
@@ -121,12 +141,24 @@ const horizontalInsetPadding: Record<
 
 const verticalInsetPadding: Record<
   NonNullable<DividerVariants["inset"]>,
-  string
+  Record<NonNullable<DividerVariants["length"]>, string>
 > = {
-  none: "",
-  sm: "py-4",
-  md: "py-6",
-  lg: "py-8",
+  none: {
+    full: "",
+    content: "",
+  },
+  sm: {
+    full: "py-4",
+    content: "py-4",
+  },
+  md: {
+    full: "py-6",
+    content: "py-6",
+  },
+  lg: {
+    full: "py-8",
+    content: "py-8",
+  },
 };
 
 const horizontalLengthClasses: Record<
@@ -258,9 +290,7 @@ export const Divider = React.forwardRef<
     const wrapperInsetClass =
       orientation === "horizontal"
         ? horizontalInsetPadding[normalizedInset]
-        : normalizedLength === "content"
-          ? verticalInsetPadding[normalizedInset]
-          : undefined;
+        : verticalInsetPadding[normalizedInset][normalizedLength];
     const wrapperLengthClass =
       orientation === "horizontal"
         ? horizontalLengthClasses[normalizedLength]

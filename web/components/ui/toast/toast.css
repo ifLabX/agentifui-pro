@@ -1,0 +1,34 @@
+@layer components {
+  [data-sonner-toaster].ui-toast {
+    --width: min(28rem, 92vw) !important;
+    --normal-bg: var(--toast-neutral-surface) !important;
+    --normal-bg-hover: color-mix(
+      in oklch,
+      var(--toast-neutral-surface) 85%,
+      var(--toast-neutral-text) 15%
+    ) !important;
+    --normal-border: var(--toast-neutral-border) !important;
+    --normal-border-hover: color-mix(
+      in oklch,
+      var(--toast-neutral-border) 70%,
+      var(--toast-neutral-text) 30%
+    ) !important;
+    --normal-text: var(--toast-neutral-text) !important;
+
+    --success-bg: var(--toast-success-surface) !important;
+    --success-border: var(--toast-success-border) !important;
+    --success-text: var(--toast-success-text) !important;
+
+    --info-bg: var(--toast-info-surface) !important;
+    --info-border: var(--toast-info-border) !important;
+    --info-text: var(--toast-info-text) !important;
+
+    --warning-bg: var(--toast-warning-surface) !important;
+    --warning-border: var(--toast-warning-border) !important;
+    --warning-text: var(--toast-warning-text) !important;
+
+    --error-bg: var(--toast-error-surface) !important;
+    --error-border: var(--toast-error-border) !important;
+    --error-text: var(--toast-error-text) !important;
+  }
+}

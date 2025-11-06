@@ -1,5 +1,7 @@
 "use client";
 
+import "./toast.css";
+
 import { forwardRef, useMemo } from "react";
 import deepmerge from "deepmerge";
 import { useTheme } from "next-themes";

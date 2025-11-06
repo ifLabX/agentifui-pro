@@ -65,25 +65,25 @@
   --status-purple-text: oklch(0.438 0.198 303.72);
 
   /* Toast tokens */
-  --toast-neutral-surface: oklch(0.964 0.009 95);
-  --toast-neutral-border: oklch(0.882 0.01 95);
-  --toast-neutral-text: oklch(0.29 0.02 63);
+  --toast-neutral-surface: oklch(0.964 0.014 95);
+  --toast-neutral-border: oklch(0.882 0.015 95);
+  --toast-neutral-text: oklch(0.284 0.03 63);
 
-  --toast-success-surface: oklch(0.925 0.06 150);
-  --toast-success-border: oklch(0.86 0.05 150);
-  --toast-success-text: oklch(0.39 0.09 152);
+  --toast-success-surface: oklch(0.92 0.085 150);
+  --toast-success-border: oklch(0.842 0.075 150);
+  --toast-success-text: oklch(0.378 0.135 152);
 
-  --toast-info-surface: oklch(0.93 0.07 250);
-  --toast-info-border: oklch(0.86 0.06 250);
-  --toast-info-text: oklch(0.34 0.1 252);
+  --toast-info-surface: oklch(0.924 0.09 250);
+  --toast-info-border: oklch(0.848 0.08 250);
+  --toast-info-text: oklch(0.332 0.145 252);
 
-  --toast-warning-surface: oklch(0.938 0.07 82);
-  --toast-warning-border: oklch(0.868 0.06 82);
-  --toast-warning-text: oklch(0.41 0.1 78);
+  --toast-warning-surface: oklch(0.928 0.095 82);
+  --toast-warning-border: oklch(0.856 0.085 82);
+  --toast-warning-text: oklch(0.398 0.14 78);
 
-  --toast-error-surface: oklch(0.924 0.08 25);
-  --toast-error-border: oklch(0.84 0.075 23);
-  --toast-error-text: oklch(0.376 0.13 20);
+  --toast-error-surface: oklch(0.912 0.11 25);
+  --toast-error-border: oklch(0.832 0.1 23);
+  --toast-error-text: oklch(0.366 0.17 20);
 
   /* Shadow tokens */
   --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -203,25 +203,25 @@
   --status-purple-text: oklch(0.722 0.177 305.5);
 
   /* Toast tokens */
-  --toast-neutral-surface: oklch(0.39 0.018 62.17);
-  --toast-neutral-border: oklch(0.46 0.02 60.12);
-  --toast-neutral-text: oklch(0.92 0.02 72);
+  --toast-neutral-surface: oklch(0.395 0.035 62.17);
+  --toast-neutral-border: oklch(0.472 0.038 60.12);
+  --toast-neutral-text: oklch(0.928 0.04 72);
 
-  --toast-success-surface: oklch(0.46 0.08 151);
-  --toast-success-border: oklch(0.52 0.08 150);
-  --toast-success-text: oklch(0.86 0.065 158);
+  --toast-success-surface: oklch(0.452 0.12 151);
+  --toast-success-border: oklch(0.514 0.12 150);
+  --toast-success-text: oklch(0.862 0.095 158);
 
-  --toast-info-surface: oklch(0.44 0.075 247);
-  --toast-info-border: oklch(0.5 0.075 247);
-  --toast-info-text: oklch(0.85 0.06 254);
+  --toast-info-surface: oklch(0.43 0.12 247);
+  --toast-info-border: oklch(0.494 0.12 247);
+  --toast-info-text: oklch(0.856 0.09 254);
 
-  --toast-warning-surface: oklch(0.47 0.085 82);
-  --toast-warning-border: oklch(0.53 0.085 84);
-  --toast-warning-text: oklch(0.88 0.065 92);
+  --toast-warning-surface: oklch(0.448 0.13 82);
+  --toast-warning-border: oklch(0.512 0.13 84);
+  --toast-warning-text: oklch(0.884 0.09 92);
 
-  --toast-error-surface: oklch(0.455 0.11 28);
-  --toast-error-border: oklch(0.52 0.11 30);
-  --toast-error-text: oklch(0.87 0.08 25);
+  --toast-error-surface: oklch(0.44 0.165 28);
+  --toast-error-border: oklch(0.508 0.165 30);
+  --toast-error-text: oklch(0.876 0.12 25);
 
   /* Shadow dark mode */
   --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -377,39 +377,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-tooltip: var(--tooltip);
   --color-tooltip-foreground: var(--tooltip-foreground);
-}
-
-[data-sonner-toaster].ui-toast {
-  --width: min(28rem, 92vw) !important;
-  --normal-bg: var(--toast-neutral-surface) !important;
-  --normal-bg-hover: color-mix(
-    in oklch,
-    var(--toast-neutral-surface) 85%,
-    var(--toast-neutral-text) 15%
-  ) !important;
-  --normal-border: var(--toast-neutral-border) !important;
-  --normal-border-hover: color-mix(
-    in oklch,
-    var(--toast-neutral-border) 70%,
-    var(--toast-neutral-text) 30%
-  ) !important;
-  --normal-text: var(--toast-neutral-text) !important;
-
-  --success-bg: var(--toast-success-surface) !important;
-  --success-border: var(--toast-success-border) !important;
-  --success-text: var(--toast-success-text) !important;
-
-  --info-bg: var(--toast-info-surface) !important;
-  --info-border: var(--toast-info-border) !important;
-  --info-text: var(--toast-info-text) !important;
-
-  --warning-bg: var(--toast-warning-surface) !important;
-  --warning-border: var(--toast-warning-border) !important;
-  --warning-text: var(--toast-warning-text) !important;
-
-  --error-bg: var(--toast-error-surface) !important;
-  --error-border: var(--toast-error-border) !important;
-  --error-text: var(--toast-error-text) !important;
 }
 
 @layer base {

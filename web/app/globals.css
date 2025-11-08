@@ -5,32 +5,27 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Adding chat-specific design tokens for stone color palette */
+  /* Light theme design tokens driven by neutral OKLCH values */
 
-  /* Base colors */
-  --background: oklch(0.97 0.004 91.45);
-  --foreground: oklch(0.23 0.008 59.22);
+  --background: oklch(0.99 0.002 95);
+  --foreground: oklch(0.2 0.006 95);
 
-  /* Chat input specific tokens */
-  --chat-input-bg: oklch(1 0 0);
-  --chat-input-border: oklch(0.88 0 0); /* stone-200 equivalent */
-  --chat-input-text: oklch(0.28 0 0); /* stone-900 equivalent */
-  --chat-input-placeholder: oklch(0.62 0 0); /* stone-500 equivalent */
+  --chat-input-bg: oklch(0.996 0.001 95);
+  --chat-input-border: oklch(0.92 0.004 95);
+  --chat-input-text: var(--foreground);
+  --chat-input-placeholder: oklch(0.63 0.007 95);
 
-  /* Button tokens */
-  --chat-button-bg: transparent;
-  --chat-button-border: oklch(0.88 0 0); /* stone-200 */
-  --chat-button-text: oklch(0.52 0 0); /* stone-600 */
-  --chat-button-hover-bg: oklch(0.98 0 0); /* stone-50 */
+  --chat-button-bg: oklch(0.99 0.002 95);
+  --chat-button-border: var(--chat-input-border);
+  --chat-button-text: oklch(0.35 0.007 95);
+  --chat-button-hover-bg: oklch(0.968 0.003 95);
 
-  /* Submit button tokens */
-  --chat-submit-bg: oklch(0.145 0 0); /* black */
-  --chat-submit-text: oklch(1 0 0); /* white */
-  --chat-submit-hover-bg: oklch(0.28 0 0); /* gray-800 */
-  --chat-submit-disabled-bg: oklch(0.88 0 0); /* gray-200 */
-  --chat-submit-disabled-text: oklch(0.62 0 0); /* gray-400 */
+  --chat-submit-bg: oklch(0.21 0.006 95);
+  --chat-submit-text: oklch(0.99 0.001 95);
+  --chat-submit-hover-bg: oklch(0.16 0.006 95);
+  --chat-submit-disabled-bg: oklch(0.9 0.003 95);
+  --chat-submit-disabled-text: oklch(0.62 0.006 95);
 
-  /* Input tokens */
   --input-background: var(--background);
   --input-foreground: var(--foreground);
   --input-placeholder: var(--muted-foreground);
@@ -40,76 +35,80 @@
   --input-disabled-foreground: var(--muted-foreground);
   --input-invalid-border: var(--chat-error-border);
   --input-invalid-ring: var(--chat-error-text);
-  --input-shadow: var(--chat-shadow);
-  --input-shadow-focus: 0 0 24px rgba(0, 0, 0, 0.15);
+  --input-shadow: 0 0 0 transparent;
+  --input-shadow-focus: 0 0 24px
+    color-mix(in oklch, var(--foreground) 10%, transparent);
 
-  /* Attachment preview tokens */
-  --chat-attachment-bg: oklch(0.98 0 0); /* stone-100 */
-  --chat-attachment-border: oklch(0.88 0 0); /* stone-200 */
-  --chat-attachment-text: oklch(0.28 0 0); /* stone-900 */
-  --chat-attachment-text-secondary: oklch(0.62 0 0); /* stone-500 */
-  --chat-attachment-remove-bg: oklch(0.85 0 0 / 0.5); /* stone-300/50 */
-  --chat-attachment-remove-hover-bg: oklch(0.75 0 0 / 0.7); /* stone-400/70 */
+  --chat-attachment-bg: oklch(0.984 0.002 95);
+  --chat-attachment-border: var(--chat-input-border);
+  --chat-attachment-text: var(--foreground);
+  --chat-attachment-text-secondary: oklch(0.57 0.009 95);
+  --chat-attachment-remove-bg: color-mix(
+    in oklch,
+    var(--foreground) 8%,
+    transparent
+  );
+  --chat-attachment-remove-hover-bg: color-mix(
+    in oklch,
+    var(--foreground) 15%,
+    transparent
+  );
 
-  /* Error state tokens */
-  --chat-error-border: oklch(0.7 0.15 25 / 0.3); /* red-400/30 */
-  --chat-error-text: oklch(0.5 0.2 25); /* red-500 */
+  --chat-error-border: oklch(0.74 0.19 25 / 0.45);
+  --chat-error-text: oklch(0.56 0.24 25);
 
-  /* Status tokens */
-  --status-success-surface: oklch(0.95 0.051 163.05);
-  --status-success-text: oklch(0.432 0.086 166.91);
-  --status-warning-surface: oklch(0.962 0.058 95.62);
-  --status-warning-text: oklch(0.473 0.125 46.2);
-  --status-info-surface: oklch(0.932 0.032 255.59);
-  --status-info-text: oklch(0.424 0.181 265.64);
-  --status-purple-surface: oklch(0.946 0.033 307.17);
-  --status-purple-text: oklch(0.438 0.198 303.72);
+  --status-success-surface: oklch(0.962 0.06 145);
+  --status-success-text: oklch(0.46 0.14 145);
+  --status-warning-surface: oklch(0.972 0.07 80);
+  --status-warning-text: oklch(0.52 0.16 80);
+  --status-info-surface: oklch(0.958 0.07 230);
+  --status-info-text: oklch(0.44 0.15 230);
+  --status-purple-surface: oklch(0.956 0.08 305);
+  --status-purple-text: oklch(0.45 0.18 305);
 
-  /* Toast tokens */
-  --toast-neutral-surface: oklch(0.964 0.014 95);
-  --toast-neutral-border: oklch(0.882 0.015 95);
-  --toast-neutral-text: oklch(0.284 0.03 63);
+  --toast-neutral-surface: oklch(0.962 0.01 95);
+  --toast-neutral-border: oklch(0.9 0.015 95);
+  --toast-neutral-text: oklch(0.3 0.02 95);
 
-  --toast-success-surface: oklch(0.92 0.085 150);
-  --toast-success-border: oklch(0.842 0.075 150);
-  --toast-success-text: oklch(0.378 0.135 152);
+  --toast-success-surface: oklch(0.936 0.09 145);
+  --toast-success-border: oklch(0.86 0.08 145);
+  --toast-success-text: oklch(0.36 0.16 145);
 
-  --toast-info-surface: oklch(0.924 0.09 250);
-  --toast-info-border: oklch(0.848 0.08 250);
-  --toast-info-text: oklch(0.332 0.145 252);
+  --toast-info-surface: oklch(0.93 0.11 240);
+  --toast-info-border: oklch(0.85 0.1 240);
+  --toast-info-text: oklch(0.35 0.16 240);
 
-  --toast-warning-surface: oklch(0.928 0.095 82);
-  --toast-warning-border: oklch(0.856 0.085 82);
-  --toast-warning-text: oklch(0.398 0.14 78);
+  --toast-warning-surface: oklch(0.932 0.11 80);
+  --toast-warning-border: oklch(0.854 0.1 80);
+  --toast-warning-text: oklch(0.37 0.17 80);
 
-  --toast-error-surface: oklch(0.912 0.11 25);
-  --toast-error-border: oklch(0.832 0.1 23);
-  --toast-error-text: oklch(0.366 0.17 20);
+  --toast-error-surface: oklch(0.918 0.13 25);
+  --toast-error-border: oklch(0.84 0.12 25);
+  --toast-error-text: oklch(0.35 0.19 25);
 
-  /* Shadow tokens */
-  --chat-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  --chat-shadow: 0 18px 45px
+    color-mix(in oklch, var(--foreground) 6%, transparent);
 
-  /* Kbd tokens */
-  --kbd-bg: oklch(1 0 0 / 0.9);
-  --kbd-border: oklch(0.78 0 0 / 0.7);
-  --kbd-text: oklch(0.45 0 0);
+  --kbd-bg: oklch(0.99 0.004 95);
+  --kbd-border: oklch(0.88 0.004 95);
+  --kbd-text: oklch(0.32 0.007 95);
 
-  --card: oklch(0.992 0.002 67.8);
-  --card-foreground: oklch(0.23 0.008 59.22);
-  --card-border: oklch(0.839 0.018 64.89);
-  --popover: oklch(0.959 0.006 84.57);
-  --popover-foreground: oklch(0.23 0.008 59.22);
-  --primary: oklch(0.592 0.029 67.22);
-  --primary-foreground: oklch(0.992 0.002 67.8);
-  --secondary: oklch(0.918 0.012 79.78);
-  --secondary-foreground: oklch(0.34 0.018 60.03);
-  --muted: oklch(0.889 0.014 67.65);
-  --muted-foreground: oklch(0.552 0.02 64.69);
-  --accent: oklch(0.84 0.028 63.89);
-  --accent-foreground: oklch(0.315 0.021 57.9);
-  --destructive: oklch(0.56 0.2 27.08);
-  --destructive-foreground: oklch(0.99 0.005 83.38);
-  --border: oklch(0.839 0.018 64.89);
+  --card: oklch(0.996 0.001 95);
+  --card-foreground: var(--foreground);
+  --card-border: oklch(0.92 0.004 95);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.21 0.006 95);
+  --primary-foreground: oklch(0.99 0.001 95);
+  --secondary: oklch(0.96 0.003 95);
+  --secondary-foreground: oklch(0.33 0.007 95);
+  --muted: oklch(0.95 0.003 95);
+  --muted-foreground: oklch(0.52 0.008 95);
+  --accent: oklch(0.97 0.004 95);
+  --accent-foreground: oklch(0.27 0.007 95);
+  --destructive: oklch(0.58 0.257 25);
+  --destructive-foreground: oklch(0.99 0.01 95);
+  --border: oklch(0.92 0.004 95);
   --divider-muted-color: color-mix(
     in oklch,
     var(--border) 60%,
@@ -118,57 +117,53 @@
   --divider-default-color: var(--border);
   --divider-emphasized-color: color-mix(
     in oklch,
-    var(--foreground) 85%,
-    var(--border) 15%
+    var(--foreground) 80%,
+    var(--border) 20%
   );
   --divider-default-thickness: 1px;
   --divider-emphasized-thickness: 2px;
-  --input: oklch(0.839 0.018 64.89);
-  --ring: oklch(0.731 0.048 73.37);
-  --chart-1: oklch(0.677 0.124 40.31);
-  --chart-2: oklch(0.7 0.054 144.97);
-  --chart-3: oklch(0.629 0.09 270.46);
-  --chart-4: oklch(0.798 0.126 84.2);
-  --chart-5: oklch(0.673 0.077 344.96);
+  --input: var(--border);
+  --ring: oklch(0.78 0.015 95);
+  --chart-1: oklch(0.62 0.115 25);
+  --chart-2: oklch(0.65 0.085 160);
+  --chart-3: oklch(0.58 0.12 270);
+  --chart-4: oklch(0.75 0.14 85);
+  --chart-5: oklch(0.68 0.12 320);
   --radius: 0.625rem;
   --tooltip: var(--popover);
   --tooltip-foreground: var(--popover-foreground);
-  --sidebar: oklch(0.959 0.006 84.57);
-  --sidebar-foreground: oklch(0.23 0.008 59.22);
-  --sidebar-primary: oklch(0.592 0.029 67.22);
-  --sidebar-primary-foreground: oklch(0.992 0.002 67.8);
-  --sidebar-accent: oklch(0.918 0.012 79.78);
-  --sidebar-accent-foreground: oklch(0.34 0.018 60.03);
-  --sidebar-border: oklch(0.839 0.018 64.89);
-  --sidebar-ring: oklch(0.731 0.048 73.37);
+  --sidebar: oklch(0.986 0.002 95);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.962 0.003 95);
+  --sidebar-accent-foreground: oklch(0.3 0.007 95);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
 .dark {
-  /* Adding dark mode chat-specific tokens */
+  /* Dark theme uses inverted OKLCH neutrals for high contrast */
 
-  --background: oklch(0.31 0.012 62.17);
-  --foreground: oklch(0.937 0.011 71.9);
+  --background: oklch(0.13 0.006 95);
+  --foreground: oklch(0.96 0.008 95);
 
-  /* Chat input dark mode tokens */
-  --chat-input-bg: oklch(0.412 0.019 67.26);
-  --chat-input-border: oklch(0.439 0.019 60.97);
-  --chat-input-text: oklch(0.98 0 0); /* stone-100 */
-  --chat-input-placeholder: oklch(0.862 0.022 65.28);
+  --chat-input-bg: oklch(0.19 0.006 95);
+  --chat-input-border: oklch(0.3 0.008 95);
+  --chat-input-text: var(--foreground);
+  --chat-input-placeholder: oklch(0.75 0.01 95);
 
-  /* Button dark mode tokens */
-  --chat-button-bg: oklch(0.439 0.019 60.97 / 0.35);
-  --chat-button-border: oklch(0.439 0.019 60.97);
-  --chat-button-text: oklch(0.98 0 0); /* stone-100 */
-  --chat-button-hover-bg: oklch(0.491 0.021 59.14);
+  --chat-button-bg: color-mix(in oklch, var(--background) 65%, transparent);
+  --chat-button-border: oklch(0.34 0.008 95);
+  --chat-button-text: var(--foreground);
+  --chat-button-hover-bg: oklch(0.24 0.008 95);
 
-  /* Submit button dark mode tokens */
-  --chat-submit-bg: oklch(0.438 0.023 56.76);
-  --chat-submit-text: oklch(1 0 0); /* white */
-  --chat-submit-hover-bg: oklch(0.545 0.023 57.76);
-  --chat-submit-disabled-bg: oklch(0.606 0.023 57.84);
-  --chat-submit-disabled-text: oklch(0.739 0.017 58.55);
+  --chat-submit-bg: oklch(0.9 0.01 95);
+  --chat-submit-text: oklch(0.18 0.007 95);
+  --chat-submit-hover-bg: oklch(0.82 0.01 95);
+  --chat-submit-disabled-bg: oklch(0.28 0.008 95);
+  --chat-submit-disabled-text: oklch(0.62 0.01 95);
 
-  /* Input dark mode tokens */
   --input-background: var(--background);
   --input-foreground: var(--foreground);
   --input-placeholder: var(--muted-foreground);
@@ -178,114 +173,119 @@
   --input-disabled-foreground: var(--muted-foreground);
   --input-invalid-border: var(--chat-error-border);
   --input-invalid-ring: var(--chat-error-text);
-  --input-shadow: var(--chat-shadow);
-  --input-shadow-focus: 0 0 28px rgba(0, 0, 0, 0.28);
+  --input-shadow: 0 0 0 transparent;
+  --input-shadow-focus: 0 0 28px
+    color-mix(in oklch, var(--foreground) 14%, transparent);
 
-  /* Attachment preview dark mode tokens */
-  --chat-attachment-bg: oklch(0.496 0.023 54.8);
-  --chat-attachment-border: oklch(0.439 0.019 60.97);
-  --chat-attachment-text: oklch(0.98 0 0); /* stone-100 */
-  --chat-attachment-text-secondary: oklch(0.758 0.023 65.22);
-  --chat-attachment-remove-bg: oklch(0.424 0.042 34.02 / 0.85);
-  --chat-attachment-remove-hover-bg: oklch(0.454 0.052 34.59);
+  --chat-attachment-bg: oklch(0.2 0.007 95);
+  --chat-attachment-border: var(--chat-input-border);
+  --chat-attachment-text: var(--foreground);
+  --chat-attachment-text-secondary: oklch(0.78 0.01 95);
+  --chat-attachment-remove-bg: color-mix(
+    in oklch,
+    var(--foreground) 18%,
+    transparent
+  );
+  --chat-attachment-remove-hover-bg: color-mix(
+    in oklch,
+    var(--foreground) 28%,
+    transparent
+  );
 
-  /* Error state dark mode tokens */
-  --chat-error-border: oklch(0.608 0.097 33.94 / 0.3);
-  --chat-error-text: oklch(0.715 0.089 35.26);
+  --chat-error-border: oklch(0.55 0.22 30 / 0.45);
+  --chat-error-text: oklch(0.68 0.18 30);
 
-  /* Status dark mode tokens */
-  --status-success-surface: oklch(0.378 0.073 168.94 / 0.3);
-  --status-success-text: oklch(0.773 0.153 163.22);
-  --status-warning-surface: oklch(0.414 0.105 45.9 / 0.3);
-  --status-warning-text: oklch(0.837 0.164 84.43);
-  --status-info-surface: oklch(0.379 0.138 265.52 / 0.3);
-  --status-info-text: oklch(0.714 0.143 254.62);
-  --status-purple-surface: oklch(0.381 0.166 304.99 / 0.3);
-  --status-purple-text: oklch(0.722 0.177 305.5);
+  --status-success-surface: oklch(0.32 0.09 145);
+  --status-success-text: oklch(0.8 0.12 145);
+  --status-warning-surface: oklch(0.34 0.11 80);
+  --status-warning-text: oklch(0.84 0.15 80);
+  --status-info-surface: oklch(0.33 0.12 230);
+  --status-info-text: oklch(0.82 0.14 230);
+  --status-purple-surface: oklch(0.34 0.14 305);
+  --status-purple-text: oklch(0.82 0.18 305);
 
-  /* Toast tokens */
-  --toast-neutral-surface: oklch(0.395 0.035 62.17);
-  --toast-neutral-border: oklch(0.472 0.038 60.12);
-  --toast-neutral-text: oklch(0.928 0.04 72);
+  --toast-neutral-surface: oklch(0.28 0.007 95);
+  --toast-neutral-border: oklch(0.36 0.009 95);
+  --toast-neutral-text: oklch(0.92 0.01 95);
 
-  --toast-success-surface: oklch(0.452 0.12 151);
-  --toast-success-border: oklch(0.514 0.12 150);
-  --toast-success-text: oklch(0.862 0.095 158);
+  --toast-success-surface: oklch(0.34 0.12 145);
+  --toast-success-border: oklch(0.4 0.12 145);
+  --toast-success-text: oklch(0.86 0.11 145);
 
-  --toast-info-surface: oklch(0.43 0.12 247);
-  --toast-info-border: oklch(0.494 0.12 247);
-  --toast-info-text: oklch(0.856 0.09 254);
+  --toast-info-surface: oklch(0.32 0.14 230);
+  --toast-info-border: oklch(0.38 0.14 230);
+  --toast-info-text: oklch(0.84 0.13 230);
 
-  --toast-warning-surface: oklch(0.448 0.13 82);
-  --toast-warning-border: oklch(0.512 0.13 84);
-  --toast-warning-text: oklch(0.884 0.09 92);
+  --toast-warning-surface: oklch(0.34 0.15 80);
+  --toast-warning-border: oklch(0.4 0.15 80);
+  --toast-warning-text: oklch(0.88 0.13 80);
 
-  --toast-error-surface: oklch(0.44 0.165 28);
-  --toast-error-border: oklch(0.508 0.165 30);
-  --toast-error-text: oklch(0.876 0.12 25);
+  --toast-error-surface: oklch(0.32 0.2 25);
+  --toast-error-border: oklch(0.38 0.2 25);
+  --toast-error-text: oklch(0.87 0.13 25);
 
-  /* Shadow dark mode */
-  --chat-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  --chat-shadow: 0 20px 55px
+    color-mix(in oklch, var(--foreground) 12%, transparent);
 
-  /* Kbd dark mode tokens */
-  --kbd-bg: oklch(0.28 0 0 / 0.9);
-  --kbd-border: oklch(0.62 0 0 / 0.6);
-  --kbd-text: oklch(0.88 0 0);
+  --kbd-bg: oklch(0.22 0.006 95);
+  --kbd-border: oklch(0.34 0.006 95);
+  --kbd-text: oklch(0.92 0.01 95);
 
-  --card: oklch(0.373 0.014 63.01);
-  --card-foreground: oklch(0.937 0.011 71.9);
-  --card-border: oklch(0.391 0.018 57.15);
-  --popover: oklch(0.373 0.014 63.01);
-  --popover-foreground: oklch(0.937 0.011 71.9);
-  --primary: oklch(0.788 0.04 69.74);
-  --primary-foreground: oklch(0.29 0.023 49.72);
-  --secondary: oklch(0.382 0.017 60.14);
-  --secondary-foreground: oklch(0.929 0.017 70.53);
-  --muted: oklch(0.403 0.019 54.51);
-  --muted-foreground: oklch(0.793 0.021 62.79);
-  --accent: oklch(0.438 0.023 56.76);
-  --accent-foreground: oklch(0.941 0.014 67.66);
-  --destructive: oklch(0.66 0.2 27.08);
-  --destructive-foreground: oklch(0.21 0.04 29.88);
-  --border: oklch(0.391 0.018 57.15);
+  --card: oklch(0.16 0.006 95);
+  --card-foreground: var(--foreground);
+  --card-border: oklch(0.28 0.008 95);
+  --popover: oklch(0.19 0.007 95);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.9 0.01 95);
+  --primary-foreground: oklch(0.18 0.007 95);
+  --secondary: oklch(0.24 0.008 95);
+  --secondary-foreground: oklch(0.92 0.01 95);
+  --muted: oklch(0.21 0.006 95);
+  --muted-foreground: oklch(0.74 0.01 95);
+  --accent: oklch(0.28 0.008 95);
+  --accent-foreground: oklch(0.95 0.01 95);
+  --destructive: oklch(0.62 0.24 27);
+  --destructive-foreground: oklch(0.18 0.05 27);
+  --border: oklch(0.28 0.008 95);
   --divider-muted-color: color-mix(
     in oklch,
-    var(--border) 40%,
-    var(--foreground) 60%
+    var(--border) 35%,
+    var(--foreground) 65%
   );
   --divider-default-color: color-mix(
     in oklch,
-    var(--border) 25%,
-    var(--foreground) 75%
+    var(--border) 20%,
+    var(--foreground) 80%
   );
   --divider-emphasized-color: color-mix(
     in oklch,
-    var(--border) 10%,
-    var(--foreground) 90%
+    var(--border) 5%,
+    var(--foreground) 95%
   );
   --divider-default-thickness: 1px;
   --divider-emphasized-thickness: 2px;
-  --input: oklch(0.391 0.018 57.15);
-  --ring: oklch(0.794 0.048 70.22);
+  --input: var(--border);
+  --ring: oklch(0.68 0.02 95);
+  --chart-1: oklch(0.62 0.115 25);
+  --chart-2: oklch(0.65 0.085 160);
+  --chart-3: oklch(0.58 0.12 270);
+  --chart-4: oklch(0.75 0.14 85);
+  --chart-5: oklch(0.68 0.12 320);
+  --radius: 0.625rem;
   --tooltip: var(--popover);
   --tooltip-foreground: var(--popover-foreground);
-  --chart-1: oklch(0.677 0.124 40.31);
-  --chart-2: oklch(0.7 0.054 144.97);
-  --chart-3: oklch(0.629 0.09 270.46);
-  --chart-4: oklch(0.798 0.126 84.2);
-  --chart-5: oklch(0.673 0.077 344.96);
-  --sidebar: oklch(0.255 0.01 67.38);
-  --sidebar-foreground: oklch(0.937 0.011 71.9);
-  --sidebar-primary: oklch(0.788 0.04 69.74);
-  --sidebar-primary-foreground: oklch(0.29 0.023 49.72);
-  --sidebar-accent: oklch(0.438 0.023 56.76);
-  --sidebar-accent-foreground: oklch(0.941 0.014 67.66);
-  --sidebar-border: oklch(0.391 0.018 57.15);
-  --sidebar-ring: oklch(0.794 0.048 70.22);
+  --sidebar: oklch(0.11 0.006 95);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.23 0.008 95);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
 @theme inline {
-  /* Adding chat-specific color mappings to Tailwind */
+  /* Font families */
   --font-sans: "Geist", "Geist Fallback";
   --font-mono: "Geist Mono", "Geist Mono Fallback";
   --font-serif: "Geist", "Geist Fallback";

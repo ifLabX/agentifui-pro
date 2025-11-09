@@ -148,7 +148,12 @@ export const apiRequest = async <T = unknown>(
   const url = new URL(buildApiUrl(path));
   const queryString = encodeQuery(query);
   if (queryString) {
-    url.search = queryString.slice(1);
+    const existingParams = new URLSearchParams(url.search);
+    const nextParams = new URLSearchParams(queryString.slice(1));
+    nextParams.forEach((value, key) => {
+      existingParams.append(key, value);
+    });
+    url.search = existingParams.toString();
   }
 
   const headers = mergeHeaders(API_DEFAULT_HEADERS, overrideHeaders);

@@ -15,9 +15,7 @@
     overflow: hidden;
     isolation: isolate;
     color: var(--split-button-primary-text);
-    transition:
-      box-shadow 150ms ease,
-      transform 150ms ease;
+    transition: box-shadow 150ms ease;
   }
 
   .split-button:focus-within {

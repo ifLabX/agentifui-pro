@@ -64,7 +64,7 @@ const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
     const shouldUseFallbackChevron = !secondaryIcon && !secondaryLabel;
     const secondaryAriaLabel =
       secondaryAriaLabelProp ??
-      (shouldUseFallbackChevron ? DEFAULT_SECONDARY_ARIA_LABEL : undefined);
+      (!secondaryLabel ? DEFAULT_SECONDARY_ARIA_LABEL : undefined);
 
     const isPrimaryDisabled = disabled || Boolean(primaryDisabledExplicit);
     const isSecondaryDisabled = disabled || Boolean(secondaryDisabledExplicit);

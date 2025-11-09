@@ -49,35 +49,35 @@ BreadcrumbItem.displayName = "BreadcrumbItem";
 
 export type BreadcrumbLinkProps = Omit<
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  "ref"
+  "ref" | "children"
 > & {
   asChild?: boolean;
+  children: React.ReactNode;
 };
 
 const BreadcrumbLink = React.forwardRef<HTMLElement, BreadcrumbLinkProps>(
-  ({ className, asChild = false, ...props }, ref) => {
+  ({ className, asChild = false, children, ...props }, ref) => {
+    const linkClasses = cn(
+      "inline-flex h-[var(--breadcrumb-min-height)] items-center gap-2 rounded-[var(--breadcrumb-radius)] px-[var(--breadcrumb-link-padding-x)] py-[var(--breadcrumb-link-padding-y)] text-sm text-[var(--breadcrumb-foreground)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:text-[var(--breadcrumb-hover-foreground)]",
+      className
+    );
+
     if (asChild) {
       return (
-        <Slot
-          ref={ref}
-          className={cn(
-            "inline-flex h-[var(--breadcrumb-min-height)] items-center gap-2 rounded-[var(--breadcrumb-radius)] px-[var(--breadcrumb-link-padding-x)] py-[var(--breadcrumb-link-padding-y)] text-sm text-[var(--breadcrumb-foreground)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:text-[var(--breadcrumb-hover-foreground)]",
-            className
-          )}
-          {...props}
-        />
+        <Slot ref={ref} className={linkClasses} {...props}>
+          {children}
+        </Slot>
       );
     }
 
     return (
       <a
         ref={ref as React.Ref<HTMLAnchorElement>}
-        className={cn(
-          "inline-flex h-[var(--breadcrumb-min-height)] items-center gap-2 rounded-[var(--breadcrumb-radius)] px-[var(--breadcrumb-link-padding-x)] py-[var(--breadcrumb-link-padding-y)] text-sm text-[var(--breadcrumb-foreground)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:text-[var(--breadcrumb-hover-foreground)]",
-          className
-        )}
+        className={linkClasses}
         {...props}
-      />
+      >
+        {children}
+      </a>
     );
   }
 );
@@ -109,8 +109,8 @@ const BreadcrumbSeparator = ({
   ...props
 }: BreadcrumbSeparatorProps) => (
   <li
-    role="presentation"
     aria-hidden="true"
+    role="presentation"
     className={cn(
       "flex items-center text-[var(--breadcrumb-separator-color)] [&>svg]:size-3.5",
       className

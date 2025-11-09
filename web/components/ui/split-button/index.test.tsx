@@ -67,6 +67,30 @@ describe("SplitButton", () => {
     ).toBeInTheDocument();
   });
 
+  it("preserves fallback aria-label when consumer only supplies handlers", () => {
+    render(
+      <SplitButton
+        primaryAction={{ label: "Save" }}
+        secondaryAction={{ onClick: jest.fn() }}
+      />
+    );
+
+    expect(
+      screen.getByLabelText(DEFAULT_SECONDARY_ARIA_LABEL)
+    ).toBeInTheDocument();
+  });
+
+  it("respects custom aria-label overrides on secondary action", () => {
+    render(
+      <SplitButton
+        primaryAction={{ label: "Save" }}
+        secondaryAction={{ onClick: jest.fn(), "aria-label": "Open menu" }}
+      />
+    );
+
+    expect(screen.getByLabelText("Open menu")).toBeInTheDocument();
+  });
+
   it("expands to full width when requested", () => {
     const { container } = render(
       <SplitButton

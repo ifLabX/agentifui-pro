@@ -57,8 +57,14 @@ const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
       className: secondaryClassName,
       type: secondaryType = "button",
       disabled: secondaryDisabledExplicit,
+      ["aria-label"]: secondaryAriaLabelProp,
       ...secondaryRest
     } = resolvedSecondary;
+
+    const shouldUseFallbackChevron = !secondaryIcon && !secondaryLabel;
+    const secondaryAriaLabel =
+      secondaryAriaLabelProp ??
+      (shouldUseFallbackChevron ? DEFAULT_SECONDARY_ARIA_LABEL : undefined);
 
     const isPrimaryDisabled = disabled || Boolean(primaryDisabledExplicit);
     const isSecondaryDisabled = disabled || Boolean(secondaryDisabledExplicit);
@@ -99,6 +105,7 @@ const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
             secondaryClassName
           )}
           disabled={isSecondaryDisabled}
+          aria-label={secondaryAriaLabel}
           {...secondaryRest}
         >
           {secondaryIcon ? (
@@ -109,7 +116,7 @@ const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
           {secondaryLabel ? (
             <span className="split-button__label">{secondaryLabel}</span>
           ) : null}
-          {!secondaryIcon && !secondaryLabel ? (
+          {shouldUseFallbackChevron ? (
             <span className="split-button__icon" aria-hidden="true">
               <ChevronDown className="split-button__chevron" />
             </span>

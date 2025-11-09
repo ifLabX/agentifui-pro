@@ -61,16 +61,6 @@
     var(--background) 90%,
     var(--primary) 10%
   );
-  --split-button-primary-soft-stop: color-mix(
-    in oklch,
-    var(--split-button-primary-bg) 60%,
-    var(--split-button-secondary-bg) 40%
-  );
-  --split-button-secondary-soft-stop: color-mix(
-    in oklch,
-    var(--split-button-secondary-bg) 60%,
-    var(--split-button-primary-bg) 40%
-  );
   --split-button-secondary-text: color-mix(
     in oklch,
     var(--foreground) 88%,
@@ -101,6 +91,8 @@
     var(--muted-foreground) 92%,
     var(--foreground) 8%
   );
+  --split-button-focus-ring: var(--ring);
+  --split-button-radius: var(--radius-lg);
 
   /* Submit button tokens */
   --chat-submit-bg: oklch(0.145 0 0); /* black */
@@ -262,16 +254,6 @@
     var(--background) 55%,
     var(--secondary) 45%
   );
-  --split-button-primary-soft-stop: color-mix(
-    in oklch,
-    var(--split-button-primary-bg) 65%,
-    var(--split-button-secondary-bg) 35%
-  );
-  --split-button-secondary-soft-stop: color-mix(
-    in oklch,
-    var(--split-button-secondary-bg) 65%,
-    var(--split-button-primary-bg) 35%
-  );
   --split-button-primary-text: color-mix(
     in oklch,
     var(--primary-foreground) 95%,
@@ -317,8 +299,6 @@
     var(--muted-foreground) 95%,
     var(--foreground) 5%
   );
-  --split-button-focus-ring: var(--ring);
-  --split-button-radius: var(--radius-lg);
 
   /* Submit button dark mode tokens */
   --chat-submit-bg: oklch(0.438 0.023 56.76);

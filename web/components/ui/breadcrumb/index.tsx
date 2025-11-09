@@ -24,7 +24,7 @@ const BreadcrumbList = React.forwardRef<
   <ol
     ref={ref}
     className={cn(
-      "flex min-h-[var(--breadcrumb-min-height)] flex-wrap items-center gap-[var(--breadcrumb-gap)] text-sm text-[var(--breadcrumb-foreground)]",
+      "flex min-h-[var(--breadcrumb-min-height)] list-none flex-wrap items-center gap-[var(--breadcrumb-gap)] pl-0 text-sm text-[var(--breadcrumb-foreground)]",
       className
     )}
     {...props}
@@ -99,16 +99,12 @@ const BreadcrumbPage = React.forwardRef<
 ));
 BreadcrumbPage.displayName = "BreadcrumbPage";
 
-type BreadcrumbSeparatorProps = React.ComponentPropsWithoutRef<"li"> & {
-  children?: React.ReactNode;
-};
-
-const BreadcrumbSeparator = ({
-  children,
-  className,
-  ...props
-}: BreadcrumbSeparatorProps) => (
+const BreadcrumbSeparator = React.forwardRef<
+  React.ElementRef<"li">,
+  React.ComponentPropsWithoutRef<"li">
+>(({ children, className, ...props }, ref) => (
   <li
+    ref={ref}
     aria-hidden="true"
     role="presentation"
     className={cn(
@@ -119,14 +115,15 @@ const BreadcrumbSeparator = ({
   >
     {children ?? <ChevronRight aria-hidden="true" />}
   </li>
-);
+));
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 
-const BreadcrumbEllipsis = ({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"span">) => (
+const BreadcrumbEllipsis = React.forwardRef<
+  React.ElementRef<"span">,
+  React.ComponentPropsWithoutRef<"span">
+>(({ className, ...props }, ref) => (
   <span
+    ref={ref}
     className={cn(
       "inline-flex h-[var(--breadcrumb-min-height)] w-[var(--breadcrumb-min-height)] items-center justify-center rounded-[var(--breadcrumb-radius)] text-[var(--breadcrumb-ellipsis-foreground)]",
       className
@@ -136,7 +133,7 @@ const BreadcrumbEllipsis = ({
     <MoreHorizontal aria-hidden="true" className="size-4" />
     <span className="sr-only">More breadcrumb items</span>
   </span>
-);
+));
 BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";
 
 export {

@@ -1,8 +1,14 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { ChatInput } from "@/components/ui/chat-input";
 
 export default function Home() {
+  const t = useTranslations();
+  useDocumentTitle({ title: t("common.navigation.home") });
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-background">
       <div className="w-full max-w-4xl space-y-8">

@@ -15,3 +15,5 @@ export const localeNames: Record<Locale, string> = {
   "zh-Hans": "Chinese (Simplified)",
   "ja-JP": "Japanese",
 } as const;
+
+export const defaultTimeZone = "UTC";

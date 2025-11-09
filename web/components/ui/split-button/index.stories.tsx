@@ -144,6 +144,10 @@ export const Disabled: Story = {
 const monoSurfaceStyle = {
   "--split-button-primary-bg": "var(--split-button-bg)",
   "--split-button-secondary-bg": "var(--split-button-bg)",
+  "--split-button-primary-text": "var(--foreground)",
+  "--split-button-secondary-text": "var(--foreground)",
+  "--split-button-divider":
+    "color-mix(in oklch, var(--border) 60%, var(--foreground) 40%)",
 } as CSSProperties;
 
 export const MonoSurface: Story = {

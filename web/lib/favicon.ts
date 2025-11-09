@@ -6,10 +6,12 @@ export type FaviconLinks = {
   manifest?: string;
 };
 
-const removeManagedLinks = () => {
+const removeManagedLinksByRel = (rel: string) => {
   if (typeof document === "undefined") return;
   document
-    .querySelectorAll<HTMLLinkElement>(`link[${DATA_ATTRIBUTE}="true"]`)
+    .querySelectorAll<HTMLLinkElement>(
+      `link[rel='${rel}'][${DATA_ATTRIBUTE}="true"]`
+    )
     .forEach(link => {
       link.parentElement?.removeChild(link);
     });
@@ -23,6 +25,23 @@ const createLink = (rel: string, href: string) => {
   return link;
 };
 
+const upsertManagedLink = (rel: string, href: string) => {
+  if (typeof document === "undefined") return;
+  const existing = document.querySelector<HTMLLinkElement>(
+    `link[rel='${rel}'][${DATA_ATTRIBUTE}="true"]`
+  );
+  if (existing) {
+    existing.href = href;
+    return;
+  }
+  const link = createLink(rel, href);
+  if (document.head.firstChild) {
+    document.head.insertBefore(link, document.head.firstChild);
+  } else {
+    document.head.appendChild(link);
+  }
+};
+
 export const setFaviconLinks = ({
   favicon,
   appleTouchIcon,
@@ -30,24 +49,23 @@ export const setFaviconLinks = ({
 }: FaviconLinks) => {
   if (typeof document === "undefined") return;
 
-  removeManagedLinks();
-
-  const fragment = document.createDocumentFragment();
-
   if (favicon) {
-    fragment.appendChild(createLink("icon", favicon));
-    fragment.appendChild(createLink("shortcut icon", favicon));
+    upsertManagedLink("icon", favicon);
+    upsertManagedLink("shortcut icon", favicon);
+  } else {
+    removeManagedLinksByRel("icon");
+    removeManagedLinksByRel("shortcut icon");
   }
 
   if (appleTouchIcon) {
-    fragment.appendChild(createLink("apple-touch-icon", appleTouchIcon));
+    upsertManagedLink("apple-touch-icon", appleTouchIcon);
+  } else {
+    removeManagedLinksByRel("apple-touch-icon");
   }
 
   if (manifest) {
-    fragment.appendChild(createLink("manifest", manifest));
-  }
-
-  if (fragment.childNodes.length > 0) {
-    document.head.appendChild(fragment);
+    upsertManagedLink("manifest", manifest);
+  } else {
+    removeManagedLinksByRel("manifest");
   }
 };

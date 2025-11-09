@@ -47,17 +47,31 @@ const BreadcrumbItem = React.forwardRef<
 ));
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
-export interface BreadcrumbLinkProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export type BreadcrumbLinkProps = Omit<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  "ref"
+> & {
   asChild?: boolean;
-}
+};
 
-const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
+const BreadcrumbLink = React.forwardRef<HTMLElement, BreadcrumbLinkProps>(
   ({ className, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "a";
+    if (asChild) {
+      return (
+        <Slot
+          ref={ref}
+          className={cn(
+            "inline-flex h-[var(--breadcrumb-min-height)] items-center gap-2 rounded-[var(--breadcrumb-radius)] px-[var(--breadcrumb-link-padding-x)] py-[var(--breadcrumb-link-padding-y)] text-sm text-[var(--breadcrumb-foreground)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:text-[var(--breadcrumb-hover-foreground)]",
+            className
+          )}
+          {...props}
+        />
+      );
+    }
+
     return (
-      <Comp
-        ref={ref}
+      <a
+        ref={ref as React.Ref<HTMLAnchorElement>}
         className={cn(
           "inline-flex h-[var(--breadcrumb-min-height)] items-center gap-2 rounded-[var(--breadcrumb-radius)] px-[var(--breadcrumb-link-padding-x)] py-[var(--breadcrumb-link-padding-y)] text-sm text-[var(--breadcrumb-foreground)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:text-[var(--breadcrumb-hover-foreground)]",
           className

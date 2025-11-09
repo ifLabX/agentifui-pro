@@ -6,8 +6,8 @@ import { useDocumentTitle } from "@/hooks/use-document-title";
 import { ChatInput } from "@/components/ui/chat-input";
 
 export default function Home() {
-  const t = useTranslations("common.navigation");
-  useDocumentTitle({ title: t("home") });
+  const t = useTranslations();
+  useDocumentTitle({ title: t("common.navigation.home") });
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-background">

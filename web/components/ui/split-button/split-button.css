@@ -102,7 +102,6 @@
 
   .split-button__segment:disabled::before {
     background-color: var(--split-button-disabled-bg);
-    box-shadow: none;
   }
 
   .split-button__segment:disabled::after {

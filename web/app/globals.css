@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../components/ui/toast/toast.css";
+@import "../components/ui/split-button/split-button.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -22,6 +23,86 @@
   --chat-button-border: oklch(0.88 0 0); /* stone-200 */
   --chat-button-text: oklch(0.52 0 0); /* stone-600 */
   --chat-button-hover-bg: oklch(0.98 0 0); /* stone-50 */
+
+  /* Split button tokens */
+  --split-button-bg: color-mix(
+    in oklch,
+    var(--background) 94%,
+    var(--primary) 6%
+  );
+  --split-button-border: color-mix(
+    in oklch,
+    var(--border) 60%,
+    var(--primary) 40%
+  );
+  --split-button-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+  --split-button-primary-bg: color-mix(
+    in oklch,
+    var(--primary) 30%,
+    var(--background) 70%
+  );
+  --split-button-primary-text: color-mix(
+    in oklch,
+    var(--foreground) 90%,
+    var(--primary-foreground) 10%
+  );
+  --split-button-primary-hover-bg: color-mix(
+    in oklch,
+    var(--split-button-primary-bg) 85%,
+    var(--primary) 15%
+  );
+  --split-button-primary-active-bg: color-mix(
+    in oklch,
+    var(--split-button-primary-hover-bg) 80%,
+    var(--primary) 20%
+  );
+  --split-button-secondary-bg: color-mix(
+    in oklch,
+    var(--background) 90%,
+    var(--primary) 10%
+  );
+  --split-button-primary-soft-stop: color-mix(
+    in oklch,
+    var(--split-button-primary-bg) 60%,
+    var(--split-button-secondary-bg) 40%
+  );
+  --split-button-secondary-soft-stop: color-mix(
+    in oklch,
+    var(--split-button-secondary-bg) 60%,
+    var(--split-button-primary-bg) 40%
+  );
+  --split-button-secondary-text: color-mix(
+    in oklch,
+    var(--foreground) 88%,
+    var(--primary-foreground) 12%
+  );
+  --split-button-secondary-hover-bg: color-mix(
+    in oklch,
+    var(--split-button-secondary-bg) 80%,
+    var(--primary) 20%
+  );
+  --split-button-secondary-active-bg: color-mix(
+    in oklch,
+    var(--split-button-secondary-hover-bg) 75%,
+    var(--primary) 25%
+  );
+  --split-button-divider: color-mix(
+    in oklch,
+    var(--primary) 55%,
+    var(--border) 45%
+  );
+  --split-button-disabled-bg: color-mix(
+    in oklch,
+    var(--muted) 85%,
+    var(--background) 15%
+  );
+  --split-button-disabled-text: color-mix(
+    in oklch,
+    var(--muted-foreground) 92%,
+    var(--foreground) 8%
+  );
+  --split-button-focus-ring: var(--ring);
+  --split-button-radius: var(--radius-lg);
 
   /* Submit button tokens */
   --chat-submit-bg: oklch(0.145 0 0); /* black */
@@ -160,6 +241,86 @@
   --chat-button-border: oklch(0.439 0.019 60.97);
   --chat-button-text: oklch(0.98 0 0); /* stone-100 */
   --chat-button-hover-bg: oklch(0.491 0.021 59.14);
+
+  /* Split button dark mode tokens */
+  --split-button-bg: color-mix(
+    in oklch,
+    var(--background) 65%,
+    var(--card) 35%
+  );
+  --split-button-border: color-mix(
+    in oklch,
+    var(--primary) 60%,
+    var(--border) 40%
+  );
+  --split-button-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --split-button-primary-bg: color-mix(
+    in oklch,
+    var(--primary) 80%,
+    var(--background) 20%
+  );
+  --split-button-secondary-bg: color-mix(
+    in oklch,
+    var(--background) 55%,
+    var(--secondary) 45%
+  );
+  --split-button-primary-soft-stop: color-mix(
+    in oklch,
+    var(--split-button-primary-bg) 65%,
+    var(--split-button-secondary-bg) 35%
+  );
+  --split-button-secondary-soft-stop: color-mix(
+    in oklch,
+    var(--split-button-secondary-bg) 65%,
+    var(--split-button-primary-bg) 35%
+  );
+  --split-button-primary-text: color-mix(
+    in oklch,
+    var(--primary-foreground) 95%,
+    var(--foreground) 5%
+  );
+  --split-button-secondary-text: color-mix(
+    in oklch,
+    var(--foreground) 90%,
+    var(--primary-foreground) 10%
+  );
+  --split-button-primary-hover-bg: color-mix(
+    in oklch,
+    var(--split-button-primary-bg) 80%,
+    var(--primary) 20%
+  );
+  --split-button-primary-active-bg: color-mix(
+    in oklch,
+    var(--split-button-primary-hover-bg) 75%,
+    var(--primary) 25%
+  );
+  --split-button-secondary-hover-bg: color-mix(
+    in oklch,
+    var(--split-button-secondary-bg) 70%,
+    var(--primary) 30%
+  );
+  --split-button-secondary-active-bg: color-mix(
+    in oklch,
+    var(--split-button-secondary-hover-bg) 65%,
+    var(--primary) 35%
+  );
+  --split-button-divider: color-mix(
+    in oklch,
+    var(--primary) 75%,
+    var(--border) 25%
+  );
+  --split-button-disabled-bg: color-mix(
+    in oklch,
+    var(--muted) 55%,
+    var(--background) 45%
+  );
+  --split-button-disabled-text: color-mix(
+    in oklch,
+    var(--muted-foreground) 95%,
+    var(--foreground) 5%
+  );
+  --split-button-focus-ring: var(--ring);
+  --split-button-radius: var(--radius-lg);
 
   /* Submit button dark mode tokens */
   --chat-submit-bg: oklch(0.438 0.023 56.76);

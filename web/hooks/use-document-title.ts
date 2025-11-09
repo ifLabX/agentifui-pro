@@ -61,9 +61,8 @@ export const useDocumentTitle = ({
   useTitle(resolvedTitle);
 
   const favicon = branding.faviconUrl || DEFAULT_BRANDING.faviconUrl;
-  const appleTouchIcon =
-    branding.appleTouchIconUrl || DEFAULT_BRANDING.appleTouchIconUrl;
-  const manifest = branding.manifestUrl || DEFAULT_BRANDING.manifestUrl;
+  const appleTouchIcon = branding.appleTouchIconUrl;
+  const manifest = branding.manifestUrl;
 
   useEffect(() => {
     setFaviconLinks({

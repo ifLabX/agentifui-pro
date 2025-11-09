@@ -3,8 +3,6 @@ import type { BrandingPayload } from "@/types/branding";
 export const DEFAULT_BRANDING: BrandingPayload = {
   applicationTitle: "AgentifUI",
   faviconUrl: "/favicon.ico",
-  appleTouchIconUrl: "/apple-touch-icon.png",
-  manifestUrl: "/manifest.json",
 };
 
 export const BRANDING_ENV_SUFFIX =

@@ -52,7 +52,7 @@ export const useDocumentTitle = ({
 
   const resolvedTitle = useMemo(() => {
     if (isLoading) {
-      return loadingTitle ?? formattedTitle;
+      return loadingTitle ?? "";
     }
 
     return formattedTitle;

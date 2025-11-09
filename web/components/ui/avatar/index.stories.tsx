@@ -53,31 +53,30 @@ export const WithFallback: Story = {
 };
 
 export const CustomSizes: Story = {
-  render: () => (
-    <div className="flex items-end gap-6">
-      <div className="space-y-2 text-center text-sm">
-        <Avatar className="h-8 w-8 text-xs">
-          <AvatarImage src={SAMPLE_IMAGE} alt={SAMPLE_IMAGE_ALT} />
-          <AvatarFallback>JR</AvatarFallback>
-        </Avatar>
-        <span className="text-muted-foreground">Small (32px)</span>
+  render: () => {
+    const sizes = [
+      { label: "Small (32px)", className: "h-8 w-8 text-xs" },
+      { label: "Medium (48px)", className: "h-12 w-12 text-base" },
+      {
+        label: "Large (64px)",
+        className: "h-16 w-16 border-2 border-primary text-lg",
+      },
+    ];
+
+    return (
+      <div className="flex items-end gap-6">
+        {sizes.map(({ label, className }) => (
+          <div key={label} className="space-y-2 text-center text-sm">
+            <Avatar className={className}>
+              <AvatarImage src={SAMPLE_IMAGE} alt={SAMPLE_IMAGE_ALT} />
+              <AvatarFallback aria-label="User initials">JR</AvatarFallback>
+            </Avatar>
+            <span className="text-muted-foreground">{label}</span>
+          </div>
+        ))}
       </div>
-      <div className="space-y-2 text-center text-sm">
-        <Avatar className="h-12 w-12 text-base">
-          <AvatarImage src={SAMPLE_IMAGE} alt={SAMPLE_IMAGE_ALT} />
-          <AvatarFallback>JR</AvatarFallback>
-        </Avatar>
-        <span className="text-muted-foreground">Medium (48px)</span>
-      </div>
-      <div className="space-y-2 text-center text-sm">
-        <Avatar className="h-16 w-16 border-2 border-primary text-lg">
-          <AvatarImage src={SAMPLE_IMAGE} alt={SAMPLE_IMAGE_ALT} />
-          <AvatarFallback>JR</AvatarFallback>
-        </Avatar>
-        <span className="text-muted-foreground">Large (64px)</span>
-      </div>
-    </div>
-  ),
+    );
+  },
 };
 
 export const AvatarGroup: Story = {
@@ -92,7 +91,9 @@ export const AvatarGroup: Story = {
             src={imageWithSeed(initials)}
             alt={`Team member ${initials}`}
           />
-          <AvatarFallback>{initials}</AvatarFallback>
+          <AvatarFallback aria-label={`Team member ${initials}`}>
+            {initials}
+          </AvatarFallback>
         </Avatar>
       ))}
     </div>
@@ -111,7 +112,9 @@ export const WithStatusIndicator: Story = {
           <div className="relative">
             <Avatar className="h-12 w-12">
               <AvatarImage src={imageWithSeed(label)} alt={`${label} user`} />
-              <AvatarFallback>{label.slice(0, 2)}</AvatarFallback>
+              <AvatarFallback aria-label={`${label} user`}>
+                {label.slice(0, 2)}
+              </AvatarFallback>
             </Avatar>
             <span
               className={`absolute bottom-0 right-0 block size-3 rounded-full border-2 border-background ${indicator}`}

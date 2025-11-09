@@ -129,4 +129,3 @@ const SplitButton = React.forwardRef<HTMLDivElement, SplitButtonProps>(
 SplitButton.displayName = "SplitButton";
 
 export { SplitButton, DEFAULT_SECONDARY_ARIA_LABEL };
-export type { SplitButtonProps, SplitButtonAction };

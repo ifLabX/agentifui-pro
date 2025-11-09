@@ -146,7 +146,7 @@ const monoSurfaceStyle = {
   "--split-button-secondary-bg": "var(--split-button-bg)",
   "--split-button-primary-soft-stop": "var(--split-button-bg)",
   "--split-button-secondary-soft-stop": "var(--split-button-bg)",
-} satisfies CSSProperties;
+} as CSSProperties;
 
 export const MonoSurface: Story = {
   render: () => (

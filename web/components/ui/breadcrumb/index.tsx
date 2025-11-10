@@ -48,8 +48,8 @@ const BreadcrumbItem = React.forwardRef<
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
 export type BreadcrumbLinkProps = Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  "ref" | "children"
+  React.ComponentPropsWithoutRef<"a">,
+  "children"
 > & {
   asChild?: boolean;
   children: React.ReactNode;

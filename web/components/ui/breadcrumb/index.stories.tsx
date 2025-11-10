@@ -257,19 +257,30 @@ export const LongTextTruncation: Story = {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="#projects" className="max-w-40 truncate">
+            <BreadcrumbLink
+              href="#projects"
+              className="max-w-40 truncate"
+              title="Enterprise Cloud Infrastructure Projects"
+            >
               Enterprise Cloud Infrastructure Projects
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="#workspace" className="max-w-32 truncate">
+            <BreadcrumbLink
+              href="#workspace"
+              className="max-w-32 truncate"
+              title="AI Model Training Workspace"
+            >
               AI Model Training Workspace
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage className="max-w-48 truncate">
+            <BreadcrumbPage
+              className="max-w-48 truncate"
+              title="Deep Learning Neural Network Configuration Settings"
+            >
               Deep Learning Neural Network Configuration Settings
             </BreadcrumbPage>
           </BreadcrumbItem>

@@ -96,9 +96,16 @@ describe("Breadcrumb", () => {
   });
 
   test("BreadcrumbEllipsis exposes assistive text for screen readers", () => {
-    render(<BreadcrumbEllipsis />);
+    render(
+      <>
+        <BreadcrumbEllipsis />
+        <BreadcrumbEllipsis aria-label="Collapsed breadcrumb items" />
+      </>
+    );
 
-    const srOnly = screen.getByText("More breadcrumb items");
-    expect(srOnly).toHaveClass("sr-only");
+    expect(screen.getByLabelText("More breadcrumb items")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Collapsed breadcrumb items")
+    ).toBeInTheDocument();
   });
 });

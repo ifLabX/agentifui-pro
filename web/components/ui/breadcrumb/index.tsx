@@ -116,20 +116,25 @@ BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 
 const BreadcrumbEllipsis = React.forwardRef<
   React.ElementRef<"span">,
-  React.ComponentPropsWithoutRef<"span"> & { accessibleText?: string }
->(({ className, accessibleText = "More breadcrumb items", ...props }, ref) => (
-  <span
-    ref={ref}
-    className={cn(
-      "inline-flex h-[var(--breadcrumb-min-height)] w-[var(--breadcrumb-min-height)] items-center justify-center rounded-[var(--breadcrumb-radius)] text-[var(--breadcrumb-ellipsis-foreground)]",
-      className
-    )}
-    {...props}
-  >
-    <MoreHorizontal aria-hidden="true" className="size-4" />
-    <span className="sr-only">{accessibleText}</span>
-  </span>
-));
+  React.ComponentPropsWithoutRef<"span">
+>(
+  (
+    { className, "aria-label": ariaLabel = "More breadcrumb items", ...props },
+    ref
+  ) => (
+    <span
+      ref={ref}
+      aria-label={ariaLabel}
+      className={cn(
+        "inline-flex h-[var(--breadcrumb-min-height)] w-[var(--breadcrumb-min-height)] items-center justify-center rounded-[var(--breadcrumb-radius)] text-[var(--breadcrumb-ellipsis-foreground)]",
+        className
+      )}
+      {...props}
+    >
+      <MoreHorizontal aria-hidden="true" className="size-4" />
+    </span>
+  )
+);
 BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";
 
 export {

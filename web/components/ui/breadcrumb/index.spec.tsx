@@ -38,7 +38,7 @@ describe("Breadcrumb", () => {
   });
 
   test("BreadcrumbList and BreadcrumbItem merge custom class names", () => {
-    const { container } = render(
+    render(
       <Breadcrumb>
         <BreadcrumbList className="custom-list">
           <BreadcrumbItem className="custom-item">
@@ -48,13 +48,13 @@ describe("Breadcrumb", () => {
       </Breadcrumb>
     );
 
-    const list = container.querySelector("ol");
+    const list = screen.getByRole("list");
     expect(list).toHaveClass("custom-list");
-    expect(list?.className).toContain("flex");
+    expect(list).toHaveClass("flex");
 
-    const item = container.querySelector("li");
+    const item = screen.getByRole("listitem");
     expect(item).toHaveClass("custom-item");
-    expect(item?.className).toContain("inline-flex");
+    expect(item).toHaveClass("inline-flex");
   });
 
   test("BreadcrumbLink supports rendering via Slot when asChild is true", () => {

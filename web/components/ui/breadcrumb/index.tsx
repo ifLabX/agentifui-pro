@@ -116,8 +116,8 @@ BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 
 const BreadcrumbEllipsis = React.forwardRef<
   React.ElementRef<"span">,
-  React.ComponentPropsWithoutRef<"span">
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<"span"> & { accessibleText?: string }
+>(({ className, accessibleText = "More breadcrumb items", ...props }, ref) => (
   <span
     ref={ref}
     className={cn(
@@ -127,7 +127,7 @@ const BreadcrumbEllipsis = React.forwardRef<
     {...props}
   >
     <MoreHorizontal aria-hidden="true" className="size-4" />
-    <span className="sr-only">More breadcrumb items</span>
+    <span className="sr-only">{accessibleText}</span>
   </span>
 ));
 BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";

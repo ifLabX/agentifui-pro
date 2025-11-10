@@ -95,15 +95,15 @@ describe("Breadcrumb", () => {
     expect(container).toHaveTextContent("•");
   });
 
-  test("BreadcrumbEllipsis exposes assistive text for screen readers", () => {
-    render(
-      <>
-        <BreadcrumbEllipsis />
-        <BreadcrumbEllipsis aria-label="Collapsed breadcrumb items" />
-      </>
-    );
+  test("BreadcrumbEllipsis has a default aria-label", () => {
+    render(<BreadcrumbEllipsis />);
 
     expect(screen.getByLabelText("More breadcrumb items")).toBeInTheDocument();
+  });
+
+  test("BreadcrumbEllipsis accepts a custom aria-label", () => {
+    render(<BreadcrumbEllipsis aria-label="Collapsed breadcrumb items" />);
+
     expect(
       screen.getByLabelText("Collapsed breadcrumb items")
     ).toBeInTheDocument();

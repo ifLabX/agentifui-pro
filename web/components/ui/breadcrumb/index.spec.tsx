@@ -1,3 +1,4 @@
+import * as React from "react";
 import { render, screen } from "@testing-library/react";
 
 import "@testing-library/jest-dom";
@@ -11,6 +12,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "./index";
+
+const FrameworkLink = React.forwardRef<
+  HTMLAnchorElement,
+  React.ComponentPropsWithoutRef<"a">
+>(({ children, ...props }, ref) => (
+  <a ref={ref} {...props}>
+    {children}
+  </a>
+));
+FrameworkLink.displayName = "FrameworkLink";
 
 describe("Breadcrumb", () => {
   test("renders with default aria-label and nested structure", () => {
@@ -57,22 +68,23 @@ describe("Breadcrumb", () => {
     expect(item).toHaveClass("inline-flex");
   });
 
-  test("BreadcrumbLink supports rendering via Slot when asChild is true", () => {
+  test("BreadcrumbLink composes framework links via Slot when asChild is true", () => {
     render(
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild className="custom-link">
-              <button type="button">Trigger</button>
+              <FrameworkLink href="/settings">Settings</FrameworkLink>
             </BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
     );
 
-    const button = screen.getByRole("button", { name: "Trigger" });
-    expect(button).toHaveClass("custom-link");
-    expect(button).toHaveClass("inline-flex");
+    const link = screen.getByRole("link", { name: "Settings" });
+    expect(link).toHaveAttribute("href", "/settings");
+    expect(link).toHaveClass("custom-link");
+    expect(link).toHaveClass("inline-flex");
   });
 
   test("BreadcrumbSeparator renders fallback icon and allows custom children", () => {

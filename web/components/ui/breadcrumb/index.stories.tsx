@@ -119,13 +119,13 @@ export const CustomSeparator: Story = {
           <BreadcrumbItem>
             <BreadcrumbLink href="#home">Home</BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator className="mx-0 font-semibold" aria-hidden>
+          <BreadcrumbSeparator className="mx-0 font-semibold">
             /
           </BreadcrumbSeparator>
           <BreadcrumbItem>
             <BreadcrumbLink href="#settings">Settings</BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator className="mx-0 font-semibold" aria-hidden>
+          <BreadcrumbSeparator className="mx-0 font-semibold">
             /
           </BreadcrumbSeparator>
           <BreadcrumbItem>

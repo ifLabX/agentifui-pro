@@ -1,0 +1,175 @@
+@layer components {
+  .split-button {
+    --split-button-height: 2.25rem;
+    --split-button-padding-x: 0.875rem;
+    --split-button-font-size: 0.875rem;
+    --split-button-gap: 0.35rem;
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    border-radius: var(--split-button-radius);
+    border: 1px solid var(--split-button-border);
+    background-color: var(--split-button-bg);
+    box-shadow: var(--split-button-shadow);
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--split-button-primary-text);
+    transition: box-shadow 150ms ease;
+  }
+
+  .split-button:focus-within {
+    box-shadow:
+      var(--split-button-shadow),
+      0 0 0 2px
+        color-mix(in oklch, var(--split-button-focus-ring) 40%, transparent);
+  }
+
+  .split-button--block {
+    width: 100%;
+  }
+
+  .split-button[data-size="sm"] {
+    --split-button-height: 2rem;
+    --split-button-padding-x: 0.625rem;
+    --split-button-font-size: 0.8125rem;
+  }
+
+  .split-button[data-size="lg"] {
+    --split-button-height: 2.5rem;
+    --split-button-padding-x: 1rem;
+    --split-button-font-size: 0.9375rem;
+  }
+
+  .split-button__segment {
+    appearance: none;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: var(--split-button-font-size);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--split-button-gap);
+    padding-inline: var(--split-button-padding-x);
+    min-width: 2.5rem;
+    height: var(--split-button-height);
+    cursor: pointer;
+    position: relative;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+    isolation: isolate;
+    color: inherit;
+    z-index: 0;
+  }
+
+  .split-button__segment::before,
+  .split-button__segment::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+    transition:
+      background-color 150ms ease,
+      opacity 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .split-button__segment::before {
+    z-index: -2;
+    background-color: var(--split-button-bg);
+  }
+
+  .split-button__segment::after {
+    z-index: -1;
+    opacity: 0;
+    background-color: transparent;
+  }
+
+  .split-button__segment:focus-visible {
+    outline-color: var(--split-button-focus-ring);
+  }
+
+  .split-button__segment:disabled {
+    cursor: not-allowed;
+    color: var(--split-button-disabled-text);
+  }
+
+  .split-button__segment:disabled::before {
+    background-color: var(--split-button-disabled-bg);
+  }
+
+  .split-button__segment:disabled::after {
+    opacity: 0;
+  }
+
+  .split-button__segment--primary {
+    flex: 1 1 auto;
+    color: var(--split-button-primary-text);
+  }
+
+  .split-button__segment--primary::before {
+    background-color: var(--split-button-primary-bg);
+    border-top-left-radius: calc(var(--split-button-radius) - 0.5px);
+    border-bottom-left-radius: calc(var(--split-button-radius) - 0.5px);
+  }
+
+  .split-button__segment--primary::after {
+    background-color: var(--split-button-primary-hover-bg);
+  }
+
+  .split-button__segment--secondary {
+    flex: 0 0 auto;
+    color: var(--split-button-secondary-text);
+    min-width: calc(var(--split-button-height) + 0.25rem);
+  }
+
+  .split-button__segment--secondary::before {
+    background-color: var(--split-button-secondary-bg);
+    border-top-right-radius: calc(var(--split-button-radius) - 0.5px);
+    border-bottom-right-radius: calc(var(--split-button-radius) - 0.5px);
+    box-shadow:
+      -0.75px 0 0 var(--split-button-divider),
+      -2px 0 8px
+        color-mix(in oklch, var(--split-button-divider) 25%, transparent);
+  }
+
+  .split-button__segment--secondary::after {
+    background-color: var(--split-button-secondary-hover-bg);
+  }
+
+  .split-button__segment--primary:not(:disabled):hover::after,
+  .split-button__segment--primary:not(:disabled):focus-visible::after,
+  .split-button__segment--secondary:not(:disabled):hover::after,
+  .split-button__segment--secondary:not(:disabled):focus-visible::after {
+    opacity: 1;
+  }
+
+  .split-button__segment--primary:not(:disabled):active::after {
+    background-color: var(--split-button-primary-active-bg);
+    opacity: 1;
+  }
+
+  .split-button__segment--secondary:not(:disabled):active::after {
+    background-color: var(--split-button-secondary-active-bg);
+    opacity: 1;
+  }
+
+  .split-button__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .split-button__label {
+    white-space: nowrap;
+  }
+
+  .split-button__chevron {
+    width: 1rem;
+    height: 1rem;
+  }
+}

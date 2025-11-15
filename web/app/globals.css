@@ -114,6 +114,31 @@
   --input-shadow: var(--chat-shadow);
   --input-shadow-focus: 0 0 24px rgba(0, 0, 0, 0.15);
 
+  /* Breadcrumb tokens */
+  --breadcrumb-gap: 0.25rem;
+  --breadcrumb-item-gap: 0.25rem;
+  --breadcrumb-link-padding-x: 0.25rem;
+  --breadcrumb-link-padding-y: 0.25rem;
+  --breadcrumb-min-height: 2.25rem;
+  --breadcrumb-radius: calc(var(--radius) - 2px);
+  --breadcrumb-foreground: var(--muted-foreground);
+  --breadcrumb-hover-foreground: color-mix(
+    in oklch,
+    var(--foreground) 80%,
+    var(--primary) 20%
+  );
+  --breadcrumb-current-foreground: var(--foreground);
+  --breadcrumb-separator-color: color-mix(
+    in oklch,
+    var(--muted-foreground) 70%,
+    var(--border) 30%
+  );
+  --breadcrumb-ellipsis-foreground: color-mix(
+    in oklch,
+    var(--muted-foreground) 85%,
+    var(--background) 15%
+  );
+
   /* Attachment preview tokens */
   --chat-attachment-bg: oklch(0.98 0 0); /* stone-100 */
   --chat-attachment-border: oklch(0.88 0 0); /* stone-200 */
@@ -319,6 +344,28 @@
   --input-invalid-ring: var(--chat-error-text);
   --input-shadow: var(--chat-shadow);
   --input-shadow-focus: 0 0 28px rgba(0, 0, 0, 0.28);
+
+  /* Breadcrumb dark mode overrides */
+  --breadcrumb-foreground: color-mix(
+    in oklch,
+    var(--muted-foreground) 70%,
+    var(--foreground) 30%
+  );
+  --breadcrumb-hover-foreground: color-mix(
+    in oklch,
+    var(--foreground) 70%,
+    var(--primary) 30%
+  );
+  --breadcrumb-separator-color: color-mix(
+    in oklch,
+    var(--muted-foreground) 45%,
+    var(--foreground) 55%
+  );
+  --breadcrumb-ellipsis-foreground: color-mix(
+    in oklch,
+    var(--muted-foreground) 40%,
+    var(--foreground) 60%
+  );
 
   /* Attachment preview dark mode tokens */
   --chat-attachment-bg: oklch(0.496 0.023 54.8);

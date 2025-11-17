@@ -155,6 +155,8 @@ describe("Breadcrumb", () => {
     const itemRef = React.createRef<HTMLLIElement>();
     const linkRef = React.createRef<HTMLAnchorElement>();
     const pageRef = React.createRef<HTMLSpanElement>();
+    const separatorRef = React.createRef<HTMLLIElement>();
+    const ellipsisRef = React.createRef<HTMLSpanElement>();
 
     render(
       <Breadcrumb ref={breadcrumbRef}>
@@ -164,9 +166,12 @@ describe("Breadcrumb", () => {
               Link
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
+          <BreadcrumbSeparator ref={separatorRef} />
           <BreadcrumbItem>
             <BreadcrumbPage ref={pageRef}>Current</BreadcrumbPage>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+            <BreadcrumbEllipsis ref={ellipsisRef} />
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -178,6 +183,8 @@ describe("Breadcrumb", () => {
     expect(itemRef.current).toBeInstanceOf(HTMLLIElement);
     expect(linkRef.current).toBeInstanceOf(HTMLAnchorElement);
     expect(pageRef.current).toBeInstanceOf(HTMLSpanElement);
+    expect(separatorRef.current).toBeInstanceOf(HTMLLIElement);
+    expect(ellipsisRef.current).toBeInstanceOf(HTMLSpanElement);
   });
 
   test("accepts and applies custom aria-label", () => {

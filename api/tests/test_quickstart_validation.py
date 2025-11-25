@@ -156,6 +156,7 @@ def test_quickstart_environment_configuration() -> None:
         "DATABASE_URL": "postgresql+asyncpg://user:password@localhost:5432/agentifui_dev",
         "DATABASE_POOL_SIZE": "10",
         "DATABASE_POOL_TIMEOUT": "30",
+        "REDIS_URL": "redis://localhost:6379/0",
         "SECRET_KEY": "test-secret-key-minimum-32-characters",
         "LOG_LEVEL": "INFO",
     }

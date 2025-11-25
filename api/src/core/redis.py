@@ -129,16 +129,9 @@ async def _disconnect_pool(client: Redis) -> None:
 async def reset_redis_client() -> None:
     """
     Reset the cached Redis client (useful for tests or config reloads).
+    This is an alias for `close_redis` to provide semantic clarity in tests.
     """
-    global _redis_client
-    if _redis_client is None:
-        return
-
-    client = _redis_client
-    try:
-        await _shutdown_client(client)
-    finally:
-        _redis_client = None
+    await close_redis()
 
 
 def reset_redis_client_blocking() -> None:

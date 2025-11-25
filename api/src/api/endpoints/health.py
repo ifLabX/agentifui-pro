@@ -9,6 +9,7 @@ import time
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+from redis.exceptions import RedisError
 from src.core.config import get_settings
 from src.core.db import check_database_connection, get_database_info
 from src.core.redis import ping_redis
@@ -216,11 +217,18 @@ async def get_redis_health() -> JSONResponse:
         )
         return JSONResponse(status_code=503, content=response.model_dump())
 
-    except Exception as e:
+    except (TimeoutError, RedisError) as e:
         response_time_ms = int((time.time() - start_time) * 1000)
 
         response = create_unhealthy_redis_response(
             errors=[f"Redis health check failed: {str(e)}"],
+            response_time_ms=response_time_ms,
+        )
+        return JSONResponse(status_code=503, content=response.model_dump())
+    except Exception as e:
+        response_time_ms = int((time.time() - start_time) * 1000)
+        response = create_unhealthy_redis_response(
+            errors=[f"Unexpected Redis error: {str(e)}"],
             response_time_ms=response_time_ms,
         )
         return JSONResponse(status_code=503, content=response.model_dump())

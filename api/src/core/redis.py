@@ -124,7 +124,12 @@ def reset_redis_client() -> None:
         try:
             disconnect_callable = _redis_client.connection_pool.disconnect(inuse_connections=True)
             if asyncio.iscoroutine(disconnect_callable):
-                asyncio.run(disconnect_callable)
+                try:
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    asyncio.run(disconnect_callable)
+                else:
+                    loop.create_task(disconnect_callable)
         except Exception as exc:
             logger.warning("Failed to disconnect Redis connection pool during reset: %s", exc)
     _redis_client = None

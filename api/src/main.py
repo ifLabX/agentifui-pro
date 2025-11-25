@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.api.endpoints.health import router as health_router
 from src.core.config import get_settings
 from src.core.db import dispose_engine
+from src.core.redis import close_redis
 from src.middleware.error_handler import setup_error_handling
 from src.middleware.tenant_context import TenantContextMiddleware
 
@@ -27,6 +28,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Startup
     yield
     # Shutdown
+    await close_redis()
     await dispose_engine()
 
 

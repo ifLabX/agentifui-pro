@@ -71,6 +71,22 @@ class DatabaseHealthResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
 
+class RedisHealthResponse(BaseModel):
+    """
+    Redis health response model.
+
+    Represents the health status of the Redis connection.
+    """
+
+    status: HealthStatus = Field(..., description="Redis health status")
+    timestamp: str = Field(..., description="ISO 8601 timestamp of the health check")
+    redis_connected: bool = Field(..., description="Whether Redis connection is active")
+    response_time_ms: Optional[int] = Field(None, ge=0, description="Redis response time in milliseconds")
+    errors: Optional[list[str]] = Field(None, description="List of error messages if status is not healthy")
+
+    model_config = ConfigDict(frozen=True)
+
+
 # Utility functions for creating health responses
 
 
@@ -163,5 +179,49 @@ def create_unhealthy_database_response(
         connection_pool=None,
         response_time_ms=response_time_ms,
         migration_status=None,
+        errors=errors,
+    )
+
+
+def create_healthy_redis_response(response_time_ms: Optional[int] = None) -> RedisHealthResponse:
+    """
+    Create a healthy Redis response.
+
+    Args:
+        response_time_ms: Redis response time in milliseconds
+
+    Returns:
+        RedisHealthResponse: Healthy Redis response
+    """
+    return RedisHealthResponse(
+        status=HealthStatus.HEALTHY,
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        redis_connected=True,
+        response_time_ms=response_time_ms,
+        errors=None,
+    )
+
+
+def create_unhealthy_redis_response(
+    errors: list[str],
+    response_time_ms: Optional[int] = None,
+    status: HealthStatus = HealthStatus.UNHEALTHY,
+) -> RedisHealthResponse:
+    """
+    Create an unhealthy Redis response.
+
+    Args:
+        errors: List of error messages
+        response_time_ms: Response time in milliseconds (if available)
+        status: Desired health status (UNHEALTHY or DEGRADED)
+
+    Returns:
+        RedisHealthResponse: Unhealthy Redis response
+    """
+    return RedisHealthResponse(
+        status=status,
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+        redis_connected=False,
+        response_time_ms=response_time_ms,
         errors=errors,
     )

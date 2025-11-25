@@ -11,14 +11,19 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from src.core.config import get_settings
 from src.core.db import check_database_connection, get_database_info
+from src.core.redis import ping_redis
 from src.schemas.health import (
     ConnectionPoolInfo,
     DatabaseHealthResponse,
     HealthResponse,
+    HealthStatus,
     MigrationStatus,
+    RedisHealthResponse,
     create_healthy_database_response,
+    create_healthy_redis_response,
     create_healthy_response,
     create_unhealthy_database_response,
+    create_unhealthy_redis_response,
     create_unhealthy_response,
 )
 
@@ -168,6 +173,63 @@ async def get_database_health() -> JSONResponse:
 
         response = create_unhealthy_database_response(
             errors=[f"Database health check failed: {str(e)}"],
+            response_time_ms=response_time_ms,
+        )
+        return JSONResponse(status_code=503, content=response.model_dump())
+
+
+@router.get(
+    "/redis",
+    response_model=RedisHealthResponse,
+    responses={
+        200: {"description": "Redis is healthy"},
+        503: {
+            "description": "Redis is unhealthy",
+            "model": RedisHealthResponse,
+        },
+    },
+    summary="Redis Health Check",
+    description="Returns the health status of the Redis cache connection",
+)
+async def get_redis_health() -> JSONResponse:
+    """
+    Get Redis health status.
+
+    Performs a Redis PING with timeout to verify connectivity and latency.
+
+    Returns:
+        RedisHealthResponse: Redis health status with metrics
+    """
+    start_time = time.time()
+    settings = get_settings()
+
+    if not settings.redis_url:
+        response = create_unhealthy_redis_response(
+            errors=["Redis URL is not configured"],
+            status=HealthStatus.DEGRADED,
+        )
+        # Treat missing Redis configuration as optional/degraded to avoid failing liveness
+        return JSONResponse(status_code=200, content=response.model_dump())
+
+    try:
+        is_connected = await ping_redis(timeout_seconds=settings.redis_health_check_timeout)
+        response_time_ms = int((time.time() - start_time) * 1000)
+
+        if is_connected:
+            response = create_healthy_redis_response(response_time_ms=response_time_ms)
+            return JSONResponse(status_code=200, content=response.model_dump())
+
+        response = create_unhealthy_redis_response(
+            errors=["Redis ping failed"],
+            response_time_ms=response_time_ms,
+        )
+        return JSONResponse(status_code=503, content=response.model_dump())
+
+    except Exception as e:
+        response_time_ms = int((time.time() - start_time) * 1000)
+
+        response = create_unhealthy_redis_response(
+            errors=[f"Redis health check failed: {str(e)}"],
             response_time_ms=response_time_ms,
         )
         return JSONResponse(status_code=503, content=response.model_dump())

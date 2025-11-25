@@ -58,8 +58,9 @@ async def test_get_redis_reuses_singleton_and_closes_pool() -> None:
     mock_client_recreated.connection_pool = MagicMock()
     mock_client_recreated.aclose = AsyncMock()
 
-    with patch("src.core.redis.get_settings", return_value=settings), patch(
-        "src.core.redis.redis.from_url", side_effect=[mock_client, mock_client_recreated]
+    with (
+        patch("src.core.redis.get_settings", return_value=settings),
+        patch("src.core.redis.redis.from_url", side_effect=[mock_client, mock_client_recreated]),
     ):
         first = get_redis()
         second = get_redis()
@@ -81,8 +82,9 @@ async def test_reset_redis_client_disconnects_pool() -> None:
     mock_client.connection_pool = MagicMock()
     mock_client.aclose = AsyncMock()
 
-    with patch("src.core.redis.get_settings", return_value=settings), patch(
-        "src.core.redis.redis.from_url", return_value=mock_client
+    with (
+        patch("src.core.redis.get_settings", return_value=settings),
+        patch("src.core.redis.redis.from_url", return_value=mock_client),
     ):
         _ = get_redis()
         reset_redis_client()

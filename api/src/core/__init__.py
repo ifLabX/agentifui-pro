@@ -1,6 +1,6 @@
 """Core infrastructure module."""
 
-from src.core.config import Settings, get_settings, reset_settings
+from src.core.config import Settings, get_settings, reset_settings, reset_settings_async
 from src.core.db import (
     check_database_connection,
     create_all_tables,
@@ -35,4 +35,5 @@ __all__ = [
     "reset_engine",
     "reset_session_factory",
     "reset_settings",
+    "reset_settings_async",
 ]

@@ -95,40 +95,63 @@ async def close_redis() -> None:
 
     client = _redis_client
     try:
-        # Prefer the async close coroutine if available
-        close_callable = getattr(client, "aclose", None) or getattr(client, "close", None)
+        await _shutdown_client(client)
+    finally:
+        _redis_client = None
+
+
+async def _shutdown_client(client: Redis) -> None:
+    """
+    Close a Redis client and disconnect its pool.
+    """
+    close_callable = getattr(client, "aclose", None) or getattr(client, "close", None)
+    try:
         if close_callable is not None:
             result = close_callable()
             if asyncio.iscoroutine(result):
                 await result
     finally:
-        try:
-            disconnect_callable = client.connection_pool.disconnect(inuse_connections=True)
-            if asyncio.iscoroutine(disconnect_callable):
-                await disconnect_callable
-        except Exception as exc:
-            logger.warning("Failed to disconnect Redis connection pool: %s", exc)
-        _redis_client = None
+        await _disconnect_pool(client)
 
 
-def reset_redis_client() -> None:
+async def _disconnect_pool(client: Redis) -> None:
+    """
+    Disconnect the Redis connection pool, awaiting async implementations.
+    """
+    try:
+        disconnect_callable = client.connection_pool.disconnect(inuse_connections=True)
+        if asyncio.iscoroutine(disconnect_callable):
+            await disconnect_callable
+    except Exception as exc:
+        logger.warning("Failed to disconnect Redis connection pool: %s", exc)
+
+
+async def reset_redis_client() -> None:
     """
     Reset the cached Redis client (useful for tests or config reloads).
     """
     global _redis_client
-    if _redis_client is not None:
-        try:
-            disconnect_callable = _redis_client.connection_pool.disconnect(inuse_connections=True)
-            if asyncio.iscoroutine(disconnect_callable):
-                try:
-                    loop = asyncio.get_running_loop()
-                except RuntimeError:
-                    asyncio.run(disconnect_callable)
-                else:
-                    loop.create_task(disconnect_callable)
-        except Exception as exc:
-            logger.warning("Failed to disconnect Redis connection pool during reset: %s", exc)
-    _redis_client = None
+    if _redis_client is None:
+        return
+
+    client = _redis_client
+    try:
+        await _shutdown_client(client)
+    finally:
+        _redis_client = None
+
+
+def reset_redis_client_blocking() -> None:
+    """
+    Blocking helper to reset the Redis client outside of an event loop.
+    """
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        asyncio.run(reset_redis_client())
+        return
+
+    raise RuntimeError("reset_redis_client_blocking cannot run inside an active event loop; await reset_redis_client.")
 
 
 def build_redis_key(*parts: str, tenant_id: str | None = None, user_id: str | None = None) -> str:
@@ -169,4 +192,12 @@ def ttl_or_default(ttl: Optional[int] = None) -> int:
     return ttl if ttl is not None else get_settings().redis_default_ttl_seconds
 
 
-__all__ = ["build_redis_key", "close_redis", "get_redis", "ping_redis", "reset_redis_client", "ttl_or_default"]
+__all__ = [
+    "build_redis_key",
+    "close_redis",
+    "get_redis",
+    "ping_redis",
+    "reset_redis_client",
+    "reset_redis_client_blocking",
+    "ttl_or_default",
+]

@@ -5,6 +5,7 @@ This module provides type-safe configuration management using environment variab
 with validation and default values.
 """
 
+import asyncio
 from functools import lru_cache
 from typing import Any
 
@@ -184,11 +185,27 @@ def reset_settings() -> None:
         ...     reset_settings()
         ...     settings = get_settings()  # Gets fresh settings with new URL
     """
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        get_settings.cache_clear()
+        # Reset Redis client to ensure new settings are applied
+        from src.core.redis import reset_redis_client_blocking
+
+        reset_redis_client_blocking()
+        return
+
+    raise RuntimeError("reset_settings cannot run inside an active event loop; use reset_settings_async instead.")
+
+
+async def reset_settings_async() -> None:
+    """
+    Async variant to clear settings and reset Redis when already in an event loop.
+    """
     get_settings.cache_clear()
-    # Reset Redis client to ensure new settings are applied
     from src.core.redis import reset_redis_client
 
-    reset_redis_client()
+    await reset_redis_client()
 
 
 # Export settings instance for convenience

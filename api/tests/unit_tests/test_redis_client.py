@@ -13,6 +13,7 @@ from src.core.redis import (
     get_redis,
     ping_redis,
     reset_redis_client,
+    reset_redis_client_blocking,
     ttl_or_default,
 )
 
@@ -29,9 +30,9 @@ def _settings(redis_url: str = "redis://localhost:6379/0", **overrides: object) 
 @pytest.fixture(autouse=True)
 def reset_client() -> None:
     """Ensure Redis client cache is cleared before and after each test."""
-    reset_redis_client()
+    reset_redis_client_blocking()
     yield
-    reset_redis_client()
+    reset_redis_client_blocking()
 
 
 def test_build_redis_key_includes_prefix_and_scopes() -> None:
@@ -87,7 +88,7 @@ async def test_reset_redis_client_disconnects_pool() -> None:
         patch("src.core.redis.redis.from_url", return_value=mock_client),
     ):
         _ = get_redis()
-        reset_redis_client()
+        await reset_redis_client()
         mock_client.connection_pool.disconnect.assert_called_with(inuse_connections=True)
 
 

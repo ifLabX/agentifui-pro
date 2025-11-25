@@ -104,21 +104,3 @@ def test_health_redis_endpoint_handles_exceptions() -> None:
     data = response.json()
     assert "errors" in data
     assert any("boom" in error for error in data["errors"])
-
-
-def test_health_redis_endpoint_requires_configuration() -> None:
-    """Test /health/redis returns unhealthy when Redis URL is missing."""
-    from src.main import app
-
-    client = TestClient(app)
-    # Use existing settings snapshot but clear redis_url
-    settings_without_redis = _settings_with_redis().model_copy(update={"redis_url": None})
-
-    with patch("src.api.endpoints.health.get_settings", return_value=settings_without_redis):
-        response = client.get("/health/redis")
-
-    assert response.status_code == 200
-    data = response.json()
-    assert data["status"] == "degraded"
-    assert data["redis_connected"] is False
-    assert "Redis URL is not configured" in data.get("errors", [])

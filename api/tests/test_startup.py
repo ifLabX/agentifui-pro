@@ -349,6 +349,7 @@ def test_startup_with_missing_optional_config() -> None:
     """Test that startup works even with missing optional configuration."""
     minimal_env = {
         "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+        "REDIS_URL": "redis://localhost:6379/0",
     }
 
     with patch.dict(os.environ, minimal_env, clear=True):

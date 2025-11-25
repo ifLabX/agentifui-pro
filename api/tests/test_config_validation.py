@@ -27,8 +27,15 @@ def test_config_settings_has_required_fields() -> None:
     """Test that Settings class has all required configuration fields."""
     from src.core.config import Settings
 
-    # Create instance to check fields
-    settings = Settings()
+    with patch.dict(
+        os.environ,
+        {
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
+        },
+        clear=True,
+    ):
+        settings = Settings()
 
     # Required application settings
     assert hasattr(settings, "app_name")
@@ -49,12 +56,15 @@ def test_config_database_url_validation() -> None:
     from src.core.config import Settings
 
     # Test with valid PostgreSQL URL
-    with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
+    with patch.dict(
+        os.environ,
+        {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test", "REDIS_URL": "redis://localhost:6379/0"},
+    ):
         settings = Settings()
         assert "postgresql+asyncpg" in settings.database_url
 
     # Test with invalid URL should raise validation error
-    with patch.dict(os.environ, {"DATABASE_URL": "invalid-url"}):
+    with patch.dict(os.environ, {"DATABASE_URL": "invalid-url", "REDIS_URL": "redis://localhost:6379/0"}):
         with pytest.raises(ValueError):  # Should raise Pydantic validation error
             Settings()
 
@@ -65,14 +75,24 @@ def test_config_pool_size_validation() -> None:
 
     # Test with valid pool size
     with patch.dict(
-        os.environ, {"DATABASE_POOL_SIZE": "10", "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+        os.environ,
+        {
+            "DATABASE_POOL_SIZE": "10",
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
+        },
     ):
         settings = Settings()
         assert settings.database_pool_size == 10
 
     # Test with invalid pool size
     with patch.dict(
-        os.environ, {"DATABASE_POOL_SIZE": "-1", "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+        os.environ,
+        {
+            "DATABASE_POOL_SIZE": "-1",
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
+        },
     ):
         with pytest.raises(ValueError):  # Should raise validation error
             Settings()
@@ -86,14 +106,24 @@ def test_config_log_level_validation() -> None:
 
     for level in valid_levels:
         with patch.dict(
-            os.environ, {"LOG_LEVEL": level, "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+            os.environ,
+            {
+                "LOG_LEVEL": level,
+                "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+                "REDIS_URL": "redis://localhost:6379/0",
+            },
         ):
             settings = Settings()
             assert settings.log_level == level
 
     # Test with invalid log level
     with patch.dict(
-        os.environ, {"LOG_LEVEL": "INVALID", "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}
+        os.environ,
+        {
+            "LOG_LEVEL": "INVALID",
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
+        },
     ):
         with pytest.raises(ValueError):  # Should raise validation error
             Settings()
@@ -104,7 +134,14 @@ def test_config_environment_defaults() -> None:
     from src.core.config import Settings
 
     # Test with minimal environment
-    with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}, clear=True):
+    with patch.dict(
+        os.environ,
+        {
+            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
+        },
+        clear=True,
+    ):
         settings = Settings()
 
         # Should have defaults for non-required fields
@@ -123,6 +160,7 @@ def test_config_cors_settings() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ORIGINS": '["http://localhost:3000"]',
         },
     ):
@@ -141,6 +179,7 @@ def test_config_health_check_settings() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "HEALTH_CHECK_TIMEOUT": "5",
             "DATABASE_HEALTH_CHECK_TIMEOUT": "10",
         },
@@ -165,6 +204,7 @@ def test_config_feature_flags() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "USE_UUIDV7": "true",
             "ENABLE_DOCS": "false",
         },
@@ -183,7 +223,10 @@ def test_config_settings_immutable() -> None:
     """Test that settings are immutable after creation."""
     from src.core.config import Settings
 
-    with patch.dict(os.environ, {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test"}):
+    with patch.dict(
+        os.environ,
+        {"DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test", "REDIS_URL": "redis://localhost:6379/0"},
+    ):
         settings = Settings()
 
         # Attempt to modify should raise error (if using frozen=True)

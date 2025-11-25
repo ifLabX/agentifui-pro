@@ -16,7 +16,6 @@ from src.schemas.health import (
     ConnectionPoolInfo,
     DatabaseHealthResponse,
     HealthResponse,
-    HealthStatus,
     MigrationStatus,
     RedisHealthResponse,
     create_healthy_database_response,
@@ -202,14 +201,6 @@ async def get_redis_health() -> JSONResponse:
     """
     start_time = time.time()
     settings = get_settings()
-
-    if not settings.redis_url:
-        response = create_unhealthy_redis_response(
-            errors=["Redis URL is not configured"],
-            status=HealthStatus.DEGRADED,
-        )
-        # Treat missing Redis configuration as optional/degraded to avoid failing liveness
-        return JSONResponse(status_code=200, content=response.model_dump())
 
     try:
         is_connected = await ping_redis(timeout_seconds=settings.redis_health_check_timeout)

@@ -185,14 +185,10 @@ def reset_settings() -> None:
         ...     settings = get_settings()  # Gets fresh settings with new URL
     """
     get_settings.cache_clear()
-    try:
-        # Reset Redis client to ensure new settings are applied
-        from src.core.redis import reset_redis_client
+    # Reset Redis client to ensure new settings are applied
+    from src.core.redis import reset_redis_client
 
-        reset_redis_client()
-    except Exception:
-        # Redis is optional; ignore if not yet available
-        pass
+    reset_redis_client()
 
 
 # Export settings instance for convenience

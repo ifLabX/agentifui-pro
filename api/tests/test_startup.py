@@ -214,6 +214,7 @@ def test_environment_variable_handling_startup() -> None:
         "ENVIRONMENT": "development",  # Must be one of: development, staging, production
         "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test",
         "LOG_LEVEL": "DEBUG",
+        "REDIS_URL": "redis://localhost:6379/0",
     }
 
     with patch.dict(os.environ, test_env, clear=False):
@@ -307,6 +308,7 @@ def test_production_configuration_validation() -> None:
         "DEBUG": "false",
         "DATABASE_URL": "postgresql+asyncpg://user:pass@db.example.com:5432/prod",
         "LOG_LEVEL": "INFO",
+        "REDIS_URL": "redis://localhost:6379/0",
     }
 
     with patch.dict(os.environ, production_env, clear=False):
@@ -330,6 +332,7 @@ def test_development_configuration_startup() -> None:
         "DEBUG": "true",
         "DATABASE_URL": "postgresql+asyncpg://dev:dev@localhost:5432/dev",
         "LOG_LEVEL": "DEBUG",
+        "REDIS_URL": "redis://localhost:6379/0",
     }
 
     with patch.dict(os.environ, dev_env, clear=False):

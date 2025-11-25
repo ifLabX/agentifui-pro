@@ -16,6 +16,10 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
+
+# Provide minimal defaults so settings can load during test discovery
+os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://postgres:password@localhost:5432/agentifui_pro")
+os.environ.setdefault("REDIS_URL", "redis://localhost:6379/0")
 from src.core.config import reset_settings
 from src.core.db import reset_session_factory
 

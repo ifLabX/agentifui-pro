@@ -211,24 +211,15 @@ async def get_redis_health() -> JSONResponse:
             response = create_healthy_redis_response(response_time_ms=response_time_ms)
             return JSONResponse(status_code=200, content=response.model_dump())
 
-        response = create_unhealthy_redis_response(
-            errors=["Redis ping failed"],
-            response_time_ms=response_time_ms,
-        )
-        return JSONResponse(status_code=503, content=response.model_dump())
-
+        error_msg = "Redis ping failed"
     except (TimeoutError, RedisError) as e:
-        response_time_ms = int((time.time() - start_time) * 1000)
-
-        response = create_unhealthy_redis_response(
-            errors=[f"Redis health check failed: {str(e)}"],
-            response_time_ms=response_time_ms,
-        )
-        return JSONResponse(status_code=503, content=response.model_dump())
+        error_msg = f"Redis health check failed: {str(e)}"
     except Exception as e:
-        response_time_ms = int((time.time() - start_time) * 1000)
-        response = create_unhealthy_redis_response(
-            errors=[f"Unexpected Redis error: {str(e)}"],
-            response_time_ms=response_time_ms,
-        )
-        return JSONResponse(status_code=503, content=response.model_dump())
+        error_msg = f"Unexpected Redis error: {str(e)}"
+
+    response_time_ms = int((time.time() - start_time) * 1000)
+    response = create_unhealthy_redis_response(
+        errors=[error_msg],
+        response_time_ms=response_time_ms,
+    )
+    return JSONResponse(status_code=503, content=response.model_dump())

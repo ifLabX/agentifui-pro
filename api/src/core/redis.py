@@ -29,12 +29,8 @@ def _create_redis_client() -> Redis:
     Returns:
         Redis client with connection pooling
 
-    Raises:
-        ValueError: If Redis URL is not configured
     """
     settings = get_settings()
-    if not settings.redis_url:
-        raise ValueError("Redis URL is not configured")
 
     client: Redis = cast(
         Redis,

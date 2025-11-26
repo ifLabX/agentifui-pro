@@ -5,6 +5,7 @@ This module provides type-safe configuration management using environment variab
 with validation and default values.
 """
 
+import asyncio
 from functools import lru_cache
 from typing import Any
 
@@ -44,6 +45,16 @@ class Settings(BaseSettings):
     database_pool_max_overflow: int = Field(default=20, ge=0, le=100)
     database_pool_timeout: int = Field(default=30, gt=0, le=300)
     database_pool_recycle: int = Field(default=3600, gt=0)
+
+    # Redis Configuration
+    redis_url: str = Field(...)
+    redis_pool_max_connections: int = Field(default=50, gt=0, le=1000)
+    redis_socket_connect_timeout: float = Field(default=5.0, gt=0, le=60)
+    redis_socket_timeout: float = Field(default=5.0, gt=0, le=60)
+    redis_health_check_timeout: float = Field(default=2.0, gt=0, le=30)
+    redis_health_check_interval: int = Field(default=30, ge=0, le=3600)
+    redis_key_prefix: str = Field(default="agentifui-pro")
+    redis_default_ttl_seconds: int = Field(default=3600, gt=0, le=604800)
 
     # Health Check Configuration
     health_check_timeout: int = Field(default=5, gt=0, le=30)
@@ -91,6 +102,22 @@ class Settings(BaseSettings):
         if v.lower() not in allowed_envs:
             raise ValueError(f"Environment must be one of: {allowed_envs}")
         return v.lower()
+
+    @field_validator("redis_url")
+    @classmethod
+    def validate_redis_url(cls, v: str) -> str:
+        """Validate that Redis URL is well-formed."""
+        if not v.startswith(("redis://", "rediss://")):
+            raise ValueError("Redis URL must start with redis:// or rediss://")
+        return v
+
+    @field_validator("redis_key_prefix")
+    @classmethod
+    def validate_redis_key_prefix(cls, v: str) -> str:
+        """Ensure Redis key prefix is non-empty."""
+        if not v.strip():
+            raise ValueError("Redis key prefix cannot be empty")
+        return v.strip()
 
     @model_validator(mode="before")
     @classmethod
@@ -158,7 +185,27 @@ def reset_settings() -> None:
         ...     reset_settings()
         ...     settings = get_settings()  # Gets fresh settings with new URL
     """
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        get_settings.cache_clear()
+        # Reset Redis client to ensure new settings are applied
+        from src.core.redis import reset_redis_client_blocking
+
+        reset_redis_client_blocking()
+        return
+
+    raise RuntimeError("reset_settings cannot run inside an active event loop; use reset_settings_async instead.")
+
+
+async def reset_settings_async() -> None:
+    """
+    Async variant to clear settings and reset Redis when already in an event loop.
+    """
     get_settings.cache_clear()
+    from src.core.redis import reset_redis_client
+
+    await reset_redis_client()
 
 
 # Export settings instance for convenience

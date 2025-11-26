@@ -136,7 +136,7 @@ def test_connection_pool_configuration() -> None:
 async def test_connection_error_handling() -> None:
     """Test that connection errors are handled gracefully."""
     from sqlalchemy.exc import DBAPIError
-    from src.core.config import reset_settings
+    from src.core.config import reset_settings_async
     from src.core.db import get_async_engine, reset_engine
 
     # Test with invalid database URL
@@ -144,7 +144,7 @@ async def test_connection_error_handling() -> None:
         "os.environ", {"DATABASE_URL": "postgresql+asyncpg://invalid:invalid@nonexistent:5432/nonexistent"}
     ):
         # Reset settings and engine to pick up new DATABASE_URL
-        reset_settings()
+        await reset_settings_async()
         reset_engine()
 
         engine = get_async_engine()

@@ -18,6 +18,7 @@ def test_cors_origins_comma_separated_format() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ORIGINS": "http://localhost:3000",
         },
         clear=True,
@@ -31,6 +32,7 @@ def test_cors_origins_comma_separated_format() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ORIGINS": "http://localhost:3000,http://localhost:3001,https://example.com",
         },
         clear=True,
@@ -52,6 +54,7 @@ def test_cors_origins_json_array_format() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ORIGINS": '["http://localhost:3000"]',
         },
         clear=True,
@@ -65,6 +68,7 @@ def test_cors_origins_json_array_format() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ORIGINS": '["http://localhost:3000","https://example.com","https://app.example.com"]',
         },
         clear=True,
@@ -86,6 +90,7 @@ def test_cors_origins_with_spaces() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ORIGINS": "http://localhost:3000, http://localhost:3001, https://example.com",
         },
         clear=True,
@@ -108,6 +113,7 @@ def test_cors_methods_parsing() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ALLOW_METHODS": "GET,POST,PUT,DELETE",
         },
         clear=True,
@@ -123,6 +129,7 @@ def test_cors_methods_parsing() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ALLOW_METHODS": '["GET","POST","PUT","DELETE","PATCH"]',
         },
         clear=True,
@@ -142,6 +149,7 @@ def test_cors_headers_parsing() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ALLOW_HEADERS": "Content-Type,Authorization,X-Request-ID",
         },
         clear=True,
@@ -157,6 +165,7 @@ def test_cors_headers_parsing() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ALLOW_HEADERS": '["Content-Type","Authorization","X-Custom-Header"]',
         },
         clear=True,
@@ -176,6 +185,7 @@ def test_cors_wildcard_format() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ALLOW_METHODS": "*",
         },
         clear=True,
@@ -189,6 +199,7 @@ def test_cors_wildcard_format() -> None:
         os.environ,
         {
             "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
+            "REDIS_URL": "redis://localhost:6379/0",
             "CORS_ALLOW_HEADERS": '["*"]',
         },
         clear=True,

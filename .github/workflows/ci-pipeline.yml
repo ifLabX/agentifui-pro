@@ -21,6 +21,7 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
       workflows: ${{ steps.filter.outputs.workflows }}
+      migrations: ${{ steps.filter.outputs.migrations }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +39,8 @@ jobs:
             workflows:
               - '.github/workflows/**'
               - '.github/actions/**'
+            migrations:
+              - 'api/migrations/**'
 
   # ════════════════════════════════════════════════════════════
   # Stage 1: Quality Gate (Parallel)
@@ -59,6 +62,16 @@ jobs:
   # ════════════════════════════════════════════════════════════
   # Stage 2: Build (Conditional, Parallel)
   # ════════════════════════════════════════════════════════════
+  db-migration-check:
+    name: DB Migration Check
+    needs: [detect-changes, backend-quality]
+    if: |
+      always() &&
+      needs.detect-changes.outputs.migrations == 'true' &&
+      (needs.backend-quality.result == 'success' || needs.backend-quality.result == 'skipped')
+    uses: ./.github/workflows/db-migration-check.yml
+    secrets: inherit
+
   build-backend:
     name: Build Backend
     needs: [detect-changes, backend-quality]
@@ -108,7 +121,7 @@ jobs:
   # ════════════════════════════════════════════════════════════
   pipeline-status:
     name: Pipeline Status
-    needs: [detect-changes, backend-quality, frontend-quality, build-backend, build-frontend, integration-tests]
+    needs: [detect-changes, backend-quality, frontend-quality, db-migration-check, build-backend, build-frontend, integration-tests]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -120,6 +133,7 @@ jobs:
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Backend Quality | ${{ needs.backend-quality.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend Quality | ${{ needs.frontend-quality.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| DB Migration Check | ${{ needs.db-migration-check.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Backend Build | ${{ needs.build-backend.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend Build | ${{ needs.build-frontend.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Integration Tests | ${{ needs.integration-tests.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
@@ -127,6 +141,7 @@ jobs:
           # Fail if any required job failed
           if [[ "${{ needs.backend-quality.result }}" == "failure" ]] || \
              [[ "${{ needs.frontend-quality.result }}" == "failure" ]] || \
+             [[ "${{ needs.db-migration-check.result }}" == "failure" ]] || \
              [[ "${{ needs.build-backend.result }}" == "failure" ]] || \
              [[ "${{ needs.build-frontend.result }}" == "failure" ]]; then
             echo "❌ Pipeline failed" >> $GITHUB_STEP_SUMMARY

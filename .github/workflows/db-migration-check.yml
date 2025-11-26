@@ -1,4 +1,4 @@
-name: Reusable Backend Quality Check
+name: DB Migration Check
 
 on:
   workflow_call:
@@ -7,27 +7,18 @@ on:
         type: string
         default: 'api'
         description: 'Backend working directory'
-      python-versions:
-        type: string
-        default: '["3.11", "3.12"]'
-        description: 'JSON array of Python versions to test (e.g., ["3.11","3.12"])'
       postgres-version:
         type: string
         default: '18'
         description: 'PostgreSQL version'
-      run-tests:
-        type: boolean
-        default: true
-        description: 'Run test suite'
+
+concurrency:
+  group: db-migration-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  quality-check:
+  migration:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ${{ fromJson(inputs.python-versions) }}
 
     defaults:
       run:
@@ -56,32 +47,21 @@ jobs:
         uses: ./.github/actions/setup-uv
         with:
           working-directory: ${{ inputs.working-directory }}
-          python-version: ${{ matrix.python-version }}
 
       - name: Check lockfile
         run: uv lock --check
 
-      - name: Lint check
-        run: uv run ruff check .
+      - name: Sync dependencies
+        run: uv sync --frozen
 
-      - name: Format check
-        run: uv run ruff format --check .
+      - name: Offline upgrade script generation
+        run: |
+          uv run alembic upgrade head --sql
+          uv run alembic downgrade base --sql
 
-      - name: Type check
-        run: uv run mypy .
-
-      - name: Run tests
-        if: inputs.run-tests
+      - name: Run migrations on database
         env:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/agentifui_pro_test
-          DEBUG: false
-        run: uv run --frozen pytest -v --cov=src --cov-report=xml --cov-fail-under=80
-
-      - name: Upload coverage
-        if: inputs.run-tests && always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-coverage
-          path: ${{ inputs.working-directory }}/coverage.xml
-          retention-days: 7
-          if-no-files-found: ignore
+        run: |
+          uv run alembic upgrade head
+          uv run alembic downgrade base

@@ -5,8 +5,8 @@ All tests follow TDD principles - they define the contract before implementation
 """
 
 import re
-import sys
 import subprocess
+import sys
 import tomllib
 from pathlib import Path
 

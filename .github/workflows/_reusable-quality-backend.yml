@@ -81,7 +81,7 @@ jobs:
         if: inputs.run-tests && always()
         uses: actions/upload-artifact@v4
         with:
-          name: backend-coverage
+          name: backend-coverage-py${{ matrix.python-version }}
           path: ${{ inputs.working-directory }}/coverage.xml
           retention-days: 7
           if-no-files-found: ignore

@@ -3,10 +3,9 @@ Integration-style tests to verify middleware + role dependencies work together.
 """
 
 import uuid
-from typing import Any
+from typing import Annotated, Any
 
 from fastapi import Depends, FastAPI
-from typing import Annotated
 from fastapi.testclient import TestClient
 from src.api.deps import get_current_tenant, get_db_session, require_tenant_role
 from src.middleware.error_handler import setup_error_handling

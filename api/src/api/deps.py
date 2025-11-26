@@ -89,13 +89,11 @@ def require_tenant_member(
                 detail="User is not a member of this tenant",
             )
 
-        if member.status in {TenantMemberStatus.REMOVED, TenantMemberStatus.SUSPENDED}:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Tenant membership is not active",
-            )
+        inactive_statuses = {TenantMemberStatus.REMOVED, TenantMemberStatus.SUSPENDED}
+        if not allow_invited:
+            inactive_statuses.add(TenantMemberStatus.INVITED)
 
-        if not allow_invited and member.status == TenantMemberStatus.INVITED:
+        if member.status in inactive_statuses:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Tenant membership is not active",

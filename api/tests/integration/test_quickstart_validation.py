@@ -386,7 +386,7 @@ def test_quickstart_file_structure_validation() -> None:
     from pathlib import Path
 
     # Test that essential files exist
-    api_dir = Path(__file__).parent.parent  # Go up from tests/ to api/
+    api_dir = Path(__file__).resolve().parents[2]
 
     essential_files = [
         "src/main.py",

@@ -20,6 +20,11 @@ jobs:
   migration:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/agentifui_pro_test
+      REDIS_URL: redis://localhost:6379/0
+      DEBUG: false
+
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
@@ -38,6 +43,15 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
 
     steps:
       - name: Checkout code

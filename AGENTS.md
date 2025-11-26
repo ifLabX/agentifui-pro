@@ -85,6 +85,8 @@ pnpm i18n:namespace <name>     # Add feature namespace
 - **Test coverage**: Minimum 80% for backend
 - **Security**: No secrets in code, use environment variables only
 
+- **FastAPI tenancy (api/)**: Only accept `x-tenant-id`/`x-actor-id` headers (UUID); `tenant_id` query param is rejected. Public routes are `/`, `/health` (+ `/db` `/redis`), `/docs`, `/redoc`, `/openapi.json`; all other routers should enforce `require_tenant_member` / `require_tenant_role` at router level.
+
 ## Pull Requests
 
 **Before creating PRs**:

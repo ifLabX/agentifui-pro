@@ -158,4 +158,4 @@ uv run pytest -vv --tb=short
 5. Commit: `git commit -m "feat: description"`
 6. Create PR
 
-See [CLAUDE.md](../CLAUDE.md) for detailed coding standards and conventions.
+See [AGENTS.md](../AGENTS.md) for detailed coding standards and conventions.

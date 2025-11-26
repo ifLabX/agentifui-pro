@@ -43,4 +43,4 @@ docs: update API guide
 
 ---
 
-See `CLAUDE.md` for detailed development commands and project architecture.
+See `AGENTS.md` for detailed development commands and project architecture.

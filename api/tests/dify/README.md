@@ -334,4 +334,4 @@ When adding new tests:
 
 - [Dify SDK Source](https://github.com/langgenius/dify/tree/main/sdks/python-client)
 - [pytest Documentation](https://docs.pytest.org/)
-- [Project Test Standards](../../../CLAUDE.md#testing-requirements)
+- [Project Test Standards](../../../AGENTS.md#testing-requirements)

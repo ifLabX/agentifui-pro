@@ -4,7 +4,7 @@ Modern async FastAPI backend with PostgreSQL 18, SQLAlchemy 2.0, and Alembic mig
 
 ## Prerequisites
 
-- **Python**: 3.12+
+- **Python**: 3.11+
 - **uv**: [Install uv](https://docs.astral.sh/uv/)
 - **PostgreSQL**: 18+ (required for native `uuidv7()` support)
 
@@ -149,24 +149,6 @@ uv sync
 uv run pytest -vv --tb=short
 ```
 
-## Production Deployment
-
-```dockerfile
-FROM python:3.12-slim
-WORKDIR /app
-RUN pip install uv
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen
-COPY . .
-CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0"]
-```
-
-**Production checklist**:
-- Configure DATABASE_URL with SSL
-- Set `ENVIRONMENT=production`
-- Restrict `CORS_ORIGINS`
-- Use `LOG_LEVEL=INFO`
-
 ## Contributing
 
 1. Create feature branch
@@ -177,5 +159,3 @@ CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0"]
 6. Create PR
 
 See [CLAUDE.md](../CLAUDE.md) for detailed coding standards and conventions.
-
-

@@ -3,7 +3,7 @@ name = "agentifui-pro-api"
 version = "0.1.0"
 description = "Agentifui Pro API Backend"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.100.0",
     "uvicorn>=0.23.0",
@@ -21,6 +21,7 @@ dependencies = [
 dev = [
     "ruff>=0.12.10",
     "pytest>=7.0.0",
+    "pytest-cov>=4.1.0",
     "pytest-asyncio>=0.21.0",
     "httpx>=0.24.0",
     "psutil>=7.1.0",
@@ -35,7 +36,7 @@ asyncio_mode = "auto"
 
 [tool.mypy]
 # Python version
-python_version = "3.12"
+python_version = "3.11"
 
 # Strictness
 strict = true

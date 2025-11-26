@@ -5,6 +5,7 @@ All tests follow TDD principles - they define the contract before implementation
 """
 
 import re
+import sys
 import subprocess
 import tomllib
 from pathlib import Path
@@ -12,6 +13,20 @@ from pathlib import Path
 
 def test_mypy_installed() -> None:
     """Contract: mypy is installed and accessible via uv."""
+    # Derive minimum required mypy version from pyproject to avoid hardcoding.
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    with open(pyproject_path, "rb") as f:
+        config = tomllib.load(f)
+
+    dev_deps = config.get("dependency-groups", {}).get("dev", [])
+    min_version = (1, 8)  # fallback floor if spec is missing
+    for dep in dev_deps:
+        if isinstance(dep, str) and dep.startswith("mypy"):
+            match = re.search(r"mypy>=([0-9]+)\\.([0-9]+)", dep)
+            if match:
+                min_version = (int(match.group(1)), int(match.group(2)))
+            break
+
     result = subprocess.run(
         ["uv", "run", "mypy", "--version"],
         capture_output=True,
@@ -22,14 +37,14 @@ def test_mypy_installed() -> None:
     assert result.returncode == 0, f"mypy not accessible: {result.stderr}"
     assert "mypy" in result.stdout.lower(), f"Unexpected output: {result.stdout}"
 
-    # Extract version and verify >= 1.8.0
+    # Extract version and verify it meets the declared minimum
     # Output format: "mypy 1.18.2 (compiled: yes)"
     version_match = re.search(r"mypy (\d+\.\d+\.\d+)", result.stdout)
     assert version_match, f"Could not extract version from: {result.stdout}"
 
     version_str = version_match.group(1)
     major, minor = map(int, version_str.split(".")[:2])
-    assert (major, minor) >= (1, 8), f"mypy version {version_str} < 1.8.0"
+    assert (major, minor) >= min_version, f"mypy version {version_str} < {min_version[0]}.{min_version[1]}"
 
 
 def test_mypy_config_exists() -> None:
@@ -130,7 +145,16 @@ def test_mypy_cache_created() -> None:
 
         shutil.rmtree(cache_dir)
 
-    # Run mypy
+    # Read configured mypy target version; cache directories are keyed by this value
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    with open(pyproject_path, "rb") as f:
+        config = tomllib.load(f)
+
+    python_version = (
+        config.get("tool", {}).get("mypy", {}).get("python_version")
+        or f"{sys.version_info.major}.{sys.version_info.minor}"
+    )
+
     subprocess.run(
         ["uv", "run", "mypy", "."],
         capture_output=True,
@@ -142,8 +166,8 @@ def test_mypy_cache_created() -> None:
     assert cache_dir.is_dir(), ".mypy_cache is not a directory"
 
     # Verify Python version subdirectory exists
-    python_subdir = cache_dir / "3.12"
-    assert python_subdir.exists(), "Python 3.12 cache subdirectory not created"
+    python_subdir = cache_dir / python_version
+    assert python_subdir.exists(), f"Python {python_version} cache subdirectory not created"
 
 
 def test_type_error_detection() -> None:

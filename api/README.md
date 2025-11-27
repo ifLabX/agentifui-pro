@@ -111,7 +111,7 @@ CORS_ORIGINS=["http://localhost:3000"]
 
 - Public endpoints (health, docs, metrics) should use `public_router` to stay tenant-agnostic.
 - Tenant-scoped endpoints must use `tenant_router` (or `include_tenant_router`) so membership is enforced by default.
-- Admin/cross-tenant endpoints use `admin_router` (or `include_admin_router`) to require elevated tenant roles.
+- Admin/cross-tenant endpoints use `admin_router` (or `include_admin_router`) to require elevated tenant roles (by default, `ADMIN` and `OWNER`).
 - Add stricter endpoint-level dependencies as needed, but keep the router-level guard for baseline protection.
 
 Example:

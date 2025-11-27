@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Dict, Set
 
 import pytest
 
@@ -17,12 +16,12 @@ REPO_ROOT = find_repo_root()
 API_ENV_PATH = REPO_ROOT / "api" / ".env.example"
 WEB_ENV_PATH = REPO_ROOT / "web" / ".env.example"
 
-API_REQUIRED_KEYS: Set[str] = {"DATABASE_URL", "REDIS_URL"}
-WEB_REQUIRED_KEYS: Set[str] = {"NEXT_PUBLIC_API_URL"}
+API_REQUIRED_KEYS: set[str] = {"DATABASE_URL", "REDIS_URL"}
+WEB_REQUIRED_KEYS: set[str] = {"NEXT_PUBLIC_API_URL"}
 
 
-def parse_env_file(path: Path) -> Dict[str, str]:
-    env: Dict[str, str] = {}
+def parse_env_file(path: Path) -> dict[str, str]:
+    env: dict[str, str] = {}
     for index, raw_line in enumerate(path.read_text().splitlines(), start=1):
         line = raw_line.strip()
         if not line or line.startswith("#"):
@@ -47,7 +46,7 @@ def parse_env_file(path: Path) -> Dict[str, str]:
         (WEB_ENV_PATH, WEB_REQUIRED_KEYS, "web"),
     ],
 )
-def test_env_example_has_required_keys(env_path: Path, required_keys: Set[str], name: str) -> None:
+def test_env_example_has_required_keys(env_path: Path, required_keys: set[str], name: str) -> None:
     env = parse_env_file(env_path)
 
     missing = required_keys - set(env)

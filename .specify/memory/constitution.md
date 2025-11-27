@@ -134,4 +134,4 @@ Constitutional amendments follow semantic versioning:
 
 All amendments must update the Sync Impact Report and propagate changes to dependent templates in `.specify/templates/`.
 
-**Version**: 1.2.0 | **Ratified**: 2025-09-21 | **Last Amended**: 2025-11-27
+**Version**: 2.1.0 | **Ratified**: 2025-09-21 | **Last Amended**: 2025-11-27

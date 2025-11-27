@@ -107,6 +107,21 @@ CORS_ORIGINS=["http://localhost:3000"]
 - **Error Handling**: Structured responses with request tracing
 - **Test Coverage**: 106 tests passing (97% coverage)
 
+## Routing conventions
+
+- Public endpoints (health, docs, metrics) should use `public_router` to stay tenant-agnostic.
+- Tenant-scoped endpoints must use `tenant_router` (or `include_tenant_router`) so membership is enforced by default.
+- Admin/cross-tenant endpoints use `admin_router` (or `include_admin_router`) to require elevated tenant roles.
+- Add stricter endpoint-level dependencies as needed, but keep the router-level guard for baseline protection.
+
+Example:
+
+```python
+from src.core.router import tenant_router
+
+router = tenant_router("/projects", tags=["projects"])
+```
+
 ## UUIDv7 Primary Keys
 
 All models inherit from `Base` which uses PostgreSQL 18's `uuidv7()`:

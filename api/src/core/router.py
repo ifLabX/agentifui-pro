@@ -71,14 +71,14 @@ def admin_router(
     *,
     tags: RouterTags = None,
     dependencies: DependencyList | None = None,
-    roles: Sequence[TenantMemberRole] | None = None,
+    allowed_roles: Sequence[TenantMemberRole] | None = None,
     allow_invited: bool = False,
     **kwargs: Any,
 ) -> APIRouter:
     """
     Create a router that restricts access to specific tenant roles.
     """
-    role_scope = tuple(roles) if roles else (TenantMemberRole.ADMIN, TenantMemberRole.OWNER)
+    role_scope = tuple(allowed_roles) if allowed_roles else (TenantMemberRole.ADMIN, TenantMemberRole.OWNER)
     base_dependency = Depends(require_tenant_role(*role_scope, allow_invited=allow_invited))
     merged_dependencies = _merge_dependencies([base_dependency], dependencies)
     router_tags = _normalize_tags(tags)
@@ -103,13 +103,13 @@ def include_admin_router(
     app: FastAPI,
     router: APIRouter,
     *,
-    roles: Sequence[TenantMemberRole] | None = None,
+    allowed_roles: Sequence[TenantMemberRole] | None = None,
     allow_invited: bool = False,
 ) -> None:
     """
     Register an existing router with role-restricted tenant enforcement without mutating the router.
     """
-    role_scope = tuple(roles) if roles else (TenantMemberRole.ADMIN, TenantMemberRole.OWNER)
+    role_scope = tuple(allowed_roles) if allowed_roles else (TenantMemberRole.ADMIN, TenantMemberRole.OWNER)
     base_dependency = Depends(require_tenant_role(*role_scope, allow_invited=allow_invited))
     app.include_router(router, dependencies=[base_dependency])
 

@@ -1,6 +1,6 @@
 <!--
 Sync Impact Report:
-Version change: 1.1.0 → 1.2.0
+Version change: 2.0.0 → 2.1.0
 Modified principles:
 - I. Dual-Stack Excellence (added App Router + Server Component default and OpenAPI type-gen enforcement)
 - II. Quality-First Development (clarified lint/type gates across both stacks)

@@ -27,6 +27,7 @@ dev = [
     "psutil>=7.1.0",
     "mypy>=1.18.2",
     "types-psutil>=0.0.1",
+    "dotenv-linter>=0.5.0",
 ]
 
 [tool.pytest.ini_options]

@@ -7,12 +7,12 @@ specification in contracts/health.yaml for container orchestration.
 
 import time
 
-from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from redis.exceptions import RedisError
 from src.core.config import get_settings
 from src.core.db import check_database_connection, get_database_info
 from src.core.redis import ping_redis
+from src.core.router import public_router
 from src.schemas.health import (
     ConnectionPoolInfo,
     DatabaseHealthResponse,
@@ -27,7 +27,7 @@ from src.schemas.health import (
     create_unhealthy_response,
 )
 
-router = APIRouter(prefix="/health", tags=["health"])
+router = public_router("/health", tags=["health"])
 
 # Application start time for uptime calculation
 APP_START_TIME = time.time()

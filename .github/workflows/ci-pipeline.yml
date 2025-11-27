@@ -33,6 +33,7 @@ jobs:
               - 'api/**'
               - 'pyproject.toml'
               - 'uv.lock'
+              - 'web/.env.example'
             frontend:
               - 'web/**'
               - '!web/messages/**'

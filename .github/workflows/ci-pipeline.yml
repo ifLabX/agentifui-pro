@@ -22,6 +22,7 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
       workflows: ${{ steps.filter.outputs.workflows }}
       migrations: ${{ steps.filter.outputs.migrations }}
+      env-examples: ${{ steps.filter.outputs.env-examples }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,7 +34,6 @@ jobs:
               - 'api/**'
               - 'pyproject.toml'
               - 'uv.lock'
-              - 'web/.env.example'
             frontend:
               - 'web/**'
               - '!web/messages/**'
@@ -42,6 +42,9 @@ jobs:
               - '.github/actions/**'
             migrations:
               - 'api/migrations/**'
+            env-examples:
+              - 'api/.env.example'
+              - 'web/.env.example'
 
   # ════════════════════════════════════════════════════════════
   # Stage 1: Quality Gate (Parallel)
@@ -59,6 +62,18 @@ jobs:
     if: needs.detect-changes.outputs.frontend == 'true'
     uses: ./.github/workflows/_reusable-quality-frontend.yml
     secrets: inherit
+
+  env-lint:
+    name: Env Lint
+    needs: detect-changes
+    if: needs.detect-changes.outputs.env-examples == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dotenv-linter
+        run: python -m pip install --upgrade "dotenv-linter>=0.5.0,<0.6.0"
+      - name: Lint env files
+        run: dotenv-linter api/.env.example web/.env.example
 
   # ════════════════════════════════════════════════════════════
   # Stage 2: Build (Conditional, Parallel)
@@ -122,7 +137,17 @@ jobs:
   # ════════════════════════════════════════════════════════════
   pipeline-status:
     name: Pipeline Status
-    needs: [detect-changes, backend-quality, frontend-quality, db-migration-check, build-backend, build-frontend, integration-tests]
+    needs:
+      [
+        detect-changes,
+        backend-quality,
+        frontend-quality,
+        db-migration-check,
+        build-backend,
+        build-frontend,
+        integration-tests,
+        env-lint,
+      ]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -134,6 +159,7 @@ jobs:
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Backend Quality | ${{ needs.backend-quality.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend Quality | ${{ needs.frontend-quality.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Env Lint | ${{ needs.env-lint.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| DB Migration Check | ${{ needs.db-migration-check.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Backend Build | ${{ needs.build-backend.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend Build | ${{ needs.build-frontend.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
@@ -142,6 +168,7 @@ jobs:
           # Fail if any required job failed
           if [[ "${{ needs.backend-quality.result }}" == "failure" ]] || \
              [[ "${{ needs.frontend-quality.result }}" == "failure" ]] || \
+             [[ "${{ needs.env-lint.result }}" == "failure" ]] || \
              [[ "${{ needs.db-migration-check.result }}" == "failure" ]] || \
              [[ "${{ needs.build-backend.result }}" == "failure" ]] || \
              [[ "${{ needs.build-frontend.result }}" == "failure" ]]; then

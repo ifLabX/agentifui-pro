@@ -68,7 +68,7 @@ jobs:
         run: uv run ruff format --check .
 
       - name: Dotenv check
-        run: uv run dotenv-linter .env.example ../web/.env.example
+        run: uv run dotenv-linter .env.example
 
       - name: Type check
         run: uv run mypy .

@@ -14,7 +14,7 @@ from pathlib import Path
 def test_mypy_installed() -> None:
     """Contract: mypy is installed and accessible via uv."""
     # Derive minimum required mypy version from pyproject to avoid hardcoding.
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject_path = Path(__file__).resolve().parents[2] / "pyproject.toml"
     with open(pyproject_path, "rb") as f:
         config = tomllib.load(f)
 
@@ -31,7 +31,7 @@ def test_mypy_installed() -> None:
         ["uv", "run", "mypy", "--version"],
         capture_output=True,
         text=True,
-        cwd=Path(__file__).parent.parent,
+        cwd=Path(__file__).resolve().parents[2],
     )
 
     assert result.returncode == 0, f"mypy not accessible: {result.stderr}"
@@ -49,7 +49,7 @@ def test_mypy_installed() -> None:
 
 def test_mypy_config_exists() -> None:
     """Contract: mypy configuration section exists in pyproject.toml."""
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject_path = Path(__file__).resolve().parents[2] / "pyproject.toml"
 
     with open(pyproject_path, "rb") as f:
         config = tomllib.load(f)
@@ -67,7 +67,7 @@ def test_mypy_config_exists() -> None:
 
 def test_strict_mode_enabled() -> None:
     """Contract: mypy strict mode is enabled."""
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject_path = Path(__file__).resolve().parents[2] / "pyproject.toml"
 
     with open(pyproject_path, "rb") as f:
         config = tomllib.load(f)
@@ -78,7 +78,7 @@ def test_strict_mode_enabled() -> None:
 
 def test_pydantic_plugin_configured() -> None:
     """Contract: Pydantic mypy plugin is configured."""
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject_path = Path(__file__).resolve().parents[2] / "pyproject.toml"
 
     with open(pyproject_path, "rb") as f:
         config = tomllib.load(f)
@@ -92,7 +92,7 @@ def test_pydantic_plugin_configured() -> None:
 
 def test_migrations_excluded() -> None:
     """Contract: migrations directory is excluded from type checking."""
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject_path = Path(__file__).resolve().parents[2] / "pyproject.toml"
 
     with open(pyproject_path, "rb") as f:
         config = tomllib.load(f)
@@ -127,7 +127,7 @@ def test_mypy_runs_successfully() -> None:
         ["uv", "run", "mypy", "."],
         capture_output=True,
         text=True,
-        cwd=Path(__file__).parent.parent,
+        cwd=Path(__file__).resolve().parents[2],
     )
 
     # Exit code 0 or 1 is acceptable (0 = no errors, 1 = type errors)
@@ -137,7 +137,7 @@ def test_mypy_runs_successfully() -> None:
 
 def test_mypy_cache_created() -> None:
     """Contract: mypy creates cache directory on execution."""
-    cache_dir = Path(__file__).parent.parent / ".mypy_cache"
+    cache_dir = Path(__file__).resolve().parents[2] / ".mypy_cache"
 
     # Clean cache if exists
     if cache_dir.exists():
@@ -146,7 +146,7 @@ def test_mypy_cache_created() -> None:
         shutil.rmtree(cache_dir)
 
     # Read configured mypy target version; cache directories are keyed by this value
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    pyproject_path = Path(__file__).resolve().parents[2] / "pyproject.toml"
     with open(pyproject_path, "rb") as f:
         config = tomllib.load(f)
 
@@ -158,7 +158,7 @@ def test_mypy_cache_created() -> None:
     subprocess.run(
         ["uv", "run", "mypy", "."],
         capture_output=True,
-        cwd=Path(__file__).parent.parent,
+        cwd=Path(__file__).resolve().parents[2],
     )
 
     # Verify cache created
@@ -173,7 +173,7 @@ def test_mypy_cache_created() -> None:
 def test_type_error_detection() -> None:
     """Contract: mypy correctly detects type errors."""
     # Create temporary file with intentional type error
-    temp_file = Path(__file__).parent.parent / "src" / "_test_temp_type_error.py"
+    temp_file = Path(__file__).resolve().parents[2] / "src" / "_test_temp_type_error.py"
 
     try:
         temp_file.write_text('def test_function() -> int:\n    return "this is a string, not an int"  # Type error\n')
@@ -183,7 +183,7 @@ def test_type_error_detection() -> None:
             ["uv", "run", "mypy", "src/_test_temp_type_error.py"],
             capture_output=True,
             text=True,
-            cwd=Path(__file__).parent.parent,
+            cwd=Path(__file__).resolve().parents[2],
         )
 
         # Should exit with error code 1 (type errors found)

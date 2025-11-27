@@ -3,7 +3,7 @@
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+**Note**: This template is filled in by the `/speckit.plan` command; gates and workflows come from `.specify/memory/constitution.md`.
 
 ## Summary
 
@@ -11,25 +11,27 @@
 
 ## Technical Context
 
-**Language/Version**: Python 3.12 (FastAPI, uv) and TypeScript (Next.js 15, React 19)  
-**Primary Dependencies**: FastAPI, Pydantic, PostgreSQL 18+, Next.js App Router, Tailwind CSS v4  
-**Storage**: PostgreSQL 18+ with `uuidv7()` identifiers  
-**Testing**: `uv run pytest`, `pnpm test`, `pnpm type-check`, `pnpm quality`  
-**Target Platform**: Backend services on Linux; frontend served via Next.js with Server Components preferred  
-**Project Type**: Dual-stack web application (`api/` backend, `web/` frontend)  
-**Performance Goals**: Document feature-specific SLAs; default expectation ≤200 ms backend p95 for API requests  
-**Constraints**: Respect monorepo boundaries, async-first backend implementations, no secrets committed  
-**Scale/Scope**: Designed for enterprise workloads; confirm feature load expectations during research
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- `Dual-Stack Monorepo Integrity`: Describe which side (`api/` or `web/`) each deliverable touches and document any cross-layer contract.
-- `Continuous Quality Gates`: Plan explicit test, lint, and coverage work required for the feature.
-- `Typed Contracts Everywhere`: Capture API schemas, type additions, and documentation updates introduced by the feature.
-- `Internationalized User Experience`: Note required translation keys and how UX text flows through `next-intl`.
-- `Secure Configuration & Observability`: Account for logging, metrics, secrets management, and infrastructure assumptions.
+[Gates determined based on `.specify/memory/constitution.md`]
 
 ## Project Structure
 
@@ -54,19 +56,43 @@ specs/[###-feature]/
 -->
 
 ```text
-api/
-├── app/               # FastAPI application modules
-├── tests/             # pytest suites (unit, integration, contract)
-└── alembic/           # Database migrations
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
 
-web/
-├── app/               # Next.js App Router routes
-├── components/        # Shared React components (server-first)
-├── lib/               # Client/server utilities
-└── tests/             # Jest + RTL suites
+tests/
+├── contract/
+├── integration/
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Document the exact subdirectories touched by the feature and reference any new folders added to either `api/` or `web/`.
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 

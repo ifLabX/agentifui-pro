@@ -18,8 +18,6 @@
   - Tested independently
   - Deployed independently
   - Demonstrated to users independently
-
-  Call out any cross-layer contracts (API schema changes) and the translation keys that must be created for each story.
 -->
 
 ### User Story 1 - [Brief Title] (Priority: P1)
@@ -76,8 +74,6 @@
 
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
-- What translation is displayed when a locale string is missing?
-- How do typed contracts behave when optional fields are omitted or invalid?
 
 ## Requirements *(mandatory)*
 
@@ -93,14 +89,11 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
-- **FR-006**: Implementation MUST surface user-facing text through `next-intl` translation keys in kebab-case form.
-- **FR-007**: Backend endpoints MUST expose typed Pydantic schemas and document changes to shared contracts.
-- **FR-008**: Feature MUST include logging/metrics needed for observability and note any new environment variables.
 
 *Example of marking unclear requirements:*
 
-- **FR-009**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-010**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 

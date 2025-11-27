@@ -96,8 +96,7 @@ def include_tenant_router(
     Register an existing router with tenant membership enforcement without mutating the router.
     """
     base_dependency = Depends(require_tenant_member(allowed_roles, allow_invited=allow_invited))
-    merged_dependencies = _merge_dependencies([base_dependency], router.dependencies)
-    app.include_router(router, dependencies=merged_dependencies)
+    app.include_router(router, dependencies=[base_dependency])
 
 
 def include_admin_router(
@@ -112,8 +111,7 @@ def include_admin_router(
     """
     role_scope = tuple(roles) if roles else (TenantMemberRole.ADMIN, TenantMemberRole.OWNER)
     base_dependency = Depends(require_tenant_role(*role_scope, allow_invited=allow_invited))
-    merged_dependencies = _merge_dependencies([base_dependency], router.dependencies)
-    app.include_router(router, dependencies=merged_dependencies)
+    app.include_router(router, dependencies=[base_dependency])
 
 
 def include_public_router(app: FastAPI, router: APIRouter) -> None:

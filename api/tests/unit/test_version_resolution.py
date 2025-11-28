@@ -23,9 +23,7 @@ def test_resolve_app_version_reads_pyproject_when_package_missing(
     assert config._resolve_app_version(pyproject_path=pyproject) == "1.2.3"
 
 
-def test_resolve_app_version_handles_missing_pyproject(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_resolve_app_version_handles_missing_pyproject(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     def _raise_package_not_found(_: str) -> str:
         raise PackageNotFoundError("package not installed")
 

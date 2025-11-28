@@ -6,7 +6,7 @@ from importlib.metadata import PackageNotFoundError
 from pathlib import Path
 
 import pytest
-from src.core import config
+from src.core import version as version_module
 
 
 def test_resolve_app_version_reads_pyproject_when_package_missing(
@@ -18,18 +18,18 @@ def test_resolve_app_version_reads_pyproject_when_package_missing(
     def _raise_package_not_found(_: str) -> str:
         raise PackageNotFoundError("package not installed")
 
-    monkeypatch.setattr(config, "version", _raise_package_not_found)
+    monkeypatch.setattr(version_module, "version", _raise_package_not_found)
 
-    assert config._resolve_app_version(pyproject_path=pyproject) == "1.2.3"
+    assert version_module._resolve_app_version(pyproject_path=pyproject) == "1.2.3"
 
 
 def test_resolve_app_version_handles_missing_pyproject(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     def _raise_package_not_found(_: str) -> str:
         raise PackageNotFoundError("package not installed")
 
-    monkeypatch.setattr(config, "version", _raise_package_not_found)
+    monkeypatch.setattr(version_module, "version", _raise_package_not_found)
 
-    assert config._resolve_app_version(pyproject_path=tmp_path / "pyproject.toml") == "0.0.0"
+    assert version_module._resolve_app_version(pyproject_path=tmp_path / "pyproject.toml") == "0.0.0"
 
 
 @pytest.mark.parametrize(
@@ -47,4 +47,20 @@ def test_load_pyproject_version_edge_cases(tmp_path: Path, file_content: str, ex
     pyproject = tmp_path / "pyproject.toml"
     pyproject.write_text(file_content, encoding="utf-8")
 
-    assert config._load_pyproject_version(pyproject) == expected_version
+    assert version_module._load_pyproject_version(pyproject) == expected_version
+
+
+def test_find_pyproject_root_returns_closest_parent(tmp_path: Path) -> None:
+    project_root = tmp_path / "project"
+    nested_dir = project_root / "src" / "core"
+    nested_dir.mkdir(parents=True)
+    (project_root / "pyproject.toml").write_text("", encoding="utf-8")
+
+    assert version_module.find_pyproject_root(nested_dir) == project_root
+
+
+def test_find_pyproject_root_handles_missing_marker(tmp_path: Path) -> None:
+    search_root = tmp_path / "no-project"
+    search_root.mkdir()
+
+    assert version_module.find_pyproject_root(search_root) is None

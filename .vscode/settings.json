@@ -27,6 +27,7 @@
   "ruff.importStrategy": "fromEnvironment",
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.suggest.autoImports": true,
+  "typescript.tsdk": "web/node_modules/typescript/lib",
   "files.associations": {
     "*.css": "tailwindcss"
   },

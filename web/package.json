@@ -99,6 +99,7 @@
     "@happy-dom/jest-environment": "^20.0.8",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@next/bundle-analyzer": "^15.5.4",
+    "@next/eslint-plugin-next": "15.5.0",
     "@storybook/addon-a11y": "10.0.2",
     "@storybook/addon-docs": "10.0.2",
     "@storybook/react-vite": "10.0.2",

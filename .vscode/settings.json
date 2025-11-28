@@ -5,6 +5,15 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+  "ruff.importStrategy": "fromEnvironment",
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.suggest.autoImports": true,
   "files.associations": {

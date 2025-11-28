@@ -32,6 +32,21 @@ def test_resolve_app_version_handles_missing_pyproject(tmp_path: Path, monkeypat
     assert version_module._resolve_app_version(pyproject_path=tmp_path / "pyproject.toml") == "0.0.0"
 
 
+def test_resolve_app_version_discovers_pyproject(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    project_root = tmp_path / "project"
+    src_dir = project_root / "src" / "core"
+    src_dir.mkdir(parents=True)
+    (project_root / "pyproject.toml").write_text('[project]\nversion = "4.5.6"\n', encoding="utf-8")
+
+    def _raise_package_not_found(_: str) -> str:
+        raise PackageNotFoundError("package not installed")
+
+    monkeypatch.setattr(version_module, "version", _raise_package_not_found)
+    monkeypatch.setattr(version_module, "__file__", str(src_dir / "version.py"))
+
+    assert version_module._resolve_app_version() == "4.5.6"
+
+
 @pytest.mark.parametrize(
     ("file_content", "expected_version"),
     [

@@ -45,18 +45,19 @@ def _resolve_app_version(pyproject_path: Path | None = None) -> str:
     """
     Prefer the installed package metadata, falling back to pyproject.toml when running from source.
     """
-    start_path = Path(__file__).resolve().parent
-
     try:
         return version("agentifui-pro-api")
     except PackageNotFoundError:
         if pyproject_path is not None:
             resolved_pyproject = pyproject_path
         else:
+            start_path = Path(__file__).resolve().parent
             pyproject_root = find_pyproject_root(start_path)
             if not pyproject_root:
                 return "0.0.0"
             resolved_pyproject = pyproject_root / "pyproject.toml"
+
+    return _load_pyproject_version(resolved_pyproject)
 
 
 __version__ = _resolve_app_version()

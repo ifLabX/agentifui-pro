@@ -6,18 +6,48 @@ with validation and default values.
 """
 
 import asyncio
+import tomllib
 from functools import lru_cache
+from importlib.metadata import PackageNotFoundError, version
+from pathlib import Path
 from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-try:
-    from importlib.metadata import PackageNotFoundError, version
 
-    __version__ = version("agentifui-pro-api")
-except PackageNotFoundError:
-    __version__ = "0.1.0"  # Fallback for development
+def _load_pyproject_version(pyproject_path: Path) -> str:
+    """
+    Read the version from pyproject.toml to keep development parity with the packaged build.
+    """
+    if not pyproject_path.is_file():
+        return "0.0.0"
+
+    try:
+        with pyproject_path.open("rb") as pyproject_file:
+            project = tomllib.load(pyproject_file)
+    except tomllib.TOMLDecodeError:
+        return "0.0.0"
+
+    project_version = project.get("project", {}).get("version")
+    if isinstance(project_version, str):
+        return project_version
+
+    return "0.0.0"
+
+
+def _resolve_app_version(pyproject_path: Path | None = None) -> str:
+    """
+    Prefer the installed package metadata, falling back to pyproject.toml when running from source.
+    """
+    try:
+        return version("agentifui-pro-api")
+    except PackageNotFoundError:
+        resolved_pyproject = pyproject_path or Path(__file__).resolve().parents[2] / "pyproject.toml"
+        return _load_pyproject_version(resolved_pyproject)
+
+
+__version__ = _resolve_app_version()
 
 
 class Settings(BaseSettings):
@@ -28,8 +58,7 @@ class Settings(BaseSettings):
     """
 
     # Application Settings
-    # Version is read from pyproject.toml via importlib.metadata
-    # This ensures single source of truth for version management
+    # Keep version aligned with package metadata in all environments
     app_name: str = Field(default="Agentifui Pro API")
     app_version: str = Field(default=__version__)
     app_description: str = Field(default="Backend API for Agentifui Pro")

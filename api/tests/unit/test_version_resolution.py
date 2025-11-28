@@ -38,7 +38,7 @@ def test_resolve_app_version_handles_missing_pyproject(tmp_path: Path, monkeypat
         ('[project]\nversion = "1.2.3"', "1.2.3"),
         ('[project]\nname = "test-project"', "0.0.0"),
         ('version = "1.2.3"', "0.0.0"),
-        ('[project]\nversion = 123', "0.0.0"),
+        ("[project]\nversion = 123", "0.0.0"),
         ("this is not valid toml", "0.0.0"),
         ("", "0.0.0"),
     ],

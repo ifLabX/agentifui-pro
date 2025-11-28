@@ -7,13 +7,13 @@ defined in contracts/errors.yaml for consistent error handling.
 
 import uuid
 from datetime import UTC, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class ErrorType(str, Enum):
+class ErrorType(StrEnum):
     """Error type enumeration."""
 
     INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"

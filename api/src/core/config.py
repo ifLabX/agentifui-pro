@@ -26,7 +26,7 @@ def _load_pyproject_version(pyproject_path: Path) -> str:
     try:
         with pyproject_path.open("rb") as pyproject_file:
             project = tomllib.load(pyproject_file)
-    except tomllib.TOMLDecodeError:
+    except (tomllib.TOMLDecodeError, OSError):
         return "0.0.0"
 
     project_version = project.get("project", {}).get("version")

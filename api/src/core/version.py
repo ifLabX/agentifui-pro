@@ -54,9 +54,9 @@ def _resolve_app_version(pyproject_path: Path | None = None) -> str:
             resolved_pyproject = pyproject_path
         else:
             pyproject_root = find_pyproject_root(start_path)
-            resolved_pyproject = pyproject_root / "pyproject.toml" if pyproject_root else start_path / "pyproject.toml"
-
-        return _load_pyproject_version(resolved_pyproject)
+            if not pyproject_root:
+                return "0.0.0"
+            resolved_pyproject = pyproject_root / "pyproject.toml"
 
 
 __version__ = _resolve_app_version()

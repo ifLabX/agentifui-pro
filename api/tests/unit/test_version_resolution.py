@@ -53,6 +53,7 @@ def test_resolve_app_version_discovers_pyproject(tmp_path: Path, monkeypatch: py
         ('[project]\nversion = "1.2.3"', "1.2.3"),
         ('[project]\nname = "test-project"', "0.1.0"),
         ('version = "1.2.3"', "0.1.0"),
+        ('project = "not_a_table"', "0.1.0"),
         ("[project]\nversion = 123", "0.1.0"),
         ("this is not valid toml", "0.1.0"),
         ("", "0.1.0"),

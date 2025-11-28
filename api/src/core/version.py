@@ -36,9 +36,14 @@ def _load_pyproject_version(pyproject_path: Path) -> str:
     except (tomllib.TOMLDecodeError, OSError):
         return _DEFAULT_VERSION
 
-    project_version = project.get("project", {}).get("version")
-    if isinstance(project_version, str):
-        return project_version
+    if not isinstance(project, dict):
+        return _DEFAULT_VERSION
+
+    project_table = project.get("project")
+    if isinstance(project_table, dict):
+        project_version = project_table.get("version")
+        if isinstance(project_version, str):
+            return project_version
 
     return _DEFAULT_VERSION
 

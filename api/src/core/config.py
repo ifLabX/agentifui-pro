@@ -11,13 +11,7 @@ from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-try:
-    from importlib.metadata import PackageNotFoundError, version
-
-    __version__ = version("agentifui-pro-api")
-except PackageNotFoundError:
-    __version__ = "0.1.0"  # Fallback for development
+from src.core.version import __version__
 
 
 class Settings(BaseSettings):
@@ -28,8 +22,7 @@ class Settings(BaseSettings):
     """
 
     # Application Settings
-    # Version is read from pyproject.toml via importlib.metadata
-    # This ensures single source of truth for version management
+    # Keep version aligned with package metadata in all environments
     app_name: str = Field(default="Agentifui Pro API")
     app_version: str = Field(default=__version__)
     app_description: str = Field(default="Backend API for Agentifui Pro")

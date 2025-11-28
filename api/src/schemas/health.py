@@ -6,13 +6,13 @@ following the OpenAPI specification in contracts/health.yaml.
 """
 
 from datetime import UTC, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class HealthStatus(str, Enum):
+class HealthStatus(StrEnum):
     """Health status enumeration."""
 
     HEALTHY = "healthy"
@@ -20,7 +20,7 @@ class HealthStatus(str, Enum):
     UNHEALTHY = "unhealthy"
 
 
-class MigrationStatus(str, Enum):
+class MigrationStatus(StrEnum):
     """Migration status enumeration."""
 
     UP_TO_DATE = "up_to_date"

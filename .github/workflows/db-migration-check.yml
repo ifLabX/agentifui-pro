@@ -74,7 +74,7 @@ jobs:
       - name: Offline upgrade script generation
         run: |
           uv run alembic upgrade head --sql
-          uv run alembic downgrade base --sql
+          uv run alembic downgrade head:base --sql
 
       - name: Run migrations on database
         env:

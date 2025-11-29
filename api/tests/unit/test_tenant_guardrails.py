@@ -25,8 +25,7 @@ def test_models_are_tenant_scoped_by_default() -> None:
             missing_mixin.append(model_cls.__name__)
 
     assert not missing_mixin, (
-        "Models must inherit TenantAwareMixin or be whitelisted as global: "
-        f"{sorted(missing_mixin)}"
+        f"Models must inherit TenantAwareMixin or be whitelisted as global: {sorted(missing_mixin)}"
     )
 
 

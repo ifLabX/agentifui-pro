@@ -12,7 +12,7 @@ Backend (run inside `api/`):
 uv run pytest                  # Tests
 uv run ruff check . --fix      # Lint & fix
 uv run alembic upgrade head    # Migrations
-```
+``````````
 
 Frontend (run inside `web/`):
 ```bash

@@ -13,8 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Detect .github changes
+        id: cfg
+        uses: tj-actions/changed-files@v46
+        with:
+          files: .github/**
+
+      - name: Skip autofix when config changes
+        if: steps.cfg.outputs.any_changed == 'true'
+        run: |
+          echo "SKIP_AUTOFIX=true" >> "$GITHUB_ENV"
+          echo "Config changes detected; skipping autofix to avoid .github push restrictions."
+
       # Use uv to ensure we have the same ruff version in CI and locally.
       - uses: astral-sh/setup-uv@v6
+        if: env.SKIP_AUTOFIX != 'true'
         with:
           python-version: "3.12"
       - run: |
@@ -24,9 +37,12 @@ jobs:
           uv run ruff check --fix-only .
           # Format code
           uv run ruff format .
+        if: env.SKIP_AUTOFIX != 'true'
 
       - name: Format Markdown
         run: |
           uvx mdformat .
+        if: env.SKIP_AUTOFIX != 'true'
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27
+        if: env.SKIP_AUTOFIX != 'true'

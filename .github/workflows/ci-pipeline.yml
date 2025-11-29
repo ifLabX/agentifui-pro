@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  actions: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -18,33 +22,65 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-      workflows: ${{ steps.filter.outputs.workflows }}
-      migrations: ${{ steps.filter.outputs.migrations }}
-      env-examples: ${{ steps.filter.outputs.env-examples }}
+      backend: ${{ steps.detect.outputs.backend }}
+      frontend: ${{ steps.detect.outputs.frontend }}
+      workflows: ${{ steps.detect.outputs.workflows }}
+      migrations: ${{ steps.detect.outputs.migrations }}
+      env-examples: ${{ steps.detect.outputs.env-examples }}
     steps:
       - uses: actions/checkout@v4
-
-      - uses: dorny/paths-filter@v3
-        id: filter
         with:
-          filters: |
-            backend:
-              - 'api/**'
-              - 'pyproject.toml'
-              - 'uv.lock'
-            frontend:
-              - 'web/**'
-              - '!web/messages/**'
-            workflows:
-              - '.github/workflows/**'
-              - '.github/actions/**'
-            migrations:
-              - 'api/migrations/**'
-            env-examples:
-              - 'api/.env.example'
-              - 'web/.env.example'
+          fetch-depth: 0
+
+      - name: Detect changed files
+        id: changed
+        uses: tj-actions/changed-files@v46
+
+      - name: Compute change flags
+        id: detect
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import os
+          import shlex
+
+          files = shlex.split(os.environ.get("CHANGED_FILES", ""))
+
+          backend = any(
+              f.startswith("api/")
+              or f in {"pyproject.toml", "uv.lock"}
+              for f in files
+          )
+
+          frontend = any(
+              f.startswith("web/")
+              and not f.startswith("web/messages/")
+              for f in files
+          )
+
+          workflows = any(
+              f.startswith(".github/workflows/")
+              or f.startswith(".github/actions/")
+              for f in files
+          )
+
+          migrations = any(
+              f.startswith("api/migrations/")
+              for f in files
+          )
+
+          env_examples = any(
+              f in {"api/.env.example", "web/.env.example"}
+              for f in files
+          )
+
+          print(f"backend={'true' if backend else 'false'}")
+          print(f"frontend={'true' if frontend else 'false'}")
+          print(f"workflows={'true' if workflows else 'false'}")
+          print(f"migrations={'true' if migrations else 'false'}")
+          print(f"env-examples={'true' if env_examples else 'false'}")
+          PY
 
   # ════════════════════════════════════════════════════════════
   # Stage 1: Quality Gate (Parallel)

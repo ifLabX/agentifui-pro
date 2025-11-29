@@ -16,6 +16,10 @@ on:
         default: false
         description: 'Run build step'
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   quality-check:
     runs-on: ubuntu-latest

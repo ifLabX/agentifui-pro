@@ -48,7 +48,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -101,10 +100,6 @@ cover/
 .claude/settings.json
 **/claudedocs/
 .serena
-
-# Frontend overrides
-!web/lib/
-!web/lib/**
 
 # codex
 .codex/*

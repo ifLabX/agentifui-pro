@@ -92,7 +92,6 @@ class TenantMember(Base, TenantAwareMixin, SoftDeleteMixin, VersionedAuditMixin)
     __table_args__ = (
         UniqueConstraint("tenant_id", "user_id", name="uq_tenant_members_user"),
         Index("ix_tenant_members_tenant_id", "tenant_id"),
-        Index("ix_tenant_members_tenant_user", "tenant_id", "user_id"),
     )
 
     user_id: Mapped[str] = mapped_column(

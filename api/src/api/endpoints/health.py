@@ -12,8 +12,10 @@ from pathlib import Path
 from alembic.config import Config
 from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
+from alembic.util.exc import CommandError
 from fastapi.responses import JSONResponse
 from redis.exceptions import RedisError
+from sqlalchemy.exc import SQLAlchemyError
 from src.core.config import get_settings
 from src.core.db import check_database_connection, get_async_engine, get_database_info
 from src.core.redis import ping_redis
@@ -76,8 +78,11 @@ async def _get_migration_status() -> MigrationStatus:
         alembic_config = _load_alembic_config()
         script_dir = ScriptDirectory.from_config(alembic_config)
         head_revision = script_dir.get_current_head()
-    except Exception as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
+    except (FileNotFoundError, CommandError) as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
         logger.warning("Failed to resolve Alembic head revision: %s", exc)
+        return MigrationStatus.UNKNOWN
+    except Exception as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
+        logger.exception("Unexpected error resolving Alembic head revision")
         return MigrationStatus.UNKNOWN
 
     try:
@@ -86,8 +91,11 @@ async def _get_migration_status() -> MigrationStatus:
             current_revision = await connection.run_sync(
                 lambda sync_conn: MigrationContext.configure(connection=sync_conn).get_current_revision()
             )
-    except Exception as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
+    except SQLAlchemyError as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
         logger.warning("Failed to resolve current migration revision: %s", exc)
+        return MigrationStatus.UNKNOWN
+    except Exception as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
+        logger.exception("Unexpected error resolving current migration revision")
         return MigrationStatus.UNKNOWN
 
     if not head_revision or not current_revision:

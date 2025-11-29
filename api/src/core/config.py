@@ -38,6 +38,7 @@ class Settings(BaseSettings):
     database_pool_max_overflow: int = Field(default=20, ge=0, le=100)
     database_pool_timeout: int = Field(default=30, gt=0, le=300)
     database_pool_recycle: int = Field(default=3600, gt=0)
+    database_pool_pre_ping: bool = Field(default=False)
 
     # Redis Configuration
     redis_url: str = Field(...)

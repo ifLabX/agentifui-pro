@@ -11,6 +11,7 @@ def _fake_settings() -> SimpleNamespace:
         database_pool_max_overflow=10,
         database_pool_timeout=30,
         database_pool_recycle=1800,
+        database_pool_pre_ping=True,
         debug=False,
     )
 
@@ -40,6 +41,7 @@ def test_async_engine_uses_utc_timezone(monkeypatch) -> None:
         assert server_settings["TimeZone"] == "UTC"  # type: ignore[index]
         assert server_settings["application_name"] == settings.app_name  # type: ignore[index]
         assert captured["url"] == settings.database_url
+        assert captured["kwargs"]["pool_pre_ping"] is True  # type: ignore[index]
     finally:
         db.reset_engine()
 
@@ -62,4 +64,5 @@ def test_testing_engine_uses_utc_timezone(monkeypatch) -> None:
     assert server_settings["TimeZone"] == "UTC"  # type: ignore[index]
     assert server_settings["application_name"] == settings.app_name  # type: ignore[index]
     assert captured["url"] == settings.database_url
+    assert captured["kwargs"]["pool_pre_ping"] is True  # type: ignore[index]
     assert engine == "engine"

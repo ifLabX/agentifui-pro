@@ -46,6 +46,7 @@ def test_config_settings_has_required_fields() -> None:
     assert hasattr(settings, "database_url")
     assert hasattr(settings, "database_pool_size")
     assert hasattr(settings, "database_pool_timeout")
+    assert hasattr(settings, "database_pool_pre_ping")
 
     # Required logging settings
     assert hasattr(settings, "log_level")

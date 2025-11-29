@@ -86,9 +86,10 @@ class TestKnowledgeBaseClientDatasetManagement:
         response = client.list_datasets()
 
         # Verify request
-        call_args = mock_requests_request.call_args[0]
+        call_args, call_kwargs = mock_requests_request.call_args
         assert call_args[0] == "GET"
-        assert "/datasets?page=1&limit=20" in call_args[1]
+        assert call_args[1] == "/datasets"
+        assert call_kwargs["params"] == {"page": 1, "limit": 20}
         assert response == mock_successful_response
 
     def test_list_datasets_with_pagination(
@@ -104,8 +105,10 @@ class TestKnowledgeBaseClientDatasetManagement:
         response = client.list_datasets(page=3, page_size=50)
 
         # Verify pagination
-        call_args = mock_requests_request.call_args[0]
-        assert "/datasets?page=3&limit=50" in call_args[1]
+        call_args, call_kwargs = mock_requests_request.call_args
+        assert call_args[0] == "GET"
+        assert call_args[1] == "/datasets"
+        assert call_kwargs["params"] == {"page": 3, "limit": 50}
         assert response == mock_successful_response
 
     def test_delete_dataset(
@@ -814,7 +817,6 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         assert f"/datasets/{sample_dataset_id}/pipeline/datasource/nodes/{node_id}/run" in call_args[1]
         assert call_kwargs["json"]["inputs"] == inputs
         assert call_kwargs["json"]["datasource_type"] == datasource_type
-        assert call_kwargs["stream"] is True
         assert response == mock_streaming_response
 
     def test_run_rag_pipeline_blocking(
@@ -842,7 +844,6 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
         assert call_args[0] == "POST"
         assert f"/datasets/{sample_dataset_id}/pipeline/run" in call_args[1]
         assert call_kwargs["json"]["response_mode"] == "blocking"
-        assert call_kwargs["stream"] is False
         assert response == mock_successful_response
 
     def test_run_rag_pipeline_streaming(
@@ -867,7 +868,7 @@ class TestKnowledgeBaseClientRAGPipelineAPIs:
 
         # Verify streaming
         call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["stream"] is True
+        assert call_kwargs["json"]["response_mode"] == "streaming"
         assert response == mock_streaming_response
 
     @patch("builtins.open", new_callable=mock_open, read_data=b"file content")

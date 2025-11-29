@@ -52,7 +52,6 @@ class TestCompletionClientCreateMessage:
         assert call_kwargs["json"]["inputs"] == sample_inputs
         assert call_kwargs["json"]["response_mode"] == "blocking"
         assert call_kwargs["json"]["user"] == mock_user
-        assert call_kwargs["stream"] is False
         assert response == mock_successful_response
 
     def test_create_completion_message_streaming(
@@ -76,7 +75,6 @@ class TestCompletionClientCreateMessage:
         # Verify streaming is enabled
         call_kwargs = mock_requests_request.call_args[1]
         assert call_kwargs["json"]["response_mode"] == "streaming"
-        assert call_kwargs["stream"] is True
         assert response == mock_streaming_response
 
     def test_create_completion_message_with_files(

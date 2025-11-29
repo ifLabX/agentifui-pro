@@ -9,8 +9,8 @@ from collections.abc import Generator
 from typing import Any
 from unittest.mock import Mock, patch
 
+import httpx
 import pytest
-import requests
 
 
 @pytest.fixture
@@ -31,10 +31,27 @@ def mock_user() -> str:
     return "test-user-123"
 
 
+@pytest.fixture(autouse=True)
+def clear_proxy_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Remove proxy environment variables so httpx does not require socksio."""
+    for key in (
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "ALL_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "all_proxy",
+        "NO_PROXY",
+        "no_proxy",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setenv("NO_PROXY", "*")
+
+
 @pytest.fixture
 def mock_successful_response() -> Mock:
     """Create a mock successful HTTP response."""
-    response = Mock(spec=requests.Response)
+    response = Mock(spec=httpx.Response)
     response.status_code = 200
     response.json.return_value = {
         "success": True,
@@ -49,7 +66,7 @@ def mock_successful_response() -> Mock:
 @pytest.fixture
 def mock_error_response() -> Mock:
     """Create a mock error HTTP response."""
-    response = Mock(spec=requests.Response)
+    response = Mock(spec=httpx.Response)
     response.status_code = 400
     response.json.return_value = {
         "error": "Bad Request",
@@ -63,7 +80,7 @@ def mock_error_response() -> Mock:
 @pytest.fixture
 def mock_streaming_response() -> Mock:
     """Create a mock streaming HTTP response."""
-    response = Mock(spec=requests.Response)
+    response = Mock(spec=httpx.Response)
     response.status_code = 200
     response.headers = {"Content-Type": "text/event-stream"}
 
@@ -78,9 +95,13 @@ def mock_streaming_response() -> Mock:
 
 @pytest.fixture
 def mock_requests_request() -> Generator[Mock, None, None]:
-    """Mock requests.request to avoid real HTTP calls."""
-    with patch("requests.request") as mock_request:
-        yield mock_request
+    """Mock httpx.Client.request to avoid real HTTP calls."""
+    request_mock = Mock()
+    client_mock = Mock()
+    client_mock.request = request_mock
+    client_mock.close = Mock()
+    with patch("dify_client.client.httpx.Client", return_value=client_mock):
+        yield request_mock
 
 
 @pytest.fixture

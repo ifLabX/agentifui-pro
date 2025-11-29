@@ -28,6 +28,13 @@ _session_local: Optional[async_sessionmaker[AsyncSession]] = None
 # ============================================================================
 
 
+def _build_server_settings(app_name: str) -> dict[str, str]:
+    return {
+        "application_name": app_name,
+        "TimeZone": "UTC",
+    }
+
+
 def get_async_engine() -> AsyncEngine:
     """
     Get or create async SQLAlchemy engine.
@@ -55,11 +62,7 @@ def get_async_engine() -> AsyncEngine:
             echo=settings.debug,  # Log SQL queries in debug mode
             future=True,  # Use SQLAlchemy 2.0 style
             # Connection arguments for asyncpg
-            connect_args={
-                "server_settings": {
-                    "application_name": settings.app_name,
-                }
-            },
+            connect_args={"server_settings": _build_server_settings(settings.app_name)},
         )
 
     return _engine
@@ -109,6 +112,7 @@ def get_async_engine_for_testing() -> AsyncEngine:
         poolclass=NullPool,  # No connection pooling for tests
         echo=False,  # Disable SQL logging in tests
         future=True,
+        connect_args={"server_settings": _build_server_settings(settings.app_name)},
     )
 
 

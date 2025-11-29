@@ -15,20 +15,23 @@
 Before executing the migration:
 
 1. **Verify current state**:
+
    ```bash
    cd /Users/liuyizhou/repos/agentifui-pro/api
    git status  # Should be on 002-migrate-api-backend branch
    ls -la      # Should see flat layout (config/, database/, etc.)
    ```
 
-2. **Run baseline tests**:
+1. **Run baseline tests**:
+
    ```bash
    uv sync
    uv run pytest
    # All tests should pass before migration
    ```
 
-3. **Backup user .env file** (if exists):
+1. **Backup user .env file** (if exists):
+
    ```bash
    if [ -f .env ]; then cp .env .env.backup; fi
    ```
@@ -71,6 +74,7 @@ ls -la
 ```
 
 **Validation**:
+
 - All modules present in src/
 - No application code left in api/ root
 - migrations/ and tests/ remain at root
@@ -133,7 +137,7 @@ from src.config.settings import get_settings
 # Apply to all application imports in the file
 ```
 
-**Validation**: migrations/env.py imports from src.* modules
+**Validation**: migrations/env.py imports from src.\* modules
 
 ### Step 7: Create .env File (if missing)
 
@@ -162,6 +166,7 @@ uv sync
 ```
 
 **Validation**:
+
 - ✅ uv sync completes successfully
 - ✅ No import errors
 - ✅ Package installed in editable mode
@@ -176,8 +181,9 @@ uv run pytest
 ```
 
 **Validation**:
+
 - ✅ pytest discovers tests from tests/ directory
-- ✅ Tests import from src.* modules successfully
+- ✅ Tests import from src.\* modules successfully
 - ✅ All tests pass (same results as pre-migration)
 - ❌ If tests fail: Review import errors, check pytest configuration
 
@@ -193,6 +199,7 @@ uv run uvicorn src.main:app --reload --port 8000
 ```
 
 **Validation**:
+
 - ✅ Uvicorn starts without import errors
 - ✅ FastAPI application initializes
 - ❌ If fails: Check module path (src.main:app), review import errors
@@ -208,6 +215,7 @@ curl http://localhost:3000/health
 ```
 
 **Validation**:
+
 - ✅ Health endpoint responds
 - ✅ Database connection works
 - ✅ Application fully functional
@@ -219,18 +227,21 @@ curl http://localhost:3000/health
 Mark each item after successful completion:
 
 **Directory Structure**:
+
 - [ ] src/ directory exists and contains all application code
 - [ ] migrations/ remains at project root
 - [ ] tests/ remains at project root
 - [ ] Configuration files at project root
 
 **Configuration**:
+
 - [ ] pyproject.toml updated with package discovery
 - [ ] .ruff.toml updated with src directory
 - [ ] pytest configuration added
 - [ ] migrations/env.py updated with src. imports
 
 **Functionality**:
+
 - [ ] `uv sync` completes without errors
 - [ ] `uv run pytest` all tests pass
 - [ ] `uv run uvicorn src.main:app` server starts
@@ -238,6 +249,7 @@ Mark each item after successful completion:
 - [ ] Database operations work
 
 **Environment**:
+
 - [ ] .env file exists (created or preserved)
 - [ ] User .env modifications preserved
 - [ ] Database connection string valid
@@ -333,6 +345,7 @@ uv run pytest
 **Cause**: Package discovery not configured correctly
 
 **Fix**:
+
 ```bash
 # Verify pyproject.toml has:
 [tool.setuptools.packages.find]
@@ -349,6 +362,7 @@ uv sync
 **Cause**: pytest configuration missing
 
 **Fix**:
+
 ```bash
 # Verify pyproject.toml has:
 [tool.pytest.ini_options]
@@ -366,6 +380,7 @@ uv run pytest tests/
 **Cause**: Incorrect module path
 
 **Fix**:
+
 ```bash
 # Ensure using src.main:app not main:app
 uv run uvicorn src.main:app --reload
@@ -378,6 +393,7 @@ uv run uvicorn src.main:app --reload
 **Cause**: migrations/env.py still using old imports
 
 **Fix**:
+
 ```bash
 # Update migrations/env.py imports:
 from src.models.base import Base
@@ -392,35 +408,39 @@ uv run alembic check
 Migration is complete when ALL of the following are true:
 
 1. ✅ src/ directory contains all application code
-2. ✅ migrations/ and tests/ remain at root
-3. ✅ `uv sync` completes without errors
-4. ✅ `uv run pytest` all tests pass
-5. ✅ `uv run uvicorn src.main:app` server starts
-6. ✅ Health endpoint returns 200 OK
-7. ✅ Database connection successful
-8. ✅ Alembic commands work
-9. ✅ Ruff linting passes
-10. ✅ .env file preserved or created
+1. ✅ migrations/ and tests/ remain at root
+1. ✅ `uv sync` completes without errors
+1. ✅ `uv run pytest` all tests pass
+1. ✅ `uv run uvicorn src.main:app` server starts
+1. ✅ Health endpoint returns 200 OK
+1. ✅ Database connection successful
+1. ✅ Alembic commands work
+1. ✅ Ruff linting passes
+1. ✅ .env file preserved or created
 
 ## Next Steps
 
 After successful migration:
 
 1. **Commit changes**:
+
    ```bash
    git add .
    git commit -m "refactor(api): migrate to src/ layout structure"
    ```
 
-2. **Update documentation**:
+1. **Update documentation**:
+
    - README.md with new import examples
    - CLAUDE.md with src/ layout notes
 
-3. **Create pull request**:
+1. **Create pull request**:
+
    ```bash
    gh pr create --title "Migrate API backend to src/ layout" --body "See specs/002-migrate-api-backend/"
    ```
 
-4. **Monitor CI/CD**:
+1. **Monitor CI/CD**:
+
    - Ensure all quality gates pass
    - Verify deployment works with new structure

@@ -141,9 +141,9 @@ Complete backend quality checks with PostgreSQL 18 service.
 **Jobs:**
 
 1. Setup uv and Python
-2. Ruff linting
-3. Ruff formatting check
-4. Pytest execution with coverage
+1. Ruff linting
+1. Ruff formatting check
+1. Pytest execution with coverage
 
 **Artifacts:**
 
@@ -175,8 +175,8 @@ Complete frontend quality checks with optional build.
 **Jobs:**
 
 1. Setup pnpm and Node.js
-2. Run quality checks (ESLint + Prettier + TypeScript)
-3. Optional: Production build
+1. Run quality checks (ESLint + Prettier + TypeScript)
+1. Optional: Production build
 
 **Artifacts:**
 
@@ -204,12 +204,14 @@ jobs:
 **Trigger**: All pushes and pull requests to `main` branch
 
 **Features**:
+
 - Smart change detection (only runs affected jobs)
 - Parallel quality checks (backend + frontend simultaneously)
 - Conditional builds (only if quality passes)
 - Aggregated status reporting
 
 **GitHub Status Checks** (2-tier structure):
+
 ```
 CI Pipeline / Backend Quality     ← Only 2 layers
 CI Pipeline / Frontend Quality    ← Workflow / Job Name
@@ -223,6 +225,7 @@ CI Pipeline / Pipeline Status
 **Trigger**: Push to `main` with `web/messages/en-US/**` changes
 
 **Features**:
+
 - Cleans extra translation keys
 - Translates missing keys via MyMemory API
 - Updates TypeScript type definitions
@@ -237,6 +240,7 @@ CI Pipeline / Pipeline Status
 **Trigger**: Push/PR to `main`
 
 **Features**:
+
 - Auto-fixes Ruff violations (backend)
 - Auto-fixes ESLint violations (frontend)
 - Commits fixes automatically

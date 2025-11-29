@@ -30,12 +30,14 @@ tests/dify/
 ## Running Tests
 
 ### Run all Dify tests
+
 ```bash
 cd api
 uv run pytest tests/dify/ -v
 ```
 
 ### Run specific client tests
+
 ```bash
 # Test ChatClient only
 uv run pytest tests/dify/test_chat_client.py -v
@@ -45,6 +47,7 @@ uv run pytest tests/dify/test_knowledge_base_client.py -v
 ```
 
 ### Run specific test class
+
 ```bash
 # Test chat message creation
 uv run pytest tests/dify/test_chat_client.py::TestChatClientCreateMessage -v
@@ -54,6 +57,7 @@ uv run pytest tests/dify/test_workflow_client.py::TestWorkflowClientGetLogs -v
 ```
 
 ### Run with custom output
+
 ```bash
 # Show test names only
 uv run pytest tests/dify/ --collect-only
@@ -65,21 +69,26 @@ uv run pytest tests/dify/ -v --tb=short
 ## Test Coverage
 
 ### DifyClient (Base Client)
+
 ✅ **Initialization & Configuration**
+
 - Default and custom base URL initialization
 - API key storage and management
 
 ✅ **HTTP Request Methods**
+
 - GET, POST, DELETE requests
 - Request headers (Authorization, Content-Type)
 - URL construction and parameter handling
 - Streaming support
 
 ✅ **File Operations**
+
 - File upload with multipart/form-data
 - File preview retrieval
 
 ✅ **Common APIs**
+
 - Message feedback (like/dislike)
 - Application parameters
 - File upload endpoint
@@ -89,24 +98,29 @@ uv run pytest tests/dify/ -v --tb=short
 - File preview
 
 ### ChatClient
+
 ✅ **Message Creation**
+
 - Blocking and streaming modes
 - Conversation continuity (conversation_id)
 - File attachments support
 - Default parameter handling
 
 ✅ **Conversation Management**
+
 - List conversations (pagination, pinned filter)
 - Rename conversations (manual and auto-generated names)
 - Delete conversations
 - Get conversation messages (pagination, filters)
 
 ✅ **Message Operations**
+
 - Get suggested messages
 - Stop message generation
 - Audio-to-text conversion
 
 ✅ **Annotation APIs**
+
 - Enable/disable annotation reply
 - Get annotation status
 - List annotations (pagination, keyword filter)
@@ -114,20 +128,25 @@ uv run pytest tests/dify/ -v --tb=short
 - Validation error handling
 
 ### CompletionClient
+
 ✅ **Completion Messages**
+
 - Blocking and streaming response modes
 - Input validation and handling
 - File attachments support
 - Complex input structures
 
 ### WorkflowClient
+
 ✅ **Workflow Execution**
+
 - Run workflows (blocking and streaming)
 - Stop running workflows
 - Get workflow results
 - Run specific workflow by ID
 
 ✅ **Workflow Logs**
+
 - Default pagination
 - Keyword filtering
 - Status filtering (succeeded, failed, stopped)
@@ -136,7 +155,9 @@ uv run pytest tests/dify/ -v --tb=short
 - Combined filter scenarios
 
 ### WorkspaceClient
+
 ✅ **Model Management**
+
 - Get available models by type:
   - LLM models
   - Text embedding models
@@ -146,50 +167,60 @@ uv run pytest tests/dify/ -v --tb=short
   - Moderation models
 
 ### KnowledgeBaseClient (Most Comprehensive)
+
 ✅ **Dataset Management**
+
 - Create datasets
 - List datasets (pagination)
 - Delete datasets
 
 ✅ **Document Operations - Text-based**
+
 - Create documents from text
 - Update documents with text
 - Custom indexing techniques
 - Process rules configuration
 
 ✅ **Document Operations - File-based**
+
 - Create documents from files
 - Update documents with files
 - Original document replacement
 - File handling and upload
 
 ✅ **Document Listing & Deletion**
+
 - List documents (pagination, keyword filter)
 - Delete documents
 - Batch indexing status
 
 ✅ **Segment Management**
+
 - Add segments to documents
 - Query segments (filters, status)
 - Update document segments
 - Delete document segments
 
 ✅ **Advanced Features**
+
 - Hit testing (with/without retrieval models)
 - External retrieval models
 
 ✅ **Metadata Management**
+
 - Get, create, update dataset metadata
 - Built-in metadata operations
 - Bulk document metadata updates
 
 ✅ **Dataset Tags**
+
 - List all available tags
 - Bind tags to datasets
 - Unbind tags from datasets
 - Get dataset-specific tags
 
 ✅ **RAG Pipeline**
+
 - Get datasource plugins
 - Run datasource nodes (streaming)
 - Run RAG pipeline (blocking and streaming)
@@ -200,17 +231,20 @@ uv run pytest tests/dify/ -v --tb=short
 All tests use comprehensive fixtures defined in `conftest.py`:
 
 ### API Configuration
+
 - `mock_api_key` - Test API key
 - `mock_base_url` - Test base URL
 - `mock_user` - Test user identifier
 
 ### HTTP Mocking
+
 - `mock_successful_response` - Successful API response
 - `mock_error_response` - Error API response
 - `mock_streaming_response` - Streaming API response
 - `mock_requests_request` - Mocked requests.request
 
 ### Test Data
+
 - `sample_inputs` - Sample input data
 - `sample_files` - Sample file data
 - `sample_conversation_id` - Test conversation ID
@@ -229,19 +263,24 @@ All tests use comprehensive fixtures defined in `conftest.py`:
 ## Testing Approach
 
 ### Mocking Strategy
+
 All tests use **mock HTTP requests** to avoid real API calls:
+
 - No external dependencies required
-- Fast test execution (<1 second for all 117 tests)
+- Fast test execution (\<1 second for all 117 tests)
 - No API rate limiting concerns
 - Reproducible test results
 
 ### Test Organization
+
 Tests are organized by:
+
 1. **Client type** (separate file per client)
-2. **Functionality** (test classes per feature area)
-3. **Scenario** (individual test methods for specific cases)
+1. **Functionality** (test classes per feature area)
+1. **Scenario** (individual test methods for specific cases)
 
 ### Naming Conventions
+
 - Test files: `test_<client_name>_client.py`
 - Test classes: `Test<Client><Feature>`
 - Test methods: `test_<specific_scenario>`
@@ -249,6 +288,7 @@ Tests are organized by:
 ## Key Features Tested
 
 ### Request Validation
+
 ✅ HTTP method correctness (GET, POST, DELETE, PATCH, PUT)
 ✅ URL construction and endpoint paths
 ✅ Request headers (Authorization Bearer tokens)
@@ -257,12 +297,14 @@ Tests are organized by:
 ✅ File upload handling
 
 ### Response Handling
+
 ✅ Successful responses
 ✅ Streaming responses
 ✅ Error responses
 ✅ Response mode switching (blocking vs streaming)
 
 ### Edge Cases
+
 ✅ None/null value handling
 ✅ Optional parameter defaults
 ✅ Missing required parameters (ValueError)
@@ -270,6 +312,7 @@ Tests are organized by:
 ✅ Pagination boundaries
 
 ### Client Inheritance
+
 ✅ All clients inherit from DifyClient
 ✅ Base client functionality available in all clients
 ✅ Proper initialization patterns
@@ -277,16 +320,19 @@ Tests are organized by:
 ## Quality Assurance
 
 ### Type Safety
+
 - All test methods have complete type annotations
 - Fixtures are properly typed
 - Mock objects use `spec` parameter for type checking
 
 ### Documentation
+
 - Every test has a descriptive docstring
 - Complex scenarios explained in comments
 - README provides comprehensive overview
 
 ### Maintainability
+
 - DRY principle applied through fixtures
 - Clear test organization
 - Consistent naming patterns
@@ -314,6 +360,7 @@ tests/dify/test_workspace_client.py::....... [100%]
 ## Future Enhancements
 
 Potential areas for expansion:
+
 - Integration tests with real Dify API (optional)
 - Performance benchmarking tests
 - Error handling edge cases
@@ -324,11 +371,12 @@ Potential areas for expansion:
 ## Contributing
 
 When adding new tests:
+
 1. Follow existing naming conventions
-2. Add comprehensive docstrings
-3. Use appropriate fixtures from `conftest.py`
-4. Test both success and error scenarios
-5. Update this README with new coverage
+1. Add comprehensive docstrings
+1. Use appropriate fixtures from `conftest.py`
+1. Test both success and error scenarios
+1. Update this README with new coverage
 
 ## References
 

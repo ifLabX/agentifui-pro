@@ -33,6 +33,7 @@ uv run uvicorn src.main:app --reload
 ```
 
 Server runs at http://localhost:8000
+
 - Docs: http://localhost:8000/docs
 - Health: http://localhost:8000/health
 - DB Health: http://localhost:8000/health/db
@@ -78,6 +79,7 @@ uv run alembic history
 ```
 
 **Migration Best Practices**:
+
 - Always review auto-generated migrations before applying
 - Test on copy of production data
 - Never edit applied migrations
@@ -135,6 +137,7 @@ class User(Base):
 ```
 
 Benefits:
+
 - **Time-ordered**: Better index performance
 - **Sortable**: Natural chronological ordering
 - **Native**: Database-side generation
@@ -143,6 +146,7 @@ Benefits:
 ## Troubleshooting
 
 **Database connection failed**
+
 ```bash
 # Check PostgreSQL version
 psql --version  # Must be 18+
@@ -156,6 +160,7 @@ curl http://localhost:8000/health/db
 ```
 
 **Tests failing**
+
 ```bash
 # Clear caches
 uv sync
@@ -167,10 +172,10 @@ uv run pytest -vv --tb=short
 ## Contributing
 
 1. Create feature branch
-2. Make changes following code standards
-3. Run tests: `uv run pytest`
-4. Run linting: `uv run ruff check`
-5. Commit: `git commit -m "feat: description"`
-6. Create PR
+1. Make changes following code standards
+1. Run tests: `uv run pytest`
+1. Run linting: `uv run ruff check`
+1. Commit: `git commit -m "feat: description"`
+1. Create PR
 
 See [AGENTS.md](../AGENTS.md) for detailed coding standards and conventions.

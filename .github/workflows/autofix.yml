@@ -26,4 +26,12 @@ jobs:
           # Format code
           uv run ruff format .
 
+      - name: Format Markdown
+        run: |
+          # Avoid web/ (Prettier) and .github/ (autofix.ci restriction)
+          find . -name '*.md' \
+            -not -path './web/*' \
+            -not -path './.github/*' \
+            -print0 | xargs -0 -r uvx mdformat
+
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27

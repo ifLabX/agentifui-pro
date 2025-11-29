@@ -6,6 +6,7 @@
 **Input**: User description: "The current situation requires ensuring that running `uv run pytest` under the `api` directory passes all tests, while also cleaning up dead code, redundant code, or unnecessary environment variables. Everything must comply with FastAPI best practices. The main focus right now is to explore the `@api/` directory, analyze why many pytest tests are failing, attempt solutions, and then write documentation based on the findings."
 
 ## Execution Flow (main)
+
 ```
 1. Analyze pytest failures (28 failed, 81 passed out of 109 tests)
    → Categorize failures by root cause
@@ -23,27 +24,31 @@
 6. Return: SUCCESS (all tests pass, code cleaned)
 ```
 
----
+______________________________________________________________________
 
 ## ⚡ Quick Guidelines
+
 - ✅ Focus on fixing test failures and removing technical debt
 - ✅ Ensure FastAPI best practices compliance
 - ✅ Document all findings for future reference
 
----
+______________________________________________________________________
 
 ## User Scenarios & Testing
 
 ### Primary User Story
+
 As a developer working on the agentifui-pro API, I need all pytest tests to pass reliably so that I can confidently deploy code and maintain high quality standards. The codebase should follow FastAPI best practices and be free of dead code or unused configurations.
 
 ### Acceptance Scenarios
+
 1. **Given** the api directory with 109 tests, **When** running `uv run pytest`, **Then** all tests should pass with 0 failures
-2. **Given** the codebase with environment variables in `.env.example`, **When** reviewing configurations, **Then** all variables should be actively used in the code
-3. **Given** the FastAPI application, **When** validating against best practices, **Then** it should follow async patterns, proper dependency injection, and middleware configuration
-4. **Given** deprecated Pydantic patterns, **When** running tests, **Then** no deprecation warnings should appear
+1. **Given** the codebase with environment variables in `.env.example`, **When** reviewing configurations, **Then** all variables should be actively used in the code
+1. **Given** the FastAPI application, **When** validating against best practices, **Then** it should follow async patterns, proper dependency injection, and middleware configuration
+1. **Given** deprecated Pydantic patterns, **When** running tests, **Then** no deprecation warnings should appear
 
 ### Edge Cases
+
 - What happens when greenlet library is missing from dependencies?
 - How does the test suite handle database connection failures?
 - What occurs when Pydantic Field uses deprecated `env` parameter?
@@ -52,6 +57,7 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 ## Requirements
 
 ### Functional Requirements
+
 - **FR-001**: Test suite MUST pass all 109 tests without failures
 - **FR-002**: System MUST include greenlet library in dependencies for SQLAlchemy async operations
 - **FR-003**: Code MUST use Pydantic v2 ConfigDict instead of deprecated class-based config
@@ -64,6 +70,7 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 - **FR-010**: All code MUST follow FastAPI best practices for async patterns and dependency injection
 
 ### Non-Functional Requirements
+
 - **NFR-001**: Test execution time MUST remain under 1 second for the full suite
 - **NFR-002**: Code coverage SHOULD be maintained at minimum 80%
 - **NFR-003**: No deprecation warnings SHOULD appear during test execution
@@ -72,6 +79,7 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 ### Key Entities
 
 **Test Failure Categories**:
+
 - **Missing Dependencies**: 5 failures related to greenlet library not being explicitly declared
 - **Pydantic Deprecations**: 26 warnings about Field `env` parameter and class-based config
 - **Middleware Access Issues**: 3 failures accessing `app.middleware_stack` incorrectly
@@ -80,44 +88,51 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 - **File Structure Validation**: 1 failure in quickstart file structure checks
 
 **Environment Variables Audit**:
+
 - Active: DATABASE_URL, APP_NAME, APP_VERSION, LOG_LEVEL, CORS_ORIGINS, etc.
 - Potentially Unused: SECRET_KEY (marked "for future use"), USE_UUIDV7 (no implementation found)
 - Deprecated Usage: CORS_ORIGINS, CORS_ALLOW_METHODS, CORS_ALLOW_HEADERS (using deprecated Field env parameter)
 
 **Code Structure**:
+
 - src/main.py: FastAPI application factory and lifespan management
 - src/config/settings.py: Pydantic Settings with validators (needs migration to v2 patterns)
 - src/database/connection.py: Async SQLAlchemy engine with pooling
 - src/health/endpoints.py: Health check endpoints with database status
 - tests/: 10 test modules covering 109 test cases
 
----
+______________________________________________________________________
 
 ## Analysis Summary
 
 ### Critical Issues Identified
 
 **1. Missing Greenlet Dependency (Priority: High)**
+
 - SQLAlchemy async operations require greenlet
 - Present in uv.lock but not explicitly declared in pyproject.toml
 - Causes 5 test failures in async engine disposal and connection management
 
 **2. Pydantic V2 Migration Incomplete (Priority: High)**
+
 - Using deprecated `env` parameter in Field declarations (26 warnings)
 - Should use `json_schema_extra` or ValidationInfo instead
 - Class-based config deprecation warnings
 
 **3. Test Assertions Incorrect (Priority: High)**
+
 - Middleware stack access using wrong attribute path
 - Expected status codes mismatch (expecting 503, getting 500)
 - Error enum validation not enforcing properly
 
 **4. Configuration Issues (Priority: Medium)**
+
 - Some environment variables marked "for future use" but no implementation
 - USE_UUIDV7 flag has no corresponding code
 - SECRET_KEY validation complex but feature unused
 
 **5. FastAPI Best Practices (Priority: Medium)**
+
 - Lifespan management correctly implemented
 - Async patterns properly used
 - Dependency injection needs verification in tests
@@ -126,10 +141,12 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 ### Dead Code Candidates
 
 **Environment Variables**:
+
 - `SECRET_KEY`, `ALGORITHM`, `ACCESS_TOKEN_EXPIRE_MINUTES`: Security settings with no auth implementation
 - `USE_UUIDV7`: Feature flag with no corresponding UUID generation code
 
 **Potential Cleanup Areas**:
+
 - Remove unused security configuration if no auth system planned
 - Simplify Field declarations to use Pydantic v2 patterns
 - Remove or implement USE_UUIDV7 feature
@@ -137,6 +154,7 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 ### FastAPI Best Practices Compliance
 
 **✅ Followed**:
+
 - Async/await patterns throughout
 - Lifespan context manager for startup/shutdown
 - Dependency injection with get_settings()
@@ -145,33 +163,37 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 - Pydantic Settings for configuration
 
 **⚠️ Needs Review**:
+
 - Settings singleton pattern using lru_cache is correct but could use dependency injection override pattern for testing
 - Error handling middleware setup could expose more metrics
 - Database session management in session.py needs verification
 
 **❌ Issues**:
+
 - Tests accessing internal FastAPI attributes incorrectly (middleware_stack)
 - Some error responses returning 500 instead of proper status codes
 - Database health checks not handling errors gracefully
 
----
+______________________________________________________________________
 
 ## Review & Acceptance Checklist
 
 ### Content Quality
+
 - [x] No implementation details (languages, frameworks, APIs)
 - [x] Focused on user value and business needs
 - [x] Written for non-technical stakeholders
 - [x] All mandatory sections completed
 
 ### Requirement Completeness
+
 - [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable (all 109 tests pass)
 - [x] Scope is clearly bounded (api/ directory only)
 - [x] Dependencies and assumptions identified (greenlet, Pydantic v2)
 
----
+______________________________________________________________________
 
 ## Execution Status
 
@@ -183,13 +205,13 @@ As a developer working on the agentifui-pro API, I need all pytest tests to pass
 - [x] Entities identified (test failures, env variables, code structure)
 - [x] Review checklist passed
 
----
+______________________________________________________________________
 
 ## Next Steps
 
 1. **Fix Dependencies**: Add greenlet to pyproject.toml explicitly
-2. **Migrate Pydantic**: Update Field declarations to v2 patterns
-3. **Fix Tests**: Correct middleware assertions and status code expectations
-4. **Clean Dead Code**: Remove or implement unused environment variables
-5. **Validate Best Practices**: Ensure all FastAPI patterns are optimal
-6. **Document**: Create comprehensive implementation guide in claudedocs/
+1. **Migrate Pydantic**: Update Field declarations to v2 patterns
+1. **Fix Tests**: Correct middleware assertions and status code expectations
+1. **Clean Dead Code**: Remove or implement unused environment variables
+1. **Validate Best Practices**: Ensure all FastAPI patterns are optimal
+1. **Document**: Create comprehensive implementation guide in claudedocs/

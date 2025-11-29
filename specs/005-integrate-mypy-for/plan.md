@@ -4,6 +4,7 @@
 **Input**: Feature specification from `/specs/005-integrate-mypy-for/spec.md`
 
 ## Execution Flow (/plan command scope)
+
 ```
 1. Load feature spec from Input path ✓
 2. Fill Technical Context ✓
@@ -28,7 +29,7 @@ Integrate mypy static type checker into the Python backend (api/) to provide com
 **Testing**: pytest (backend coverage validation), mypy --install-types for type stub management
 **Target Platform**: Linux/macOS development environments, CI/CD pipeline
 **Project Type**: Web (backend-only integration, frontend already has TypeScript strict mode)
-**Performance Goals**: <5 seconds incremental check for typical single-file changes, <30 seconds full codebase check
+**Performance Goals**: \<5 seconds incremental check for typical single-file changes, \<30 seconds full codebase check
 **Constraints**: Must not block development workflow, gradual adoption support for existing code, compatible with async/await patterns
 **Scale/Scope**: ~15 Python files currently, scaling to 100+ files over project lifetime
 
@@ -37,18 +38,23 @@ Integrate mypy static type checker into the Python backend (api/) to provide com
 ## Constitution Check
 
 ### I. Dual-Stack Excellence
+
 ✅ **PASS** - Backend-only change, no cross-stack impact. Type checking enhances backend quality without affecting frontend.
 
 ### II. Quality-First Development
+
 ✅ **PASS** - Aligns perfectly with quality-first principle. Adds another automated quality gate (type checking) alongside existing Ruff linting.
 
 ### III. Test-Driven Implementation
+
 ✅ **PASS** - Type checking complements TDD by catching type errors before tests run. Integration with pytest ensures test code is also type-checked.
 
 ### IV. Internationalization by Design
+
 ✅ **PASS** - Not applicable to backend tooling integration.
 
 ### V. Convention Consistency
+
 ✅ **PASS** - Configuration follows project standards (pyproject.toml, English comments, conventional structure).
 
 **Overall**: No constitutional violations. This is pure quality infrastructure enhancement.
@@ -56,6 +62,7 @@ Integrate mypy static type checker into the Python backend (api/) to provide com
 ## Project Structure
 
 ### Documentation (this feature)
+
 ```
 specs/005-integrate-mypy-for/
 ├── plan.md              # This file
@@ -67,6 +74,7 @@ specs/005-integrate-mypy-for/
 ```
 
 ### Source Code (repository root)
+
 ```
 api/
 ├── pyproject.toml           # Add [tool.mypy] configuration section
@@ -93,30 +101,35 @@ api/
 **Research completed using Context7 for mypy best practices:**
 
 ### Decision 1: Strict Mode Configuration
+
 - **Decision**: Enable `strict = true` in pyproject.toml with selective overrides for third-party libraries
 - **Rationale**: Project is early-stage with ~15 files, making it ideal for strict mode adoption. Strict mode includes all recommended checks: disallow_untyped_defs, disallow_untyped_calls, disallow_any_generics, warn_return_any, no_implicit_reexport
 - **Alternatives considered**: Gradual typing (rejected - project too small to need gradual approach), Custom flag selection (rejected - strict mode is community best practice)
 - **Source**: mypy official docs strict configuration guidelines
 
 ### Decision 2: Pydantic Plugin Integration
+
 - **Decision**: Use `pydantic.mypy` plugin for enhanced Pydantic model validation
 - **Rationale**: Project uses Pydantic extensively for FastAPI request/response models. Plugin provides better type inference for Pydantic's dynamic features
 - **Configuration**: `plugins = ["pydantic.mypy"]` in [tool.mypy] section
 - **Source**: Pydantic documentation for mypy integration
 
 ### Decision 3: Async Pattern Support
+
 - **Decision**: No special configuration needed - mypy 1.8+ has native async/await support
 - **Rationale**: Project uses asyncpg and async SQLAlchemy patterns. Modern mypy versions correctly handle AsyncIterator, Coroutine, Awaitable types
 - **Validation**: Confirmed via Context7 research showing mypy's async protocol support
 - **Source**: mypy async protocol documentation
 
 ### Decision 4: Migration File Handling
+
 - **Decision**: Exclude `migrations/` directory from strict checking with `[[tool.mypy.overrides]]`
 - **Rationale**: Alembic-generated migration files have specific patterns that may not align with strict type checking. Allow Alembic to manage these files without type enforcement
 - **Configuration**: `module = "migrations.*"`, `ignore_errors = true`
 - **Source**: Community best practices for Alembic + mypy integration
 
 ### Decision 5: Third-Party Library Stubs
+
 - **Decision**: Use `ignore_missing_imports = true` for asyncpg and other libraries without type stubs
 - **Rationale**: Some async libraries lack complete type stub coverage. Rather than blocking development, allow these imports with type inference where possible
 - **Configuration**: Per-module overrides for specific libraries
@@ -124,18 +137,21 @@ api/
 - **Source**: mypy documentation on handling missing imports
 
 ### Decision 6: Cache Strategy
+
 - **Decision**: Use default incremental caching with `.mypy_cache/` directory
 - **Rationale**: Incremental mode provides 5-10x speedup on subsequent runs. Default cache location aligns with project conventions
-- **Performance**: Expect <5s for single-file changes, <30s for full codebase
+- **Performance**: Expect \<5s for single-file changes, \<30s for full codebase
 - **Source**: mypy incremental mode documentation
 
 ### Decision 7: Pre-commit Integration
+
 - **Decision**: Add mypy check to Husky pre-commit hook alongside existing Ruff checks
 - **Rationale**: Catch type errors before commit, maintaining quality-first development principle
 - **Implementation**: Workspace-aware hook runs mypy only on api/ changes
 - **Source**: Project's existing Husky configuration pattern
 
 ### Decision 8: CI/CD Integration
+
 - **Decision**: Add mypy check as separate CI step after linting, before tests
 - **Rationale**: Type checking is independent from linting and testing, should fail fast if types are wrong
 - **Order**: lint → type-check → test → build
@@ -148,6 +164,7 @@ api/
 ### 1. Data Model (Configuration Schema)
 
 **Entity**: Mypy Configuration
+
 - **Location**: `api/pyproject.toml` under `[tool.mypy]` section
 - **Fields**:
   - `python_version`: "3.12" (matches project requirement)
@@ -165,12 +182,14 @@ api/
   - `asyncpg.*`: ignore_missing_imports = true (if needed)
 
 **Entity**: Type Cache
+
 - **Location**: `api/.mypy_cache/` (auto-generated)
 - **Purpose**: Store incremental type checking state
 - **Lifecycle**: Regenerated on file changes, cleaned on cache invalidation
 - **Size**: ~1-5MB for current codebase, scales linearly
 
 **Entity**: Pre-commit Hook Configuration
+
 - **Location**: `.husky/pre-commit`
 - **Workspace Detection**: Check if `api/` has changes before running mypy
 - **Command**: `cd api && uv run mypy .`
@@ -179,6 +198,7 @@ api/
 ### 2. API Contracts
 
 **Contract 1: Type Checking Service**
+
 ```yaml
 Input:
   - Python source files in api/src/
@@ -198,6 +218,7 @@ Guarantees:
 ```
 
 **Contract 2: Pre-commit Type Check**
+
 ```yaml
 Trigger: Git commit with changes in api/
 
@@ -212,6 +233,7 @@ Failure: Exit code 1, commit blocked, errors displayed
 ```
 
 **Contract 3: CI/CD Type Check**
+
 ```yaml
 Stage: After linting, before testing
 
@@ -229,6 +251,7 @@ Output:
 ### 3. Contract Tests
 
 **Test File**: `tests/test_type_checking.py`
+
 ```python
 """Contract tests for mypy type checking integration."""
 
@@ -271,6 +294,7 @@ def test_type_error_detection():
 ### 4. Integration Test Scenarios
 
 **Scenario 1: Valid Type Annotations**
+
 ```python
 # Given: FastAPI endpoint with proper type hints
 from fastapi import APIRouter
@@ -287,6 +311,7 @@ async def health_check() -> HealthResponse:
 ```
 
 **Scenario 2: Type Mismatch Detection**
+
 ```python
 # Given: Function with incorrect return type
 async def get_user_age(user_id: int) -> int:
@@ -297,6 +322,7 @@ async def get_user_age(user_id: int) -> int:
 ```
 
 **Scenario 3: Async Pattern Validation**
+
 ```python
 # Given: Async function with coroutine handling
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -323,45 +349,48 @@ Update performed via: `.specify/scripts/bash/update-agent-context.sh claude`
 ## Phase 2: Task Planning Approach
 
 **Task Generation Strategy**:
+
 1. Load contracts from Phase 1
-2. Create dependency-ordered task list following TDD principles
-3. Each contract generates:
+1. Create dependency-ordered task list following TDD principles
+1. Each contract generates:
    - Configuration task
    - Contract test task [P]
    - Implementation task to make test pass
    - Integration validation task
 
 **Ordering Strategy**:
+
 - **Tests First**: Contract tests before implementation (TDD)
 - **Dependencies**: Configuration → Tests → Implementation → Integration
 - **Parallelizable**: Tests can be written in parallel [P]
 - **Sequential**: Configuration must complete before testing
 
 **Estimated Task Breakdown**:
+
 1. Add mypy to dev dependencies (pyproject.toml)
-2. Create mypy configuration section [P]
-3. Write contract test for mypy installation [P]
-4. Write contract test for configuration validation [P]
-5. Write contract test for strict mode [P]
-6. Write contract test for cache creation [P]
-7. Write contract test for Pydantic plugin [P]
-8. Write contract test for exclusions [P]
-9. Write contract test for error detection [P]
-10. Run mypy on codebase, document initial errors
-11. Fix type errors in src/models/ [P per file]
-12. Fix type errors in src/schemas/ [P per file]
-13. Fix type errors in src/api/ [P per file]
-14. Fix type errors in src/core/ [P per file]
-15. Fix type errors in src/middleware/ [P per file]
-16. Fix type errors in tests/ [P per file]
-17. Verify all contract tests pass
-18. Update pre-commit hook configuration
-19. Test pre-commit hook with intentional type error
-20. Add .mypy_cache to .gitignore
-21. Create quickstart.md validation guide
-22. Run full quickstart validation
-23. Update CLAUDE.md with mypy context
-24. Document mypy integration in project README (if needed)
+1. Create mypy configuration section [P]
+1. Write contract test for mypy installation [P]
+1. Write contract test for configuration validation [P]
+1. Write contract test for strict mode [P]
+1. Write contract test for cache creation [P]
+1. Write contract test for Pydantic plugin [P]
+1. Write contract test for exclusions [P]
+1. Write contract test for error detection [P]
+1. Run mypy on codebase, document initial errors
+1. Fix type errors in src/models/ [P per file]
+1. Fix type errors in src/schemas/ [P per file]
+1. Fix type errors in src/api/ [P per file]
+1. Fix type errors in src/core/ [P per file]
+1. Fix type errors in src/middleware/ [P per file]
+1. Fix type errors in tests/ [P per file]
+1. Verify all contract tests pass
+1. Update pre-commit hook configuration
+1. Test pre-commit hook with intentional type error
+1. Add .mypy_cache to .gitignore
+1. Create quickstart.md validation guide
+1. Run full quickstart validation
+1. Update CLAUDE.md with mypy context
+1. Document mypy integration in project README (if needed)
 
 **Estimated Output**: 24-30 numbered, ordered tasks in tasks.md
 
@@ -380,6 +409,7 @@ Update performed via: `.specify/scripts/bash/update-agent-context.sh claude`
 ## Progress Tracking
 
 **Phase Status**:
+
 - [x] Phase 0: Research complete
 - [x] Phase 1: Design complete
 - [x] Phase 2: Task planning approach described
@@ -388,10 +418,12 @@ Update performed via: `.specify/scripts/bash/update-agent-context.sh claude`
 - [ ] Phase 5: Validation passed
 
 **Gate Status**:
+
 - [x] Initial Constitution Check: PASS
 - [x] Post-Design Constitution Check: PASS
 - [x] All technical unknowns resolved
 - [x] No complexity deviations
 
----
+______________________________________________________________________
+
 *Based on Constitution v1.1.0 - See `.specify/memory/constitution.md`*

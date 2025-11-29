@@ -14,36 +14,42 @@ This document outlines all components involved in the src/ layout migration, cat
 All application modules move from `api/` to `api/src/`:
 
 1. **config/**
+
    - Current: `api/config/`
    - Target: `api/src/config/`
    - Contents: `__init__.py`, `settings.py`, `logging.py`
    - Dependencies: None (imported by other modules)
 
-2. **database/**
+1. **database/**
+
    - Current: `api/database/`
    - Target: `api/src/database/`
    - Contents: `__init__.py`, `connection.py`, `session.py`, `base.py`
    - Dependencies: config (for settings)
 
-3. **models/**
+1. **models/**
+
    - Current: `api/models/`
    - Target: `api/src/models/`
    - Contents: `__init__.py`, `base.py`, SQLAlchemy model files
    - Dependencies: database (for base classes)
 
-4. **health/**
+1. **health/**
+
    - Current: `api/health/`
    - Target: `api/src/health/`
    - Contents: `__init__.py`, `endpoints.py`, `schemas.py`
    - Dependencies: database (for health checks)
 
-5. **middleware/**
+1. **middleware/**
+
    - Current: `api/middleware/`
    - Target: `api/src/middleware/`
    - Contents: `__init__.py`, `error_handler.py`
    - Dependencies: config (for logging)
 
-6. **main.py**
+1. **main.py**
+
    - Current: `api/main.py`
    - Target: `api/src/main.py`
    - Dependencies: All above modules (FastAPI app entry point)
@@ -83,22 +89,26 @@ api/src/
 ### Configuration Files
 
 1. **pyproject.toml**
+
    - Update `[tool.setuptools.packages.find]` section
    - Add `where = ["src"]` directive
    - Update any hardcoded package references
    - Change: Package discovery configuration
 
-2. **alembic.ini**
+1. **alembic.ini**
+
    - Update `script_location` (remains `migrations`)
    - No changes needed (migrations stay at root)
    - Keep existing configuration
 
-3. **.ruff.toml**
+1. **.ruff.toml**
+
    - Add `src = ["src"]` to `[tool.ruff]` section
    - Update source directory configuration
    - Change: Linting scope definition
 
-4. **pytest configuration (pyproject.toml)**
+1. **pytest configuration (pyproject.toml)**
+
    - Add `[tool.pytest.ini_options]` section
    - Set `pythonpath = ["src"]`
    - Set `testpaths = ["tests"]`
@@ -125,34 +135,41 @@ api/src/
 ### Files Staying at Project Root
 
 1. **migrations/**
+
    - Location: `api/migrations/` (unchanged)
    - Reason: Standard practice, Alembic convention
    - Contents: All existing migration files
 
-2. **tests/**
+1. **tests/**
+
    - Location: `api/tests/` (unchanged)
    - Reason: Standard practice, pytest convention
-   - Update: Test files will import from src.* modules
+   - Update: Test files will import from src.\* modules
    - Contents: All existing test files
 
-3. **.env.example**
+1. **.env.example**
+
    - Location: `api/.env.example` (unchanged)
    - Reason: Template file, no code changes needed
    - Usage: Source for creating .env if missing
 
-4. **pyproject.toml**
+1. **pyproject.toml**
+
    - Location: `api/pyproject.toml` (updated, not moved)
    - Reason: Project configuration file stays at root
 
-5. **alembic.ini**
+1. **alembic.ini**
+
    - Location: `api/alembic.ini` (updated, not moved)
    - Reason: Alembic configuration file stays at root
 
-6. **.ruff.toml**
+1. **.ruff.toml**
+
    - Location: `api/.ruff.toml` (updated, not moved)
    - Reason: Ruff configuration file stays at root
 
-7. **.env** (if exists)
+1. **.env** (if exists)
+
    - Location: `api/.env` (unchanged)
    - Reason: User configuration, must preserve
    - Action: Copy from .env.example if missing
@@ -164,6 +181,7 @@ api/src/
 After migration, Python will resolve imports as follows:
 
 **Before** (flat layout):
+
 ```python
 from config.settings import get_settings
 from database.connection import get_engine
@@ -171,6 +189,7 @@ from models.base import Base
 ```
 
 **After** (src/ layout):
+
 ```python
 # Same imports in source files - no changes needed
 from config.settings import get_settings
@@ -184,12 +203,14 @@ from models.base import Base
 Tests will need explicit src. prefix since they're outside src/ directory:
 
 **Before**:
+
 ```python
 from main import app
 from config.settings import get_settings
 ```
 
 **After**:
+
 ```python
 from src.main import app
 from src.config.settings import get_settings
@@ -198,12 +219,14 @@ from src.config.settings import get_settings
 ### Alembic Imports (migrations/env.py)
 
 **Before**:
+
 ```python
 from models.base import Base
 from config.settings import get_settings
 ```
 
 **After**:
+
 ```python
 from src.models.base import Base
 from src.config.settings import get_settings
@@ -212,23 +235,27 @@ from src.config.settings import get_settings
 ## Migration Validation Points
 
 ### Phase 1: Directory Structure
+
 - [ ] src/ directory created
 - [ ] All modules moved successfully
 - [ ] All __init__.py files present
 - [ ] No orphaned files in api/ root
 
 ### Phase 2: Configuration Updates
+
 - [ ] pyproject.toml updated
 - [ ] .ruff.toml updated
 - [ ] pytest configuration added
 - [ ] migrations/env.py updated
 
 ### Phase 3: Import Resolution
+
 - [ ] `uv sync` completes without errors
 - [ ] Test imports resolve correctly
 - [ ] Alembic can discover models
 
 ### Phase 4: Functionality Validation
+
 - [ ] All tests pass
 - [ ] API server starts successfully
 - [ ] Health endpoints respond correctly
@@ -239,8 +266,8 @@ from src.config.settings import get_settings
 If migration fails, rollback procedure:
 
 1. **Git rollback**: `git checkout main` (branch-based safety)
-2. **Or manual rollback**:
-   - Move src/* back to api/ root
+1. **Or manual rollback**:
+   - Move src/\* back to api/ root
    - Restore original pyproject.toml
    - Restore original .ruff.toml
    - Restore original migrations/env.py

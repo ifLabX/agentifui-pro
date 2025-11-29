@@ -1,10 +1,10 @@
-
 # Implementation Plan: API Backend Directory Restructuring
 
 **Branch**: `002-migrate-api-backend` | **Date**: 2025-10-02 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/Users/liuyizhou/repos/agentifui-pro/specs/002-migrate-api-backend/spec.md`
 
 ## Execution Flow (/plan command scope)
+
 ```
 1. Load feature spec from Input path
    → ✅ Loaded successfully
@@ -29,6 +29,7 @@
 ```
 
 **IMPORTANT**: The /plan command STOPS at step 9. Phases 2-4 are executed by other commands:
+
 - Phase 2: /tasks command creates tasks.md
 - Phase 3-4: Implementation execution (manual or via tools)
 
@@ -44,7 +45,7 @@ Migrate the Agentifui Pro API backend from flat directory layout to standard Pyt
 **Testing**: pytest 7.0+ with pytest-asyncio, httpx for API testing
 **Target Platform**: Linux/macOS server (FastAPI async runtime)
 **Project Type**: web (backend portion of monorepo with frontend in /web)
-**Performance Goals**: Maintain existing API response times (<200ms p95 for health endpoints)
+**Performance Goals**: Maintain existing API response times (\<200ms p95 for health endpoints)
 **Constraints**: Zero downtime migration, all existing tests must pass, maintain uv compatibility
 **Scale/Scope**: Single backend application with ~8 modules, migrations/, tests/ directories
 
@@ -53,28 +54,37 @@ Migrate the Agentifui Pro API backend from flat directory layout to standard Pyt
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 ### I. Dual-Stack Excellence
+
 **Status**: ✅ PASS
+
 - Backend-only refactoring, no API contract changes
 - Pydantic models remain unchanged, frontend TypeScript interfaces unaffected
 - OpenAPI schema generation continues to work
 
 ### II. Quality-First Development
+
 **Status**: ✅ PASS
+
 - Ruff configuration (.ruff.toml) will be updated for src/ layout
 - All quality gates (linting, formatting, type checking) remain enforced
 - Pre-commit hooks continue to function
 
 ### III. Test-Driven Implementation
+
 **Status**: ✅ PASS (Refactoring Context)
+
 - Existing tests must pass after migration (regression prevention)
 - pytest configuration updated for src/ layout
 - Test discovery mechanisms validated
 
 ### IV. Internationalization by Design
+
 **Status**: ✅ N/A (Backend infrastructure only)
 
 ### V. Convention Consistency
+
 **Status**: ✅ PASS
+
 - Python package naming follows snake_case convention
 - All comments remain in English
 - Conventional commit for the migration
@@ -82,6 +92,7 @@ Migrate the Agentifui Pro API backend from flat directory layout to standard Pyt
 ## Project Structure
 
 ### Documentation (this feature)
+
 ```
 specs/002-migrate-api-backend/
 ├── plan.md              # This file (/plan command output)
@@ -94,6 +105,7 @@ specs/002-migrate-api-backend/
 ### Source Code (repository root)
 
 **Current Structure (api/ directory)**:
+
 ```
 api/
 ├── config/              # Settings and configuration
@@ -111,6 +123,7 @@ api/
 ```
 
 **Target Structure (api/ directory after migration)**:
+
 ```
 api/
 ├── src/                 # All project source code moves here
@@ -136,17 +149,20 @@ api/
 No unknowns exist in Technical Context - all information is specified. Research focuses on best practices:
 
 1. **Python src layout best practices**:
+
    - Research standard src/ layout conventions
    - Package discovery configuration approaches
    - Import path strategies for existing code
 
-2. **Tool configuration patterns**:
+1. **Tool configuration patterns**:
+
    - pytest with src/ layout (pythonpath, import modes)
    - Alembic migration script paths
    - Ruff source code directory specification
    - uvicorn module loading from src/
 
-3. **Migration safety patterns**:
+1. **Migration safety patterns**:
+
    - Strategies for preserving user .env modifications
    - Import path update approaches (absolute vs relative)
    - Validation techniques for zero-regression migrations
@@ -160,26 +176,31 @@ No unknowns exist in Technical Context - all information is specified. Research 
 This is a refactoring feature with no new API contracts or data models. Phase 1 focuses on migration design and validation strategy:
 
 1. **Extract migration components** → `data-model.md`:
+
    - Source files to move (config/, database/, health/, middleware/, models/, main.py)
    - Files to update (pyproject.toml, alembic.ini, .ruff.toml, pytest configs)
    - Files to preserve (migrations/, tests/, .env.example)
 
-2. **No new API contracts needed**:
+1. **No new API contracts needed**:
+
    - This is infrastructure refactoring only
    - All existing endpoints remain unchanged
    - Skip contracts/ directory generation
 
-3. **No new tests needed** (validation-focused instead):
+1. **No new tests needed** (validation-focused instead):
+
    - Existing test suite must pass after migration
    - Import validation strategy
    - Environment configuration validation
 
-4. **Extract validation scenarios** → `quickstart.md`:
+1. **Extract validation scenarios** → `quickstart.md`:
+
    - Step-by-step migration execution
    - Validation commands (uv sync, pytest, health check)
    - Rollback procedure if issues arise
 
-5. **Update agent file incrementally**:
+1. **Update agent file incrementally**:
+
    - Run `.specify/scripts/bash/update-agent-context.sh claude`
    - Add src/ layout information to CLAUDE.md
    - Update Active Technologies with migration details
@@ -191,6 +212,7 @@ This is a refactoring feature with no new API contracts or data models. Phase 1 
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
 
 **Task Generation Strategy**:
+
 - Load `.specify/templates/tasks-template.md` as base
 - Generate tasks from migration components in data-model.md
 - Each directory to move → relocation task [P where safe]
@@ -198,11 +220,12 @@ This is a refactoring feature with no new API contracts or data models. Phase 1 
 - Validation steps from quickstart.md → verification tasks
 
 **Ordering Strategy**:
+
 1. Setup: Create src/ directory structure with __init__.py files
-2. Move: Relocate all source modules to src/ [some parallel]
-3. Update: Modify all configuration files for src/ layout
-4. Validate: Run uv sync, pytest, import checks
-5. Polish: Environment setup, documentation updates
+1. Move: Relocate all source modules to src/ [some parallel]
+1. Update: Modify all configuration files for src/ layout
+1. Validate: Run uv sync, pytest, import checks
+1. Polish: Environment setup, documentation updates
 
 **Estimated Output**: 15-20 numbered, ordered tasks in tasks.md
 
@@ -225,6 +248,7 @@ This is a refactoring feature with no new API contracts or data models. Phase 1 
 *This checklist is updated during execution flow*
 
 **Phase Status**:
+
 - [x] Phase 0: Research complete (/plan command)
 - [x] Phase 1: Design complete (/plan command)
 - [x] Phase 2: Task planning complete (/plan command - describe approach only)
@@ -233,10 +257,12 @@ This is a refactoring feature with no new API contracts or data models. Phase 1 
 - [ ] Phase 5: Validation passed
 
 **Gate Status**:
+
 - [x] Initial Constitution Check: PASS
 - [x] Post-Design Constitution Check: PASS
 - [x] All NEEDS CLARIFICATION resolved (none existed)
 - [x] Complexity deviations documented (none exist)
 
----
+______________________________________________________________________
+
 *Based on Constitution v1.0.1 - See `.specify/memory/constitution.md`*

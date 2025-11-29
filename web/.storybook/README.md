@@ -129,32 +129,32 @@ Some peer dependency warnings may appear but are non-blocking:
 ## Best Practices
 
 1. **Component-First Development**: Build components in isolation before integrating
-2. **Interactive Testing**: Use `play` functions for user interaction testing
-3. **Accessibility**: Leverage `@storybook/addon-a11y` to catch a11y issues early
-4. **Documentation**: Use `autodocs` tag to generate prop tables automatically
-5. **State Examples**: Provide both controlled and uncontrolled variants
-6. **Edge Cases**: Include disabled, loading, error states in stories
-7. **Responsive Testing**: Use viewport addon to test different screen sizes
+1. **Interactive Testing**: Use `play` functions for user interaction testing
+1. **Accessibility**: Leverage `@storybook/addon-a11y` to catch a11y issues early
+1. **Documentation**: Use `autodocs` tag to generate prop tables automatically
+1. **State Examples**: Provide both controlled and uncontrolled variants
+1. **Edge Cases**: Include disabled, loading, error states in stories
+1. **Responsive Testing**: Use viewport addon to test different screen sizes
 
 ## Troubleshooting
 
 ### Storybook won't start
 
 1. Clear cache: `rm -rf node_modules/.cache/storybook`
-2. Reinstall dependencies: `pnpm install`
-3. Check for conflicting versions in `package.json`
+1. Reinstall dependencies: `pnpm install`
+1. Check for conflicting versions in `package.json`
 
 ### Stories not appearing
 
 1. Verify file naming: `*.stories.tsx`
-2. Check `main.js` stories glob patterns
-3. Ensure default export exists in story file
+1. Check `main.js` stories glob patterns
+1. Ensure default export exists in story file
 
 ### Styling issues
 
 1. Verify `app/globals.css` is imported in `preview.ts`
-2. Check Tailwind config is correctly referenced
-3. Ensure CSS variables are defined in globals.css
+1. Check Tailwind config is correctly referenced
+1. Ensure CSS variables are defined in globals.css
 
 ## Resources
 

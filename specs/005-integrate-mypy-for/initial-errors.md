@@ -48,6 +48,7 @@
 **Locations**: All test files, some source files
 
 **Example**:
+
 ```python
 # Current (error)
 def test_something():
@@ -66,6 +67,7 @@ def test_something() -> None:
 **Locations**: `src/models/errors.py`, validators
 
 **Example**:
+
 ```python
 # Current (error)
 validation_errors: list[dict]
@@ -81,6 +83,7 @@ validation_errors: list[dict[str, Any]]
 **Location**: `src/core/config.py:123`
 
 **Example**:
+
 ```python
 # Current (error)
 from pydantic import ConfigDict
@@ -107,6 +110,7 @@ model_config = SettingsConfigDict(
 **Location**: `src/core/config.py` validators
 
 **Example**:
+
 ```python
 # Current (error)
 @field_validator("database_url")
@@ -126,6 +130,7 @@ def validate_database_url(cls, v: Any) -> Any:
 **Location**: `tests/test_error_schemas.py`
 
 **Example**:
+
 ```python
 # Current (error)
 ErrorResponse(message="Test", timestamp="...")  # Missing 'error' field
@@ -141,16 +146,20 @@ ErrorResponse(error="TEST_ERROR", message="Test", timestamp="...")
 ### High Priority (Core Application)
 
 1. **src/core/config.py** (6 errors)
+
    - Fix ConfigDict → SettingsConfigDict
    - Add validator type annotations
 
-2. **src/models/errors.py** (2 errors)
+1. **src/models/errors.py** (2 errors)
+
    - Add generic type parameters
 
-3. **src/middleware/error_handler.py** (6 errors)
+1. **src/middleware/error_handler.py** (6 errors)
+
    - Add return type annotations
 
-4. **src/main.py, src/core/db.py, src/api/endpoints/health.py** (6 errors total)
+1. **src/main.py, src/core/db.py, src/api/endpoints/health.py** (6 errors total)
+
    - Add missing type annotations
 
 ### Medium Priority (Test Infrastructure)
@@ -170,25 +179,25 @@ ErrorResponse(error="TEST_ERROR", message="Test", timestamp="...")
 Tests account for 89% of errors (171/191). Consider:
 
 1. **Option A (Recommended)**: Fix all errors in source code first (20 errors), then gradually fix test files
-2. **Option B**: Exclude tests temporarily via mypy override:
+1. **Option B**: Exclude tests temporarily via mypy override:
    ```toml
    [[tool.mypy.overrides]]
    module = "tests.*"
    ignore_errors = true
    ```
-3. **Option C**: Use `--exclude` flag: `mypy . --exclude 'tests/'`
+1. **Option C**: Use `--exclude` flag: `mypy . --exclude 'tests/'`
 
 **Recommendation**: Use Option A - fix source code errors first, then tests. This maintains type safety across the entire codebase.
 
 ## Next Steps
 
 1. ✅ Document initial errors (this file)
-2. ⏳ Fix source code errors (20 errors across 6 files)
-3. ⏳ Fix test infrastructure (conftest.py - 37 errors)
-4. ⏳ Fix individual test files (134 errors)
-5. ⏳ Verify all errors resolved
-6. ⏳ Update pre-commit hook
-7. ⏳ Performance validation
+1. ⏳ Fix source code errors (20 errors across 6 files)
+1. ⏳ Fix test infrastructure (conftest.py - 37 errors)
+1. ⏳ Fix individual test files (134 errors)
+1. ⏳ Verify all errors resolved
+1. ⏳ Update pre-commit hook
+1. ⏳ Performance validation
 
 ## Detailed Error List (Sample)
 
@@ -224,6 +233,6 @@ src/models/errors.py:154:29: error: Missing type parameters for generic type "di
                             ^
 ```
 
----
+______________________________________________________________________
 
 **Full error output**: See `/tmp/mypy_full_output.txt`

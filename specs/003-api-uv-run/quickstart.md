@@ -11,7 +11,7 @@
 - PostgreSQL database running (for database health tests)
 - Environment variables configured in `api/.env`
 
----
+______________________________________________________________________
 
 ## Quick Verification (30 seconds)
 
@@ -28,12 +28,13 @@ uv run pytest
 ```
 
 **Success Criteria**:
+
 - ✅ 109 tests passed
 - ✅ 0 tests failed
 - ✅ 0 deprecation warnings
 - ✅ Execution time < 1 second
 
----
+______________________________________________________________________
 
 ## Step-by-Step Verification
 
@@ -198,7 +199,7 @@ wc -l api/.env.example
 # Expected: ~35 lines (down from ~51)
 ```
 
----
+______________________________________________________________________
 
 ## Regression Testing
 
@@ -214,6 +215,7 @@ uv run pytest --cov=src --cov-report=term-missing
 ### Specific Bug Scenarios
 
 **Test 1: Greenlet Import**
+
 ```bash
 uv run python -c "
 from database.connection import get_async_engine
@@ -227,6 +229,7 @@ print('✅ Async engine disposal works')
 ```
 
 **Test 2: Pydantic Field Loading**
+
 ```bash
 uv run python -c "
 import os
@@ -239,6 +242,7 @@ print('✅ Environment variables load correctly')
 ```
 
 **Test 3: Error Status Codes**
+
 ```bash
 uv run python -c "
 from fastapi.testclient import TestClient
@@ -250,7 +254,7 @@ print('✅ Health endpoints return correct status codes')
 "
 ```
 
----
+______________________________________________________________________
 
 ## Performance Benchmarks
 
@@ -269,13 +273,14 @@ done
 # Expected: Each file < 0.2s
 ```
 
----
+______________________________________________________________________
 
 ## Troubleshooting
 
 ### Issue: Deprecation Warnings Still Appear
 
 **Solution**:
+
 ```bash
 # Check for remaining env parameters
 grep -n "env=" api/src/config/settings.py
@@ -288,6 +293,7 @@ grep -n "env=" api/src/config/settings.py
 ### Issue: Greenlet Import Error
 
 **Solution**:
+
 ```bash
 # Verify greenlet in dependencies
 grep greenlet api/pyproject.toml
@@ -301,6 +307,7 @@ uv add greenlet
 ### Issue: Tests Still Failing
 
 **Solution**:
+
 ```bash
 # Run single failing test with full traceback
 uv run pytest tests/test_name.py::test_function -vv --tb=long
@@ -312,7 +319,7 @@ uv run pytest tests/test_name.py::test_function -vv --tb=long
 # - Wrong Python version (verify 3.12+)
 ```
 
----
+______________________________________________________________________
 
 ## Success Checklist
 
@@ -329,7 +336,7 @@ After all fixes implemented:
 - [ ] Error enum validation enforces type safety
 - [ ] Settings load correctly from environment
 
----
+______________________________________________________________________
 
 ## Production Readiness
 
@@ -365,6 +372,6 @@ curl http://localhost:8000/health/db
 # OR: HTTP 503 {"status": "unhealthy", ...} if DB down
 ```
 
----
+______________________________________________________________________
 
 **Completion**: All tests pass, no warnings, FastAPI best practices compliant ✅

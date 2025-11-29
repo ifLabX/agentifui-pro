@@ -3,11 +3,14 @@
 Single source of truth (CLAUDE.md is a symlink): edit this file only.
 
 ## Stack
+
 - Backend `api/`: FastAPI, Python 3.11+, PostgreSQL 18 (native `uuidv7()`), managed by `uv` (port 8000).
 - Frontend `web/`: Next.js 15 + React 19 + TypeScript, Node.js ≥20, managed by `pnpm` (port 3000).
 
 ## Fast commands
+
 Backend (run inside `api/`):
+
 ```bash
 uv run pytest                  # Tests
 uv run ruff check . --fix      # Lint & fix
@@ -15,6 +18,7 @@ uv run alembic upgrade head    # Migrations
 ```
 
 Frontend (run inside `web/`):
+
 ```bash
 pnpm test                      # Frontend tests
 pnpm fix                       # ESLint only (no Prettier)
@@ -23,6 +27,7 @@ pnpm quality                   # Type-check + lint + prettier check
 ```
 
 ## Rules for AI changes
+
 - Language: Everything in English; comments only when they explain “why”.
 - Commits: Conventional commits (e.g., `feat: ...`, `fix: ...`).
 - Naming: Frontend files/folders kebab-case; translation keys kebab-case (`t('namespace.section.key')`).

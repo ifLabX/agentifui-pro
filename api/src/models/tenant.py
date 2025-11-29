@@ -125,6 +125,7 @@ class TenantMember(Base, TenantAwareMixin, SoftDeleteMixin, VersionedAuditMixin)
         UUID(as_uuid=False),
         ForeignKey("tenants.id", ondelete="CASCADE"),
         nullable=False,
+        comment="Owning tenant identifier",
     )
 
     tenant: Mapped[Tenant] = relationship(back_populates="members")

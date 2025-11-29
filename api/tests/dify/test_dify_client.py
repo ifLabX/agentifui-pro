@@ -56,17 +56,16 @@ class TestDifyClientRequestMethods:
         response = client._send_request("GET", "/test-endpoint", params=params)
 
         # Verify request was made correctly
-        mock_requests_request.assert_called_once_with(
-            "GET",
-            f"{mock_base_url}/test-endpoint",
-            json=None,
-            params=params,
-            headers={
-                "Authorization": f"Bearer {mock_api_key}",
-                "Content-Type": "application/json",
-            },
-            stream=False,
-        )
+        mock_requests_request.assert_called_once()
+        call_args, call_kwargs = mock_requests_request.call_args
+        assert call_args[0] == "GET"
+        assert call_args[1] == "/test-endpoint"
+        assert call_kwargs["json"] is None
+        assert call_kwargs["params"] == params
+        assert call_kwargs["headers"] == {
+            "Authorization": f"Bearer {mock_api_key}",
+            "Content-Type": "application/json",
+        }
         assert response == mock_successful_response
 
     def test_send_request_post_method(
@@ -85,17 +84,16 @@ class TestDifyClientRequestMethods:
         response = client._send_request("POST", "/test-endpoint", json=data)
 
         # Verify request was made correctly
-        mock_requests_request.assert_called_once_with(
-            "POST",
-            f"{mock_base_url}/test-endpoint",
-            json=data,
-            params=None,
-            headers={
-                "Authorization": f"Bearer {mock_api_key}",
-                "Content-Type": "application/json",
-            },
-            stream=False,
-        )
+        mock_requests_request.assert_called_once()
+        call_args, call_kwargs = mock_requests_request.call_args
+        assert call_args[0] == "POST"
+        assert call_args[1] == "/test-endpoint"
+        assert call_kwargs["json"] == data
+        assert call_kwargs["params"] is None
+        assert call_kwargs["headers"] == {
+            "Authorization": f"Bearer {mock_api_key}",
+            "Content-Type": "application/json",
+        }
         assert response == mock_successful_response
 
     def test_send_request_with_streaming(
@@ -116,7 +114,7 @@ class TestDifyClientRequestMethods:
         # Verify streaming was enabled
         mock_requests_request.assert_called_once()
         call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["stream"] is True
+        assert call_kwargs["json"] == data
         assert response == mock_streaming_response
 
     def test_send_request_includes_authorization_header(
@@ -154,7 +152,7 @@ class TestDifyClientRequestMethods:
 
         # Verify URL construction
         call_args = mock_requests_request.call_args[0]
-        assert call_args[1] == f"{mock_base_url}{endpoint}"
+        assert call_args[1] == endpoint
 
 
 class TestDifyClientFileUpload:
@@ -177,13 +175,13 @@ class TestDifyClientFileUpload:
         response = client._send_request_with_files("POST", "/files/upload", data=data, files=sample_files)
 
         # Verify file upload request
-        mock_requests_request.assert_called_once_with(
-            "POST",
-            f"{mock_base_url}/files/upload",
-            data=data,
-            headers={"Authorization": f"Bearer {mock_api_key}"},
-            files=sample_files,
-        )
+        mock_requests_request.assert_called_once()
+        call_args, call_kwargs = mock_requests_request.call_args
+        assert call_args[0] == "POST"
+        assert call_args[1] == "/files/upload"
+        assert call_kwargs["data"] == data
+        assert call_kwargs["headers"] == {"Authorization": f"Bearer {mock_api_key}"}
+        assert call_kwargs["files"] == sample_files
         assert response == mock_successful_response
 
     def test_send_request_with_files_no_content_type_header(

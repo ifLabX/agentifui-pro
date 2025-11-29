@@ -41,6 +41,21 @@ APP_START_TIME = time.time()
 logger = logging.getLogger(__name__)
 
 
+def _compute_migration_status(head_revision: str | None, current_revision: str | None) -> MigrationStatus:
+    """
+    Map Alembic head/current revisions to a status value.
+    """
+    if head_revision is None and current_revision is None:
+        return MigrationStatus.UP_TO_DATE
+    if head_revision is None and current_revision is not None:
+        return MigrationStatus.UNKNOWN
+    if head_revision is not None and current_revision is None:
+        return MigrationStatus.PENDING
+    if head_revision == current_revision:
+        return MigrationStatus.UP_TO_DATE
+    return MigrationStatus.PENDING
+
+
 def _find_project_root(marker: str = "alembic.ini") -> Path | None:
     """
     Walk upward from this file to locate the project root by marker file.
@@ -98,13 +113,7 @@ async def _get_migration_status() -> MigrationStatus:
         logger.exception("Unexpected error resolving current migration revision")
         return MigrationStatus.UNKNOWN
 
-    if not head_revision or not current_revision:
-        return MigrationStatus.UNKNOWN
-
-    if current_revision == head_revision:
-        return MigrationStatus.UP_TO_DATE
-
-    return MigrationStatus.PENDING
+    return _compute_migration_status(head_revision, current_revision)
 
 
 @router.get(

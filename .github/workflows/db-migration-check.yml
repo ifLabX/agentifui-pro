@@ -64,6 +64,7 @@ jobs:
         uses: ./.github/actions/setup-uv
         with:
           working-directory: ${{ inputs.working-directory }}
+          python-version: "3.12"
 
       - name: Check lockfile
         run: uv lock --check

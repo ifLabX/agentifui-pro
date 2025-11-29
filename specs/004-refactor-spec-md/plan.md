@@ -4,6 +4,7 @@
 **Input**: Feature specification from `/specs/004-refactor-spec-md/spec.md`
 
 ## Execution Flow (/plan command scope)
+
 ```
 1. Load feature spec from Input path
    ✅ Loaded: Zero-functionality refactoring to FastAPI best practices
@@ -28,6 +29,7 @@
 ```
 
 **IMPORTANT**: The /plan command STOPS at step 9. Phases 2-4 are executed by other commands:
+
 - Phase 2: /tasks command creates tasks.md
 - Phase 3-4: Implementation execution (manual or via tools)
 
@@ -38,24 +40,28 @@
 **Technical Approach**: Six-phase migration strategy with new structure created first, comprehensive verification gates before cleanup, and zero tolerance for functionality changes. All 106 existing tests must pass with 97%+ coverage maintained throughout the refactoring process.
 
 ## Technical Context
+
 **Language/Version**: Python 3.12+
 **Primary Dependencies**: FastAPI, SQLAlchemy (async), Pydantic, pytest, ruff
 **Storage**: PostgreSQL 18+ (with native uuidv7() support)
 **Testing**: pytest with pytest-asyncio, minimum 80% coverage (currently 97%+)
 **Target Platform**: Linux server (FastAPI application)
 **Project Type**: web (backend refactoring only, frontend unchanged)
-**Performance Goals**: Maintain existing API response times (<200ms p95)
+**Performance Goals**: Maintain existing API response times (\<200ms p95)
 **Constraints**: Zero functionality changes, 100% test pass rate, no API contract modifications
 **Scale/Scope**: ~8 source files affected, 106 tests must continue passing, single developer migration
 
 ## Constitution Check
+
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 ### ✅ I. Dual-Stack Excellence
+
 - **Status**: PASS (N/A - Backend-only refactoring)
 - **Validation**: No frontend changes, no API contract modifications, existing OpenAPI schemas unchanged
 
 ### ✅ II. Quality-First Development
+
 - **Status**: PASS
 - **Validation**:
   - Ruff linting must pass with no new errors (120 char line length)
@@ -64,6 +70,7 @@
   - Existing quality standards maintained, no relaxation
 
 ### ✅ III. Test-Driven Implementation
+
 - **Status**: PASS
 - **Validation**:
   - All 106 existing tests must pass (100% success rate required)
@@ -72,10 +79,12 @@
   - Integration tests validate runtime behavior unchanged
 
 ### ✅ IV. Internationalization by Design
+
 - **Status**: PASS (N/A - Backend-only, no user-facing text changes)
 - **Validation**: No UI components affected, no translation changes
 
 ### ✅ V. Convention Consistency
+
 - **Status**: PASS
 - **Validation**:
   - Python module naming conventions maintained (snake_case)
@@ -84,6 +93,7 @@
   - Import organization follows Python standards (stdlib → third-party → local)
 
 ### 🎯 Spec-Kit Workflow
+
 - **Status**: PASS
 - **Validation**:
   - Specification created: `specs/004-refactor-spec-md/spec.md` ✅
@@ -92,6 +102,7 @@
   - Implementation: Will follow TDD principles with verification gates
 
 ### 🏗️ Architecture Patterns
+
 - **Status**: PASS
 - **Validation**:
   - No new dependencies introduced
@@ -101,6 +112,7 @@
   - Error handling middleware unchanged
 
 ### ⚖️ Quality Gates
+
 - **Status**: PASS
 - **Pre-refactor Baseline**:
   - Type checking: All functions have type hints ✅
@@ -116,6 +128,7 @@
 ## Project Structure
 
 ### Documentation (this feature)
+
 ```
 specs/004-refactor-spec-md/
 ├── spec.md              # Feature specification (completed)
@@ -128,6 +141,7 @@ specs/004-refactor-spec-md/
 ```
 
 ### Source Code (repository root)
+
 ```
 # Backend refactoring only - web/ unchanged
 api/
@@ -172,26 +186,32 @@ api/
 **Structure Decision**: Backend-only refactoring within existing `api/` directory. The new structure follows FastAPI's recommended layered architecture with clear separation between infrastructure (`core/`), data models (`models/`), API contracts (`schemas/`), and API routes (`api/endpoints/`). Frontend (`web/`) is completely unchanged.
 
 ## Phase 0: Outline & Research
+
 **Status**: No research required - refactoring specification is comprehensive
 
 ### Research Analysis
+
 1. **Unknowns Assessment**: Technical Context has no NEEDS CLARIFICATION markers
-2. **Specification Completeness**: REFACTOR_SPEC.md provides:
+
+1. **Specification Completeness**: REFACTOR_SPEC.md provides:
+
    - Complete current and target architecture diagrams
    - Detailed 6-phase migration plan with verification steps
    - Comprehensive import mapping table
    - File-by-file transformation instructions
    - Complete verification checklist (9 verification steps)
 
-3. **Best Practices Validation**:
+1. **Best Practices Validation**:
+
    - **Decision**: FastAPI official project structure (core/, schemas/, api/endpoints/)
    - **Rationale**: Matches FastAPI documentation and Full Stack FastAPI Template patterns
    - **Alternatives considered**:
-     - Domain-driven structure (premature for <10 endpoints)
+     - Domain-driven structure (premature for \<10 endpoints)
      - API versioning with /v1/ (YAGNI - no v2 exists yet)
      - Service layer (unnecessary for current scale)
 
-4. **Technology Stack Confirmation**:
+1. **Technology Stack Confirmation**:
+
    - Python 3.12+, FastAPI, SQLAlchemy async, Pydantic, pytest (all existing)
    - No new dependencies introduced (constitutional requirement)
    - PostgreSQL 18+ with native uuidv7() support (existing)
@@ -199,25 +219,30 @@ api/
 **Output**: Research complete - proceeding to Phase 1 design
 
 ## Phase 1: Design & Contracts
+
 *Prerequisites: research.md complete*
 
 ### 1. Data Model
+
 **Status**: N/A - No data model changes (pure refactoring)
 
 The refactoring does NOT modify any data models. Existing SQLAlchemy models in `models/base.py` and `models/errors.py` remain completely unchanged. Only their import locations change for consumers.
 
 ### 2. API Contracts
+
 **Status**: No contract changes - verification only
 
 **Critical Constraint**: Zero API contract modifications allowed
 
 **Existing Contracts** (preserved unchanged):
+
 ```
 GET /health         → 200 OK {"status": "healthy"}
 GET /health/db      → 200 OK {"status": "healthy"} or 503 Service Unavailable
 ```
 
 **Verification Strategy**:
+
 - Existing OpenAPI schema must remain byte-identical
 - All request/response formats unchanged
 - HTTP status codes preserved
@@ -225,15 +250,18 @@ GET /health/db      → 200 OK {"status": "healthy"} or 503 Service Unavailable
 - No endpoint paths modified
 
 ### 3. Contract Tests
+
 **Status**: Existing tests preserved, imports updated
 
 **Test Preservation Requirements**:
+
 - All 106 existing tests must pass unchanged
 - Test coverage maintained at 97%+ (no decrease)
 - Only import paths updated in test files
 - Test logic and assertions completely unchanged
 
 **Modified Test Files**:
+
 ```
 tests/conftest.py           → Update: from core.config, from core.db
 tests/test_health_*.py      → Indirect updates via fixtures
@@ -242,15 +270,18 @@ tests/test_config_*.py      → Indirect updates via fixtures
 ```
 
 ### 4. Integration Tests
+
 **Status**: Existing integration tests serve as regression protection
 
 **Regression Protection**:
+
 - Health endpoint tests validate API behavior unchanged
 - Database connection tests validate infrastructure unchanged
 - Configuration tests validate settings management unchanged
 - Application startup test validates initialization unchanged
 
 ### 5. Agent File Update
+
 **Status**: Executing incremental CLAUDE.md update
 
 Running agent context update script:
@@ -258,20 +289,25 @@ Running agent context update script:
 **Output**: quickstart.md, CLAUDE.md update (preserves manual content)
 
 ## Phase 2: Task Planning Approach
+
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
 
 **Task Generation Strategy**:
+
 - Load `.specify/templates/tasks-template.md` as base
 - Generate tasks following 6-phase migration plan from REFACTOR_SPEC.md
 - Each phase → grouped tasks with explicit dependencies
 - Verification gates → blocking tasks before cleanup
 
 **Phase-Based Task Groups**:
+
 1. **Phase 1: Create Structure** [P] - Parallel directory creation
+
    - Task: Create core/, schemas/, api/endpoints/ directories
    - Task: Create all __init__.py files
 
-2. **Phase 2: Create New Files** [Sequential] - Content migration
+1. **Phase 2: Create New Files** [Sequential] - Content migration
+
    - Task: Create core/config.py (copy from config/settings.py)
    - Task: Create core/db.py (merge database/connection.py + session.py)
    - Task: Create core/__init__.py (export public APIs)
@@ -279,15 +315,18 @@ Running agent context update script:
    - Task: Create api/endpoints/health.py (move from health/endpoints.py)
    - Task: Create api/deps.py (minimal re-exports)
 
-3. **Phase 3: Update main.py** [Single] - Application entry point
+1. **Phase 3: Update main.py** [Single] - Application entry point
+
    - Task: Update imports in main.py (4 import statements)
 
-4. **Phase 4: Update Imports** [P] - Parallel import updates
+1. **Phase 4: Update Imports** [P] - Parallel import updates
+
    - Task: Update middleware/error_handler.py imports
    - Task: Update tests/conftest.py imports
    - Task: Verify all test files import updates
 
-5. **Phase 5: Verification Gates** [Sequential] - Must all pass
+1. **Phase 5: Verification Gates** [Sequential] - Must all pass
+
    - Task: Verify no old imports remain (grep checks)
    - Task: Verify new imports present (grep checks)
    - Task: Verify syntax errors (py_compile)
@@ -298,13 +337,15 @@ Running agent context update script:
    - Task: Run linting (ruff check)
    - Task: Checkpoint for rollback decision
 
-6. **Phase 6: Cleanup** [Sequential] - After verification only
+1. **Phase 6: Cleanup** [Sequential] - After verification only
+
    - Task: Remove api/src/config/ directory
    - Task: Remove api/src/database/ directory
    - Task: Remove api/src/health/ directory
    - Task: Final test run validation
 
 **Ordering Strategy**:
+
 - Create-before-delete: All new files created before old files removed
 - Verification gates: Blocking tasks between migration and cleanup
 - Rollback safety: Checkpoint task before irreversible cleanup
@@ -316,6 +357,7 @@ Running agent context update script:
 **IMPORTANT**: This phase is executed by the /tasks command, NOT by /plan
 
 ## Phase 3+: Future Implementation
+
 *These phases are beyond the scope of the /plan command*
 
 **Phase 3**: Task execution (/tasks command creates tasks.md)
@@ -323,11 +365,13 @@ Running agent context update script:
 **Phase 5**: Validation (run verification checklist, ensure 106 tests pass, maintain 97%+ coverage)
 
 ## Complexity Tracking
+
 *Fill ONLY if Constitution Check has violations that must be justified*
 
 **Status**: No constitutional violations detected
 
 This refactoring strictly adheres to all constitutional principles:
+
 - No new dependencies (II. Quality-First Development)
 - No test modifications except imports (III. Test-Driven Implementation)
 - Follows established Python conventions (V. Convention Consistency)
@@ -335,9 +379,11 @@ This refactoring strictly adheres to all constitutional principles:
 - Maintains all quality gates (Quality Gates)
 
 ## Progress Tracking
+
 *This checklist is updated during execution flow*
 
 **Phase Status**:
+
 - [x] Phase 0: Research complete (/plan command) - No research needed, spec comprehensive
 - [x] Phase 1: Design complete (/plan command) - No data model changes, contracts preserved
 - [x] Phase 2: Task planning complete (/plan command - describe approach only)
@@ -346,10 +392,12 @@ This refactoring strictly adheres to all constitutional principles:
 - [ ] Phase 5: Validation passed
 
 **Gate Status**:
+
 - [x] Initial Constitution Check: PASS
 - [x] Post-Design Constitution Check: PASS
 - [x] All NEEDS CLARIFICATION resolved (none existed)
 - [x] Complexity deviations documented (none exist)
 
----
+______________________________________________________________________
+
 *Based on Constitution v1.1.0 - See `.specify/memory/constitution.md`*

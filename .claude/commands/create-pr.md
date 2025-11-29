@@ -1,6 +1,6 @@
----
-description: Create a pull request with automated quality validation and conventional commit formatting
----
+______________________________________________________________________
+
+## description: Create a pull request with automated quality validation and conventional commit formatting
 
 ## User Input
 
@@ -29,6 +29,7 @@ git status --short
 ```
 
 **Validation:**
+
 - **HALT** if on `$DEFAULT_BRANCH` → "Cannot create PR from default branch. Create feature branch first."
 - **HALT** if uncommitted changes → "Commit or stash changes first."
 - **HALT** if no new commits on branch → "No new commits to create a pull request."
@@ -46,17 +47,20 @@ git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 ```
 
 **Parse `$ARGUMENTS`:**
+
 - PR title (first quoted string)
 - Flags: `--draft`, `--base <branch>`, `--no-checks`, `--remote <name|url>`, `--reviewer <users>`
 
 ### 3. Run Quality Checks
 
 **Backend** (if `$HAS_BACKEND == true`):
+
 ```bash
 (cd api && uv run ruff check . && uv run mypy . && uv run pytest --cov --cov-report=term-missing)
 ```
 
 **Frontend** (if `$HAS_FRONTEND == true`):
+
 ```bash
 (cd web && pnpm lint && pnpm type-check && pnpm test)
 ```
@@ -69,6 +73,7 @@ git log $DEFAULT_BRANCH..HEAD --format="%s%n%b" --reverse
 Types: `feat|fix|refactor|docs|test|chore|perf|style|ci`
 
 **Description:**
+
 - **MUST** read `.github/pull_request_template.md` for the template structure
 - Synthesize commit messages into Summary section
 - Auto-select Type checkbox based on commit type
@@ -162,6 +167,7 @@ Next: Review PR, monitor CI, add labels with gh pr edit <num> --add-label <label
 **Monorepo:** Detects changes via `git diff --name-only`, runs targeted checks (api/ or web/)
 
 **Quality:**
+
 - Backend: Ruff linting, Mypy type-checking, Pytest with coverage
 - Frontend: ESLint linting, TypeScript strict mode, Unit tests
 

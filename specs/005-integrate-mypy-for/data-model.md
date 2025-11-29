@@ -11,6 +11,7 @@ This document defines the data structures and configuration schema for mypy stat
 **Location**: `api/pyproject.toml`
 
 **Structure**:
+
 ```toml
 [tool.mypy]
 # Python version
@@ -76,6 +77,7 @@ ignore_missing_imports = true
 | cache_dir | string | No | .mypy_cache | Directory for cache files |
 
 **Module Override Structure**:
+
 ```toml
 [[tool.mypy.overrides]]
 module = "pattern"          # Module name pattern (supports wildcards)
@@ -85,13 +87,14 @@ disallow_untyped_defs = boolean   # Override strict mode for specific module
 ```
 
 **Validation Rules**:
+
 - `python_version` must match project Python requirement (3.12+)
 - `plugins` must reference installed packages
 - `exclude` patterns must be valid regex
 - `cache_dir` must be gitignored
 - Module overrides must not conflict with global settings
 
----
+______________________________________________________________________
 
 ### Entity 2: Type Cache
 
@@ -100,6 +103,7 @@ disallow_untyped_defs = boolean   # Override strict mode for specific module
 **Purpose**: Store incremental type checking state to accelerate subsequent runs
 
 **Structure**:
+
 ```
 .mypy_cache/
 ├── 3.12/                    # Python version-specific cache
@@ -115,27 +119,31 @@ disallow_untyped_defs = boolean   # Override strict mode for specific module
 ```
 
 **File Types**:
+
 - `*.data.json`: Serialized type analysis results
 - `*.meta.json`: Module metadata (mtime, size, hash)
 - `CACHEDIR.TAG`: Cache directory identification
 
 **Lifecycle**:
+
 - **Creation**: Automatically on first mypy run
 - **Update**: Incremental updates on file changes
 - **Invalidation**: Automatic when source files change
 - **Cleanup**: Manual via `mypy --clear-cache`
 
 **Size Characteristics**:
+
 - Small project (~15 files): ~1-2 MB
 - Medium project (~50 files): ~3-5 MB
 - Large project (~200 files): ~10-20 MB
 
 **Performance Impact**:
+
 - First run (cold cache): 100% time
 - Subsequent run (warm cache): 10-20% time
 - Single file change: ~3-5 seconds
 
----
+______________________________________________________________________
 
 ### Entity 3: Pre-commit Hook Configuration
 
@@ -144,6 +152,7 @@ disallow_untyped_defs = boolean   # Override strict mode for specific module
 **Purpose**: Run type checking before allowing git commits
 
 **Implementation**:
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -175,19 +184,21 @@ fi
 ```
 
 **Configuration Parameters**:
+
 - **Trigger**: Git commit with staged changes
 - **Workspace Detection**: File path pattern matching
 - **Execution**: Sequential (Ruff → mypy)
 - **Failure Handling**: Block commit on any error
 - **Output**: Console error messages
 
----
+______________________________________________________________________
 
 ### Entity 4: Type Error Report
 
 **Purpose**: Structured representation of type checking results
 
 **Schema**:
+
 ```typescript
 interface TypeCheckResult {
   exitCode: 0 | 1;
@@ -212,6 +223,7 @@ interface TypeError {
 ```
 
 **Example Error Output**:
+
 ```
 src/api/endpoints/health.py:15:12: error: Incompatible return value type (got "str", expected "int")  [return-value]
 src/models/base.py:8:5: error: Missing type annotation for variable "metadata"  [var-annotated]
@@ -219,6 +231,7 @@ Found 2 errors in 2 files (checked 15 source files)
 ```
 
 **Error Codes** (most common):
+
 - `arg-type`: Argument has incompatible type
 - `return-value`: Incompatible return value type
 - `assignment`: Incompatible types in assignment
@@ -227,7 +240,7 @@ Found 2 errors in 2 files (checked 15 source files)
 - `attr-defined`: Module/class has no attribute
 - `import-untyped`: Missing type stubs for import
 
----
+______________________________________________________________________
 
 ## Relationships
 
@@ -245,7 +258,7 @@ Pre-commit Hook
 Git Commit
 ```
 
----
+______________________________________________________________________
 
 ## State Transitions
 
@@ -287,30 +300,33 @@ Git Commit
 [Commit Blocked]
 ```
 
----
+______________________________________________________________________
 
 ## Validation Requirements
 
 ### Configuration Validation
+
 1. All required fields present in `[tool.mypy]`
-2. Python version matches project requirement
-3. Plugins reference installed packages
-4. Exclude patterns are valid regex
-5. Cache directory in `.gitignore`
+1. Python version matches project requirement
+1. Plugins reference installed packages
+1. Exclude patterns are valid regex
+1. Cache directory in `.gitignore`
 
 ### Runtime Validation
+
 1. Mypy executable available via `uv run mypy`
-2. All source files accessible from mypy_path
-3. Pydantic plugin loads successfully
-4. Cache directory writable
+1. All source files accessible from mypy_path
+1. Pydantic plugin loads successfully
+1. Cache directory writable
 
 ### Integration Validation
-1. Pre-commit hook executes mypy correctly
-2. Type errors block commits
-3. Cache provides expected speedup
-4. Error messages display properly
 
----
+1. Pre-commit hook executes mypy correctly
+1. Type errors block commits
+1. Cache provides expected speedup
+1. Error messages display properly
+
+______________________________________________________________________
 
 ## Performance Characteristics
 
@@ -322,7 +338,8 @@ Git Commit
 | Cache clear + rebuild | 10-15s | Cold | No |
 
 **Optimization Strategies**:
+
 1. Incremental mode (default enabled)
-2. Exclude large generated files (migrations)
-3. Use module overrides to skip problematic libraries
-4. Cache directory on fast storage (SSD)
+1. Exclude large generated files (migrations)
+1. Use module overrides to skip problematic libraries
+1. Cache directory on fast storage (SSD)

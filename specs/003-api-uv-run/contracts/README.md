@@ -15,10 +15,10 @@ All endpoints maintain backward compatibility:
 ## Contract Modifications
 
 None. This task focuses on internal improvements:
+
 - Pydantic v2 migration
 - Test fixes
 - Error handling improvements
 - Dead code removal
 
 All external API contracts remain stable.
-

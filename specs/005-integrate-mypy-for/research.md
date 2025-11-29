@@ -11,6 +11,7 @@ All research conducted using Context7 MCP server to retrieve official mypy docum
 **Source**: mypy official documentation - Existing Code section
 
 **Finding**: Strict mode is recommended for new projects and includes 13 individual flags:
+
 - `warn_unused_configs = True`
 - `warn_redundant_casts = True`
 - `warn_unused_ignores = True`
@@ -34,6 +35,7 @@ All research conducted using Context7 MCP server to retrieve official mypy docum
 **Source**: mypy protocols documentation - Async Protocols section
 
 **Finding**: Mypy 1.8+ has native support for async protocols:
+
 - `AsyncIterator[T]`: Requires `__aiter__()` returning AsyncIterator and `__anext__()` returning Awaitable
 - `AsyncContextManager[T]`: Requires `__aenter__()` and `__aexit__()` returning Awaitables
 - Coroutines vs AsyncIterators: Different type signatures based on yield presence
@@ -47,11 +49,13 @@ All research conducted using Context7 MCP server to retrieve official mypy docum
 **Source**: mypy extending documentation - Plugins section
 
 **Finding**: Pydantic provides official mypy plugin for enhanced type checking:
+
 - Plugin ID: `pydantic.mypy`
 - Improves type inference for Pydantic's dynamic model features
 - Validates field types, validators, and model configurations
 
 **Configuration**:
+
 ```toml
 [tool.mypy]
 plugins = ["pydantic.mypy"]
@@ -64,11 +68,13 @@ plugins = ["pydantic.mypy"]
 **Source**: mypy command line documentation - Cache Configuration section
 
 **Finding**: Incremental mode provides 5-10x speedup on subsequent runs:
+
 - Default cache directory: `.mypy_cache/`
 - Cache includes: Type analysis results, dependency graph, module metadata
 - Cache invalidation: Automatic on source file changes
 
 **Performance Metrics**:
+
 - First run: Full type check (~30s for small projects)
 - Subsequent runs: Incremental check (~3-5s for single file changes)
 
@@ -91,6 +97,7 @@ ignore_errors = true
 ```
 
 **Rationale**:
+
 - `asyncpg`: May lack complete type stubs, allow imports without blocking
 - `migrations`: Alembic-generated files, exclude from strict checking
 
@@ -101,6 +108,7 @@ ignore_errors = true
 **Source**: mypy configuration documentation - Output Options section
 
 **Finding**: Enhanced error reporting improves developer experience:
+
 - `show_error_codes = true`: Display error codes for targeted suppression
 - `pretty = true`: Soft word wrap and source snippets
 - `color_output = true`: Terminal color highlighting
@@ -113,11 +121,13 @@ ignore_errors = true
 **Source**: Industry best practices for Python monorepos
 
 **Finding**: Workspace-aware hooks prevent unnecessary tool runs:
+
 - Detect changed workspace (api/ vs web/)
 - Run workspace-specific tools only
 - Maintain fast commit times
 
 **Implementation**:
+
 ```bash
 # In .husky/pre-commit
 if git diff --cached --name-only | grep -q "^api/"; then
@@ -132,11 +142,13 @@ fi
 **Source**: Industry best practices for Python CI/CD
 
 **Finding**: Type checking should be independent CI step:
+
 - Position: After linting, before testing
 - Rationale: Fail fast on type errors before expensive test execution
 - Order: lint → type-check → test → build
 
 **GitHub Actions Example**:
+
 ```yaml
 - name: Type check with mypy
   run: |
@@ -163,10 +175,10 @@ fi
 ## Implementation Notes
 
 1. **Gradual Adoption Not Needed**: Project has only ~15 files, can adopt strict mode immediately
-2. **Type Stub Installation**: May need `mypy --install-types` for some dependencies
-3. **Performance Expectations**: <5s incremental, <30s full check
-4. **Breaking Changes**: None - pure infrastructure addition
-5. **Documentation Updates**: Add mypy section to development guide
+1. **Type Stub Installation**: May need `mypy --install-types` for some dependencies
+1. **Performance Expectations**: \<5s incremental, \<30s full check
+1. **Breaking Changes**: None - pure infrastructure addition
+1. **Documentation Updates**: Add mypy section to development guide
 
 ## References
 

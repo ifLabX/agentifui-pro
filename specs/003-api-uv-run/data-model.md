@@ -8,7 +8,7 @@
 
 This refactoring task does not introduce new data models. It fixes existing models to comply with Pydantic v2 best practices and FastAPI recommendations.
 
----
+______________________________________________________________________
 
 ## 1. Settings Model (Configuration)
 
@@ -134,6 +134,7 @@ class Settings(BaseSettings):
 ### Fields to Remove (Dead Code)
 
 **Unused Security Settings** (no auth system implemented):
+
 ```python
 # REMOVE THESE:
 secret_key: SecretStr = Field(default="...", env="SECRET_KEY")
@@ -142,6 +143,7 @@ access_token_expire_minutes: int = Field(default=30, env="ACCESS_TOKEN_EXPIRE_MI
 ```
 
 **Unused Feature Flags**:
+
 ```python
 # REMOVE THIS:
 use_uuidv7: bool = Field(default=False, env="USE_UUIDV7")  # No implementation
@@ -150,13 +152,14 @@ use_uuidv7: bool = Field(default=False, env="USE_UUIDV7")  # No implementation
 ### Environment Variable Mapping
 
 Pydantic v2 BaseSettings automatically maps:
+
 - `app_name` field → `APP_NAME` environment variable (case-insensitive)
 - `database_url` field → `DATABASE_URL` environment variable
 - `cors_origins` field → `CORS_ORIGINS` environment variable
 
 No explicit `env` parameter needed!
 
----
+______________________________________________________________________
 
 ## 2. Error Models
 
@@ -198,6 +201,7 @@ class ErrorResponse(BaseModel):
 ```
 
 **Validation Test** (should enforce enum):
+
 ```python
 # This should raise ValidationError:
 ErrorResponse(error_type="invalid_type", message="test")
@@ -205,7 +209,7 @@ ErrorResponse(error_type="invalid_type", message="test")
 
 **Fix Required**: Verify enum validation works in Pydantic v2
 
----
+______________________________________________________________________
 
 ## 3. Health Models
 
@@ -235,7 +239,7 @@ class DatabaseHealthResponse(BaseModel):
 
 **No Changes Required**: Models are already Pydantic v2 compliant
 
----
+______________________________________________________________________
 
 ## 4. Database Models (Future)
 
@@ -247,11 +251,12 @@ Currently uses standard UUIDs. `USE_UUIDV7` flag exists but unused.
 
 **Decision**: Remove USE_UUIDV7 flag and related code (dead feature)
 
----
+______________________________________________________________________
 
 ## Migration Checklist
 
 ### Settings Model (settings.py)
+
 - [ ] Remove `env` parameter from all Field declarations (26 fields)
 - [ ] Remove unused security fields (SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES)
 - [ ] Remove unused feature flag (USE_UUIDV7)
@@ -260,20 +265,23 @@ Currently uses standard UUIDs. `USE_UUIDV7` flag exists but unused.
 - [ ] Confirm no deprecation warnings
 
 ### Error Models (errors.py)
+
 - [ ] Verify ErrorType enum validation works
 - [ ] Test ValidationError is raised for invalid enum values
 - [ ] Ensure Pydantic v2 compatibility
 
 ### Health Models (models.py)
+
 - [ ] Verify no changes needed
 - [ ] Confirm compatibility with updated endpoints
 
 ### Environment Files
+
 - [ ] Update .env.example to remove unused variables
 - [ ] Document removed variables in README.md
 - [ ] Verify all remaining variables are used in code
 
----
+______________________________________________________________________
 
 ## Validation Strategy
 
@@ -294,11 +302,12 @@ uv run pytest -v
 ```
 
 **Success Criteria**:
+
 - ✅ 0 deprecation warnings
 - ✅ All 109 tests pass
 - ✅ Settings load correctly from environment
 - ✅ Enum validation enforces type safety
 
----
+______________________________________________________________________
 
 **Next**: Create quickstart.md for test verification guide

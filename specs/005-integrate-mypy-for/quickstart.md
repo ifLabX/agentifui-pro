@@ -33,11 +33,12 @@ uv run mypy --version
 ```
 
 **Success Criteria**:
+
 - ✅ mypy found in pyproject.toml dev dependencies
 - ✅ mypy version 1.8.0 or higher
 - ✅ No command execution errors
 
----
+______________________________________________________________________
 
 ### Phase 2: Configuration Validation
 
@@ -55,6 +56,7 @@ grep -A 20 "\[tool.mypy\]" pyproject.toml
 ```
 
 **Manual Verification Checklist**:
+
 - [ ] `[tool.mypy]` section exists in pyproject.toml
 - [ ] `strict = true` is set
 - [ ] `plugins = ["pydantic.mypy"]` is configured
@@ -63,7 +65,7 @@ grep -A 20 "\[tool.mypy\]" pyproject.toml
 - [ ] `exclude` contains "migrations/" pattern
 - [ ] Module overrides exist for migrations and asyncpg
 
----
+______________________________________________________________________
 
 ### Phase 3: Basic Execution Test
 
@@ -85,12 +87,13 @@ uv run mypy .
 ```
 
 **Success Criteria**:
+
 - ✅ Mypy executes without fatal errors (exit code 0 or 1, not 2)
 - ✅ If errors found, they are type errors, not configuration errors
 - ✅ Error messages show file paths, line numbers, error codes
 - ✅ Summary line shows "checked N source files"
 
----
+______________________________________________________________________
 
 ### Phase 4: Cache Functionality Test
 
@@ -117,17 +120,19 @@ ls -la .mypy_cache/
 ```
 
 **Success Criteria**:
+
 - ✅ `.mypy_cache/` directory created after first run
 - ✅ Cache contains `3.12/` subdirectory (Python version)
 - ✅ Second run is 5-10x faster than first run
 - ✅ Both runs produce identical results
 
 **Performance Benchmarks**:
-- Cold cache: <30 seconds for ~15 files
-- Warm cache: <5 seconds for no changes
+
+- Cold cache: \<30 seconds for ~15 files
+- Warm cache: \<5 seconds for no changes
 - Speedup factor: >5x
 
----
+______________________________________________________________________
 
 ### Phase 5: Type Error Detection Test
 
@@ -160,12 +165,13 @@ rm src/test_type_error.py
 ```
 
 **Success Criteria**:
+
 - ✅ All 3 type errors detected
 - ✅ Error messages include error codes `[return-value]`
 - ✅ Error messages show correct file and line numbers
 - ✅ Exit code is 1 (type errors found)
 
----
+______________________________________________________________________
 
 ### Phase 6: Strict Mode Validation
 
@@ -194,11 +200,12 @@ rm src/test_strict_mode.py
 ```
 
 **Success Criteria**:
+
 - ✅ Errors reported for missing type annotations
 - ✅ Error codes include `[no-untyped-def]` or similar
 - ✅ Strict mode prevents untyped code
 
----
+______________________________________________________________________
 
 ### Phase 7: Pydantic Plugin Test
 
@@ -232,12 +239,13 @@ rm src/test_pydantic.py
 ```
 
 **Success Criteria**:
+
 - ✅ Pydantic model instantiation type-checked
 - ✅ Invalid field types detected
 - ✅ Error code is `[arg-type]`
 - ✅ Plugin provides accurate type information
 
----
+______________________________________________________________________
 
 ### Phase 8: Async Pattern Validation
 
@@ -274,12 +282,13 @@ rm src/test_async.py
 ```
 
 **Success Criteria**:
+
 - ✅ Async generator type correctly inferred
 - ✅ Coroutine await validated
 - ✅ Invalid await detected
 - ✅ AsyncIterator vs Coroutine types distinguished
 
----
+______________________________________________________________________
 
 ### Phase 9: Exclusion Test
 
@@ -316,11 +325,12 @@ rm migrations/versions/test_migration.py
 ```
 
 **Success Criteria**:
+
 - ✅ Migration files not reported in error list
 - ✅ Migration files not included in "checked N source files" count
 - ✅ Exclusion pattern working correctly
 
----
+______________________________________________________________________
 
 ### Phase 10: Pre-commit Hook Test
 
@@ -354,12 +364,13 @@ rm api/src/test_precommit.py
 ```
 
 **Success Criteria**:
+
 - ✅ Pre-commit hook executes mypy
 - ✅ Type errors block commit
 - ✅ Error messages displayed in console
 - ✅ Commit allowed after fixing errors
 
----
+______________________________________________________________________
 
 ### Phase 11: Performance Validation
 
@@ -385,16 +396,18 @@ time uv run mypy .
 ```
 
 **Performance Acceptance Criteria**:
-- ✅ Cold cache full check: <30 seconds (for ~15 files)
-- ✅ Warm cache no changes: <5 seconds
-- ✅ Incremental single file: <5 seconds
+
+- ✅ Cold cache full check: \<30 seconds (for ~15 files)
+- ✅ Warm cache no changes: \<5 seconds
+- ✅ Incremental single file: \<5 seconds
 - ✅ Speedup factor: >5x (warm vs cold)
 
----
+______________________________________________________________________
 
 ## Final Validation Checklist
 
 ### Configuration
+
 - [ ] Mypy installed in dev dependencies (≥1.8.0)
 - [ ] Configuration section exists in pyproject.toml
 - [ ] Strict mode enabled
@@ -403,6 +416,7 @@ time uv run mypy .
 - [ ] Exclusions configured for migrations
 
 ### Functionality
+
 - [ ] Mypy executes without configuration errors
 - [ ] Type errors correctly detected
 - [ ] Strict mode enforced (no untyped code)
@@ -412,22 +426,25 @@ time uv run mypy .
 - [ ] Cache provides performance improvement
 
 ### Integration
+
 - [ ] Pre-commit hook runs mypy
 - [ ] Type errors block commits
 - [ ] .mypy_cache in .gitignore
 - [ ] Error messages clear and actionable
 
 ### Performance
-- [ ] Cold cache check completes in <30s
-- [ ] Warm cache check completes in <5s
-- [ ] Incremental check completes in <5s
+
+- [ ] Cold cache check completes in \<30s
+- [ ] Warm cache check completes in \<5s
+- [ ] Incremental check completes in \<5s
 - [ ] Speedup factor >5x
 
----
+______________________________________________________________________
 
 ## Troubleshooting
 
 ### Issue: Mypy not found
+
 ```bash
 # Solution: Ensure dependencies are installed
 cd api
@@ -435,6 +452,7 @@ uv sync --dev
 ```
 
 ### Issue: Plugin not loading
+
 ```bash
 # Check if pydantic is installed
 uv run python -c "import pydantic; print(pydantic.__version__)"
@@ -444,6 +462,7 @@ uv sync --dev
 ```
 
 ### Issue: Cache not providing speedup
+
 ```bash
 # Clear and rebuild cache
 rm -rf .mypy_cache/
@@ -454,6 +473,7 @@ find .mypy_cache -type f
 ```
 
 ### Issue: Too many type errors
+
 ```bash
 # Start with specific module
 uv run mypy src/models/
@@ -463,7 +483,7 @@ uv run mypy src/schemas/
 uv run mypy src/api/
 ```
 
----
+______________________________________________________________________
 
 ## Success Metrics
 
@@ -477,12 +497,12 @@ uv run mypy src/api/
 | Integration | Blocks bad commits | Phase 10 passes |
 | Performance | Meets SLAs | Phase 11 benchmarks |
 
----
+______________________________________________________________________
 
 ## Completion Sign-off
 
 When all validation phases pass and all checklists are complete, the mypy integration is production-ready.
 
 **Sign-off**: [ ] All validation phases completed successfully
-**Date**: ___________
-**Validated By**: ___________
+**Date**: \_\_\_\_\_\_\_\_\_\_\_
+**Validated By**: \_\_\_\_\_\_\_\_\_\_\_

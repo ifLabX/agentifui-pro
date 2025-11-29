@@ -4,6 +4,7 @@
 **Prerequisites**: plan.md, research.md, data-model.md, quickstart.md
 
 ## Execution Flow (main)
+
 ```
 1. Load plan.md from feature directory
    → ✅ Loaded successfully
@@ -33,10 +34,12 @@
 ```
 
 ## Format: `[ID] [P?] Description`
+
 - **[P]**: Can run in parallel (different files, no dependencies)
 - Include exact file paths in descriptions
 
 ## Path Conventions
+
 - **Working directory**: `/Users/liuyizhou/repos/agentifui-pro/api`
 - **Source modules**: Currently at `api/` root, moving to `api/src/`
 - **Config files**: Remain at `api/` root
@@ -90,6 +93,7 @@
 ## Dependencies
 
 **Critical Path**:
+
 - T001-T002 (pre-migration) before T003 (create directory)
 - T003 blocks T004-T009 (cannot move to non-existent directory)
 - T004-T009 block T010-T013 (config updates require modules in place)
@@ -99,6 +103,7 @@
 - T016-T019 block T020-T022 (polish after validation)
 
 **Parallel Opportunities**:
+
 - T004-T008 can run in parallel (different directories)
 - T020-T021 can run in parallel (different operations)
 
@@ -146,9 +151,10 @@ mv config src/ && mv database src/ && mv models src/ && mv health src/ && mv mid
 ## Migration Safety
 
 **Rollback Strategy**: If any validation task (T015-T019) fails:
+
 1. Stop execution immediately
-2. Run: `git checkout main && git branch -D 002-migrate-api-backend`
-3. Or manually rollback: Move src/* back to api/ root, restore original config files
+1. Run: `git checkout main && git branch -D 002-migrate-api-backend`
+1. Or manually rollback: Move src/\* back to api/ root, restore original config files
 
 **Success Criteria**: All validation tasks (T015-T019) pass ✅
 

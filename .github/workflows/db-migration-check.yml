@@ -12,6 +12,9 @@ on:
         default: '18'
         description: 'PostgreSQL version'
 
+permissions:
+  contents: read
+
 concurrency:
   group: db-migration-${{ github.ref }}
   cancel-in-progress: true

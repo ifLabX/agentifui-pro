@@ -42,45 +42,45 @@ jobs:
           CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
-import os
-import shlex
+          import os
+          import shlex
 
-files = shlex.split(os.environ.get("CHANGED_FILES", ""))
+          files = shlex.split(os.environ.get("CHANGED_FILES", ""))
 
-backend = any(
-    f.startswith("api/")
-    or f in {"pyproject.toml", "uv.lock"}
-    for f in files
-)
+          backend = any(
+              f.startswith("api/")
+              or f in {"pyproject.toml", "uv.lock"}
+              for f in files
+          )
 
-frontend = any(
-    f.startswith("web/")
-    and not f.startswith("web/messages/")
-    for f in files
-)
+          frontend = any(
+              f.startswith("web/")
+              and not f.startswith("web/messages/")
+              for f in files
+          )
 
-workflows = any(
-    f.startswith(".github/workflows/")
-    or f.startswith(".github/actions/")
-    for f in files
-)
+          workflows = any(
+              f.startswith(".github/workflows/")
+              or f.startswith(".github/actions/")
+              for f in files
+          )
 
-migrations = any(
-    f.startswith("api/migrations/")
-    for f in files
-)
+          migrations = any(
+              f.startswith("api/migrations/")
+              for f in files
+          )
 
-env_examples = any(
-    f in {"api/.env.example", "web/.env.example"}
-    for f in files
-)
+          env_examples = any(
+              f in {"api/.env.example", "web/.env.example"}
+              for f in files
+          )
 
-print(f"backend={'true' if backend else 'false'}")
-print(f"frontend={'true' if frontend else 'false'}")
-print(f"workflows={'true' if workflows else 'false'}")
-print(f"migrations={'true' if migrations else 'false'}")
-print(f"env-examples={'true' if env_examples else 'false'}")
-PY
+          print(f"backend={'true' if backend else 'false'}")
+          print(f"frontend={'true' if frontend else 'false'}")
+          print(f"workflows={'true' if workflows else 'false'}")
+          print(f"migrations={'true' if migrations else 'false'}")
+          print(f"env-examples={'true' if env_examples else 'false'}")
+          PY
 
   # ════════════════════════════════════════════════════════════
   # Stage 1: Quality Gate (Parallel)

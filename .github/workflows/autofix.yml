@@ -41,7 +41,8 @@ jobs:
 
       - name: Format Markdown
         run: |
-          uvx mdformat .
+          # Avoid web/ to prevent conflicts with Prettier in frontend quality checks
+          find . -name '*.md' -not -path './web/*' -print0 | xargs -0 -r uvx mdformat
         if: env.SKIP_AUTOFIX != 'true'
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27

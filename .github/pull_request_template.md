@@ -1,9 +1,9 @@
 > [!IMPORTANT]
 >
-> - Read [CONTRIBUTING.md](https://github.com/ifLabX/agentifui-pro/blob/main/CONTRIBUTING.md)  
-> - Ensure issue exists and you're assigned  
-> - Link correctly: `Fixes #<issue number>`  
-> - All PRs must be created **in English**  
+> - Read [CONTRIBUTING.md](https://github.com/ifLabX/agentifui-pro/blob/main/CONTRIBUTING.md)
+> - Ensure issue exists and you're assigned
+> - Link correctly: `Fixes #<issue number>`
+> - All PRs must be created **in English**
 
 ## Summary
 
@@ -13,11 +13,11 @@ Fixes #(issue number)
 
 ## Type
 
-- [ ] 🐛 Bug fix  
-- [ ] ✨ Feature  
-- [ ] 💥 Breaking change  
-- [ ] 📚 Docs  
-- [ ] ♻️ Refactor  
-- [ ] ⚡ Performance  
+- [ ] 🐛 Bug fix
+- [ ] ✨ Feature
+- [ ] 💥 Breaking change
+- [ ] 📚 Docs
+- [ ] ♻️ Refactor
+- [ ] ⚡ Performance
 
 ## Screenshots (if UI changes)

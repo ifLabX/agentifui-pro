@@ -86,9 +86,12 @@ async def run_async_migrations() -> None:
     Creates an async engine and runs migrations within
     an async context for proper connection handling.
     """
+    from src.core.db import _build_server_settings
+
     connectable = create_async_engine(
         settings.database_url,
         poolclass=pool.NullPool,  # No connection pooling for migrations
+        connect_args={"server_settings": _build_server_settings(settings.app_name)},
     )
 
     async with connectable.connect() as connection:

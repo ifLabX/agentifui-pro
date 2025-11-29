@@ -20,6 +20,9 @@ on:
         default: true
         description: 'Run test suite'
 
+permissions:
+  contents: read
+
 jobs:
   quality-check:
     runs-on: ubuntu-latest
@@ -79,6 +82,27 @@ jobs:
           DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/agentifui_pro_test
           DEBUG: false
         run: uv run --frozen pytest -v --cov=src --cov-report=xml --cov-fail-under=80
+
+      - name: Coverage summary
+        if: inputs.run-tests && always()
+        run: |
+          if [ ! -f coverage.xml ]; then
+            echo "### Backend coverage" >> "$GITHUB_STEP_SUMMARY"
+            echo "Coverage file not found; skipping summary." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+import xml.etree.ElementTree as ET
+
+print("### Backend coverage")
+try:
+    root = ET.parse("coverage.xml").getroot()
+    rate = float(root.attrib.get("line-rate", 0.0)) * 100
+    print(f"Total line coverage: {rate:.2f}%")
+except Exception as exc:
+    print(f"Could not parse coverage.xml: {exc}")
+PY
 
       - name: Upload coverage
         if: inputs.run-tests && always()

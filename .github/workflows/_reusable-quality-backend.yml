@@ -93,16 +93,16 @@ jobs:
           fi
 
           python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
-import xml.etree.ElementTree as ET
+          import xml.etree.ElementTree as ET
 
-print("### Backend coverage")
-try:
-    root = ET.parse("coverage.xml").getroot()
-    rate = float(root.attrib.get("line-rate", 0.0)) * 100
-    print(f"Total line coverage: {rate:.2f}%")
-except Exception as exc:
-    print(f"Could not parse coverage.xml: {exc}")
-PY
+          print("### Backend coverage")
+          try:
+              root = ET.parse("coverage.xml").getroot()
+              rate = float(root.attrib.get("line-rate", 0.0)) * 100
+              print(f"Total line coverage: {rate:.2f}%")
+          except Exception as exc:
+              print(f"Could not parse coverage.xml: {exc}")
+          PY
 
       - name: Upload coverage
         if: inputs.run-tests && always()

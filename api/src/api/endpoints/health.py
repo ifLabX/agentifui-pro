@@ -6,11 +6,15 @@ specification in contracts/health.yaml for container orchestration.
 """
 
 import time
+from pathlib import Path
 
+from alembic.config import Config
+from alembic.runtime.migration import MigrationContext
+from alembic.script import ScriptDirectory
 from fastapi.responses import JSONResponse
 from redis.exceptions import RedisError
 from src.core.config import get_settings
-from src.core.db import check_database_connection, get_database_info
+from src.core.db import check_database_connection, get_async_engine, get_database_info
 from src.core.redis import ping_redis
 from src.core.router import public_router
 from src.schemas.health import (
@@ -31,6 +35,50 @@ router = public_router("/health", tags=["health"])
 
 # Application start time for uptime calculation
 APP_START_TIME = time.time()
+
+
+def _load_alembic_config() -> Config:
+    """
+    Build an Alembic Config with absolute paths to avoid CWD sensitivity.
+
+    Returns:
+        Config: Alembic configuration pointing at this service's migration scripts
+    """
+    project_root = Path(__file__).resolve().parents[3]
+    config = Config(str(project_root / "alembic.ini"))
+    config.set_main_option("script_location", str(project_root / "migrations"))
+    config.set_main_option("sqlalchemy.url", get_settings().database_url)
+    config.attributes["configure_logger"] = False
+    return config
+
+
+async def _get_migration_status() -> MigrationStatus:
+    """
+    Determine whether the database is at the latest Alembic head revision.
+    """
+    try:
+        alembic_config = _load_alembic_config()
+        script_dir = ScriptDirectory.from_config(alembic_config)
+        head_revision = script_dir.get_current_head()
+    except Exception:
+        return MigrationStatus.UNKNOWN
+
+    try:
+        engine = get_async_engine()
+        async with engine.connect() as connection:
+            current_revision = await connection.run_sync(
+                lambda sync_conn: MigrationContext.configure(connection=sync_conn).get_current_revision()
+            )
+    except Exception:
+        return MigrationStatus.UNKNOWN
+
+    if not head_revision or not current_revision:
+        return MigrationStatus.UNKNOWN
+
+    if current_revision == head_revision:
+        return MigrationStatus.UP_TO_DATE
+
+    return MigrationStatus.PENDING
 
 
 @router.get(
@@ -156,8 +204,7 @@ async def get_database_health() -> JSONResponse:
                 pool_size=db_info.get("pool_size", 0),
             )
 
-        # Check migration status (placeholder for future Alembic integration)
-        migration_status = MigrationStatus.UNKNOWN
+        migration_status = await _get_migration_status()
 
         # Return healthy database response
         response = create_healthy_database_response(

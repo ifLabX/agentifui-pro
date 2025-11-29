@@ -5,6 +5,7 @@ This module implements health check endpoints following the OpenAPI
 specification in contracts/health.yaml for container orchestration.
 """
 
+import logging
 import time
 from pathlib import Path
 
@@ -35,6 +36,18 @@ router = public_router("/health", tags=["health"])
 
 # Application start time for uptime calculation
 APP_START_TIME = time.time()
+logger = logging.getLogger(__name__)
+
+
+def _find_project_root(marker: str = "alembic.ini") -> Path | None:
+    """
+    Walk upward from this file to locate the project root by marker file.
+    """
+    current = Path(__file__).resolve().parent
+    for candidate in (current, *current.parents):
+        if (candidate / marker).is_file():
+            return candidate
+    return None
 
 
 def _load_alembic_config() -> Config:
@@ -44,7 +57,10 @@ def _load_alembic_config() -> Config:
     Returns:
         Config: Alembic configuration pointing at this service's migration scripts
     """
-    project_root = Path(__file__).resolve().parents[3]
+    project_root = _find_project_root()
+    if project_root is None:
+        raise FileNotFoundError("Unable to locate alembic.ini for migration status check")
+
     config = Config(str(project_root / "alembic.ini"))
     config.set_main_option("script_location", str(project_root / "migrations"))
     config.set_main_option("sqlalchemy.url", get_settings().database_url)
@@ -60,7 +76,8 @@ async def _get_migration_status() -> MigrationStatus:
         alembic_config = _load_alembic_config()
         script_dir = ScriptDirectory.from_config(alembic_config)
         head_revision = script_dir.get_current_head()
-    except Exception:
+    except Exception as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
+        logger.warning("Failed to resolve Alembic head revision: %s", exc)
         return MigrationStatus.UNKNOWN
 
     try:
@@ -69,7 +86,8 @@ async def _get_migration_status() -> MigrationStatus:
             current_revision = await connection.run_sync(
                 lambda sync_conn: MigrationContext.configure(connection=sync_conn).get_current_revision()
             )
-    except Exception:
+    except Exception as exc:  # pragma: no cover - defensive; falls back to UNKNOWN
+        logger.warning("Failed to resolve current migration revision: %s", exc)
         return MigrationStatus.UNKNOWN
 
     if not head_revision or not current_revision:

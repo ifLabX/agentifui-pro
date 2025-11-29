@@ -42,10 +42,10 @@ jobs:
           CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
+import os
 import shlex
-import sys
 
-files = shlex.split("${CHANGED_FILES}")
+files = shlex.split(os.environ.get("CHANGED_FILES", ""))
 
 backend = any(
     f.startswith("api/")

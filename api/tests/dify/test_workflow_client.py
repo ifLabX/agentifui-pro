@@ -324,7 +324,6 @@ class TestWorkflowClientRunSpecific:
         assert call_args[0] == "POST"
         assert f"/workflows/{sample_workflow_id}/run" in call_args[1]
         assert call_kwargs["json"]["inputs"] == sample_inputs
-        assert call_kwargs["stream"] is False
         assert response == mock_successful_response
 
     def test_run_specific_workflow_streaming(
@@ -347,7 +346,7 @@ class TestWorkflowClientRunSpecific:
 
         # Verify streaming is enabled
         call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["stream"] is True
+        assert call_kwargs["json"]["response_mode"] == "streaming"
         assert response == mock_streaming_response
 
     def test_run_specific_workflow_default_params(

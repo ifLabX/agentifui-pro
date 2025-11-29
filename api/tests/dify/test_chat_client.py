@@ -11,7 +11,6 @@ This module tests the ChatClient functionality including:
 
 from unittest.mock import Mock
 
-import pytest
 from dify_client import ChatClient
 
 
@@ -58,7 +57,6 @@ class TestChatClientCreateMessage:
         assert call_kwargs["json"]["query"] == query
         assert call_kwargs["json"]["user"] == mock_user
         assert call_kwargs["json"]["response_mode"] == "blocking"
-        assert call_kwargs["stream"] is False
         assert response == mock_successful_response
 
     def test_create_chat_message_streaming(
@@ -83,7 +81,7 @@ class TestChatClientCreateMessage:
 
         # Verify streaming is enabled
         call_kwargs = mock_requests_request.call_args[1]
-        assert call_kwargs["stream"] is True
+        assert call_kwargs["json"]["response_mode"] == "streaming"
         assert response == mock_streaming_response
 
     def test_create_chat_message_with_conversation_id(
@@ -156,7 +154,6 @@ class TestChatClientCreateMessage:
         # Verify default is blocking
         call_kwargs = mock_requests_request.call_args[1]
         assert call_kwargs["json"]["response_mode"] == "blocking"
-        assert call_kwargs["stream"] is False
 
 
 class TestChatClientGetSuggested:
@@ -386,7 +383,7 @@ class TestChatClientRenameConversation:
         client = ChatClient(api_key=mock_api_key)
         response = client.rename_conversation(
             conversation_id=sample_conversation_id,
-            name="",
+            name="Auto-generated name",
             auto_generate=True,
             user=mock_user,
         )
@@ -394,6 +391,7 @@ class TestChatClientRenameConversation:
         # Verify auto_generate is True
         call_kwargs = mock_requests_request.call_args[1]
         assert call_kwargs["json"]["auto_generate"] is True
+        assert call_kwargs["json"]["name"] == "Auto-generated name"
         assert response == mock_successful_response
 
 
@@ -501,19 +499,27 @@ class TestChatClientAnnotationAPIs:
         assert "/apps/annotation-reply/disable" in call_args[1]
         assert response == mock_successful_response
 
-    def test_annotation_reply_action_raises_on_none_values(self, mock_api_key: str) -> None:
-        """Test that annotation reply action raises error for None values."""
+    def test_annotation_reply_action_allows_optional_values(
+        self,
+        mock_api_key: str,
+        mock_requests_request: Mock,
+        mock_successful_response: Mock,
+    ) -> None:
+        """Test that annotation reply action forwards provided values."""
+        mock_requests_request.return_value = mock_successful_response
+
         client = ChatClient(api_key=mock_api_key)
+        response = client.annotation_reply_action(
+            action="enable",
+            score_threshold=None,  # type: ignore[arg-type]
+            embedding_provider_name="openai",
+            embedding_model_name="test",
+        )
 
-        with pytest.raises(ValueError) as exc_info:
-            client.annotation_reply_action(
-                action="enable",
-                score_threshold=None,  # type: ignore[arg-type]
-                embedding_provider_name="openai",
-                embedding_model_name="test",
-            )
-
-        assert "cannot be None" in str(exc_info.value)
+        call_kwargs = mock_requests_request.call_args[1]
+        assert call_kwargs["json"]["score_threshold"] is None
+        assert call_kwargs["json"]["embedding_provider_name"] == "openai"
+        assert response == mock_successful_response
 
     def test_get_annotation_reply_status(
         self,

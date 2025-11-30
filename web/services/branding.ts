@@ -8,7 +8,7 @@ import {
   BRANDING_QUERY_KEY,
   DEFAULT_BRANDING,
 } from "@/config/branding";
-import { apiRequest } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 
 const normalisePayload = (payload: BrandingApiResponse): BrandingPayload => {
   const applicationTitle =
@@ -56,7 +56,7 @@ const extractEnvironmentSuffix = (
 
 export const fetchBranding = async (): Promise<BrandingResult> => {
   try {
-    const data = await apiRequest<BrandingApiResponse>(BRANDING_ENDPOINT, {
+    const data = await api.get<BrandingApiResponse>(BRANDING_ENDPOINT, {
       cache: "no-store",
     });
 

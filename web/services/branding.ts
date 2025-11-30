@@ -8,60 +8,29 @@ import {
   BRANDING_QUERY_KEY,
   DEFAULT_BRANDING,
 } from "@/config/branding";
-import { apiRequest } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 
-const normalisePayload = (payload: BrandingApiResponse): BrandingPayload => {
-  const applicationTitle =
-    payload.applicationTitle ??
-    payload.application_title ??
-    DEFAULT_BRANDING.applicationTitle;
-
-  const faviconUrl =
-    payload.faviconUrl ??
-    payload.favicon_url ??
-    payload.favicon ??
-    DEFAULT_BRANDING.faviconUrl;
-
-  const appleTouchIconUrl =
-    payload.appleTouchIconUrl ??
-    payload.apple_touch_icon_url ??
-    payload.appleTouchIcon ??
-    DEFAULT_BRANDING.appleTouchIconUrl;
-
-  const manifestUrl =
-    payload.manifestUrl ??
-    payload.manifest_url ??
-    payload.manifest ??
-    DEFAULT_BRANDING.manifestUrl;
-
-  return {
-    applicationTitle,
-    faviconUrl,
-    appleTouchIconUrl,
-    manifestUrl,
-  };
-};
+const toPayload = (payload: BrandingApiResponse): BrandingPayload => ({
+  applicationTitle:
+    payload.application_title ?? DEFAULT_BRANDING.applicationTitle,
+  faviconUrl: payload.favicon_url ?? DEFAULT_BRANDING.faviconUrl,
+  appleTouchIconUrl:
+    payload.apple_touch_icon_url ?? DEFAULT_BRANDING.appleTouchIconUrl,
+  manifestUrl: payload.manifest_url ?? DEFAULT_BRANDING.manifestUrl,
+});
 
 const extractEnvironmentSuffix = (
   payload: BrandingApiResponse
-): string | undefined => {
-  const suffix = payload.environmentSuffix ?? payload.environment_suffix;
-
-  if (suffix === undefined || suffix === null) {
-    return undefined;
-  }
-
-  return suffix.trim();
-};
+): string | undefined => payload.environment_suffix?.trim() || undefined;
 
 export const fetchBranding = async (): Promise<BrandingResult> => {
   try {
-    const data = await apiRequest<BrandingApiResponse>(BRANDING_ENDPOINT, {
+    const data = await api.get<BrandingApiResponse>(BRANDING_ENDPOINT, {
       cache: "no-store",
     });
 
     return {
-      branding: normalisePayload(data),
+      branding: toPayload(data),
       environmentSuffix: extractEnvironmentSuffix(data),
       resolvedFromApi: true,
     };

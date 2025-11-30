@@ -18,18 +18,10 @@ export interface BrandingPayload {
 }
 
 export interface BrandingApiResponse {
-  applicationTitle?: string;
   application_title?: string;
-  faviconUrl?: string;
   favicon_url?: string;
-  favicon?: string;
-  appleTouchIconUrl?: string;
   apple_touch_icon_url?: string;
-  appleTouchIcon?: string;
-  manifestUrl?: string;
   manifest_url?: string;
-  manifest?: string;
-  environmentSuffix?: string;
   environment_suffix?: string;
 }
 

@@ -131,6 +131,12 @@ const resolveBody = (
   return body as BodyInit;
 };
 
+type ApiRequestOptionsWithoutMethod = Omit<ApiRequestOptions, "method">;
+type ApiRequestOptionsWithoutMethodAndBody = Omit<
+  ApiRequestOptions,
+  "method" | "body"
+>;
+
 export const apiRequest = async <T = unknown>(
   path: string,
   {
@@ -194,4 +200,35 @@ export const apiRequest = async <T = unknown>(
   }
 
   return payload as T;
+};
+
+/**
+ * Convenience methods for common HTTP verbs.
+ */
+export const api = {
+  get: <T = unknown>(path: string, options?: ApiRequestOptionsWithoutMethod) =>
+    apiRequest<T>(path, { ...options, method: "GET" }),
+
+  post: <T = unknown>(
+    path: string,
+    body?: ApiRequestOptions["body"],
+    options?: ApiRequestOptionsWithoutMethodAndBody
+  ) => apiRequest<T>(path, { ...options, method: "POST", body }),
+
+  put: <T = unknown>(
+    path: string,
+    body?: ApiRequestOptions["body"],
+    options?: ApiRequestOptionsWithoutMethodAndBody
+  ) => apiRequest<T>(path, { ...options, method: "PUT", body }),
+
+  patch: <T = unknown>(
+    path: string,
+    body?: ApiRequestOptions["body"],
+    options?: ApiRequestOptionsWithoutMethodAndBody
+  ) => apiRequest<T>(path, { ...options, method: "PATCH", body }),
+
+  delete: <T = unknown>(
+    path: string,
+    options?: ApiRequestOptionsWithoutMethod
+  ) => apiRequest<T>(path, { ...options, method: "DELETE" }),
 };

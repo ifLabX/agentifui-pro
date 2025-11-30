@@ -10,7 +10,7 @@ import {
 } from "@/config/branding";
 import { api } from "@/lib/api-client";
 
-const normalisePayload = (payload: BrandingApiResponse): BrandingPayload => ({
+const toPayload = (payload: BrandingApiResponse): BrandingPayload => ({
   applicationTitle:
     payload.application_title ?? DEFAULT_BRANDING.applicationTitle,
   faviconUrl: payload.favicon_url ?? DEFAULT_BRANDING.faviconUrl,
@@ -30,7 +30,7 @@ export const fetchBranding = async (): Promise<BrandingResult> => {
     });
 
     return {
-      branding: normalisePayload(data),
+      branding: toPayload(data),
       environmentSuffix: extractEnvironmentSuffix(data),
       resolvedFromApi: true,
     };

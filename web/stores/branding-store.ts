@@ -1,6 +1,6 @@
 "use client";
 
-import { create } from "zustand";
+import { createWithEqualityFn } from "zustand/traditional";
 
 import type { BrandingPayload } from "@/types/branding";
 import { DEFAULT_BRANDING } from "@/config/branding";
@@ -18,7 +18,7 @@ type BrandingStore = {
   setVersion: (value?: string) => void;
 };
 
-export const useBrandingStore = create<BrandingStore>(set => ({
+export const useBrandingStore = createWithEqualityFn<BrandingStore>(set => ({
   branding: DEFAULT_BRANDING,
   isLoading: true,
   environmentSuffix: undefined,

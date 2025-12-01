@@ -1,5 +1,10 @@
 import pytest
-from src.api.endpoints.branding import DEFAULT_APPLICATION_TITLE, DEFAULT_FAVICON_URL
+from src.api.endpoints.branding import (
+    DEFAULT_APPLE_TOUCH_ICON_URL,
+    DEFAULT_APPLICATION_TITLE,
+    DEFAULT_FAVICON_URL,
+    DEFAULT_MANIFEST_URL,
+)
 from src.core.config import get_settings
 
 
@@ -14,9 +19,13 @@ async def test_branding_endpoint_returns_payload(async_client) -> None:
 
     expected_title = settings.branding_application_title or DEFAULT_APPLICATION_TITLE
     expected_favicon = settings.branding_favicon_url or DEFAULT_FAVICON_URL
+    expected_apple_touch_icon = settings.branding_apple_touch_icon_url or DEFAULT_APPLE_TOUCH_ICON_URL
+    expected_manifest = settings.branding_manifest_url or DEFAULT_MANIFEST_URL
 
     assert payload["application_title"] == expected_title
     assert payload["favicon_url"] == expected_favicon
+    assert payload["apple_touch_icon_url"] == expected_apple_touch_icon
+    assert payload["manifest_url"] == expected_manifest
     assert payload["environment"] == settings.environment
     assert payload["version"] == settings.app_version
     assert payload["environment_suffix"] == settings.branding_environment_suffix

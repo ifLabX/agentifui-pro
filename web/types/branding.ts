@@ -23,8 +23,8 @@ export interface BrandingApiResponse {
   apple_touch_icon_url?: string;
   manifest_url?: string;
   environment_suffix?: string;
-  environment?: string;
-  version?: string;
+  environment: string;
+  version: string;
 }
 
 export interface BrandingState {
@@ -38,7 +38,7 @@ export interface BrandingState {
 export interface BrandingResult {
   branding: BrandingPayload;
   environmentSuffix?: string;
-  environment?: string;
-  version?: string;
+  environment: string;
+  version: string;
   resolvedFromApi: boolean;
 }

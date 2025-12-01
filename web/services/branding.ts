@@ -24,14 +24,14 @@ const toPayload = (payload: BrandingApiResponse): BrandingPayload => ({
   manifestUrl: payload.manifest_url ?? DEFAULT_BRANDING.manifestUrl,
 });
 
-const normalizeOptional = (value?: string): string | undefined =>
+const trimOptional = (value?: string): string | undefined =>
   value?.trim() || undefined;
 
 const toBrandingResult = (payload: BrandingApiResponse): BrandingResult => ({
   branding: toPayload(payload),
-  environmentSuffix: normalizeOptional(payload.environment_suffix),
-  environment: normalizeOptional(payload.environment),
-  version: normalizeOptional(payload.version),
+  environmentSuffix: trimOptional(payload.environment_suffix),
+  environment: payload.environment.trim(),
+  version: payload.version.trim(),
   resolvedFromApi: true,
 });
 

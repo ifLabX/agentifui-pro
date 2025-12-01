@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
 import pytest
-from fastapi import Request, Response
+from fastapi import Response
 from src.api.endpoints import branding
 
 

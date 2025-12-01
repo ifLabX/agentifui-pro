@@ -42,6 +42,4 @@ async def get_branding(settings: Annotated[Settings, Depends(get_settings)]) -> 
     """
     Return branding information and environment metadata for frontend consumers.
     """
-    branding_payload = _build_branding_response(settings=settings)
-
-    return branding_payload
+    return _build_branding_response(settings=settings)

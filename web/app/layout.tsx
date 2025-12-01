@@ -28,6 +28,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={cn(
+        "h-full",
         geistSans.variable,
         geistMono.variable,
         inter.variable,

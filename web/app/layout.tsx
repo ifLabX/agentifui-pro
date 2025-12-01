@@ -35,7 +35,7 @@ export default async function RootLayout({
       )}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="h-full bg-background font-sans antialiased">
         <AppProviders locale={locale} messages={messages} timeZone={timeZone}>
           {children}
         </AppProviders>

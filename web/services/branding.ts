@@ -10,6 +10,11 @@ import {
 } from "@/config/branding";
 import { api } from "@/lib/api-client";
 
+const fetchBrandingFromApi = () =>
+  api.get<BrandingApiResponse>(BRANDING_ENDPOINT, {
+    cache: "no-store",
+  });
+
 const toPayload = (payload: BrandingApiResponse): BrandingPayload => ({
   applicationTitle:
     payload.application_title ?? DEFAULT_BRANDING.applicationTitle,
@@ -23,24 +28,14 @@ const extractEnvironmentSuffix = (
   payload: BrandingApiResponse
 ): string | undefined => payload.environment_suffix?.trim() || undefined;
 
-export const fetchBranding = async (): Promise<BrandingResult> => {
-  try {
-    const data = await api.get<BrandingApiResponse>(BRANDING_ENDPOINT, {
-      cache: "no-store",
-    });
+const toBrandingResult = (payload: BrandingApiResponse): BrandingResult => ({
+  branding: toPayload(payload),
+  environmentSuffix: extractEnvironmentSuffix(payload),
+  resolvedFromApi: true,
+});
 
-    return {
-      branding: toPayload(data),
-      environmentSuffix: extractEnvironmentSuffix(data),
-      resolvedFromApi: true,
-    };
-  } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("[branding] falling back to defaults", error);
-    }
-    return { branding: DEFAULT_BRANDING, resolvedFromApi: false };
-  }
-};
+export const fetchBranding = async (): Promise<BrandingResult> =>
+  toBrandingResult(await fetchBrandingFromApi());
 
 export const brandingQueryOptions = () => ({
   queryKey: BRANDING_QUERY_KEY,

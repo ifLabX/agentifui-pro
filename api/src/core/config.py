@@ -120,8 +120,16 @@ class Settings(BaseSettings):
             raise ValueError("Redis key prefix cannot be empty")
         return v.strip()
 
-    @staticmethod
-    def _normalize_optional_branding_value(value: Any) -> str | None:
+    @field_validator(
+        "branding_application_title",
+        "branding_favicon_url",
+        "branding_apple_touch_icon_url",
+        "branding_manifest_url",
+        "branding_environment_suffix",
+        mode="before",
+    )
+    @classmethod
+    def _normalize_branding_fields(cls, value: Any) -> str | None:
         """
         Strip whitespace and treat empty branding values as unset.
         """
@@ -129,15 +137,6 @@ class Settings(BaseSettings):
             normalized = value.strip()
             return normalized or None
         return None
-
-    _normalize_branding_fields = field_validator(
-        "branding_application_title",
-        "branding_favicon_url",
-        "branding_apple_touch_icon_url",
-        "branding_manifest_url",
-        "branding_environment_suffix",
-        mode="before",
-    )(_normalize_optional_branding_value)
 
     @model_validator(mode="before")
     @classmethod

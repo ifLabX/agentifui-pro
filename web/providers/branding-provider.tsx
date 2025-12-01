@@ -11,6 +11,8 @@ export function BrandingProvider({ children }: PropsWithChildren) {
   const setEnvironmentSuffix = useBrandingStore(
     state => state.setEnvironmentSuffix
   );
+  const setEnvironment = useBrandingStore(state => state.setEnvironment);
+  const setVersion = useBrandingStore(state => state.setVersion);
   const { data, isPending, error } = useQuery(brandingQueryOptions());
 
   useEffect(() => {
@@ -24,7 +26,9 @@ export function BrandingProvider({ children }: PropsWithChildren) {
       return;
     }
     setEnvironmentSuffix(data.environmentSuffix);
-  }, [data, setBranding, setEnvironmentSuffix]);
+    setEnvironment(data.environment);
+    setVersion(data.version);
+  }, [data, setBranding, setEnvironmentSuffix, setEnvironment, setVersion]);
 
   useEffect(() => {
     if (!error) return;

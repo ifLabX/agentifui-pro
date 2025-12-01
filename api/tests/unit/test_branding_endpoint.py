@@ -18,10 +18,9 @@ async def test_branding_endpoint_returns_defaults(monkeypatch: pytest.MonkeyPatc
     )
     monkeypatch.setattr(branding, "get_settings", lambda: settings)
 
-    request = Request({"type": "http", "headers": []})
     response = Response()
 
-    result = await branding.get_branding(request=request, response=response)
+    result = await branding.get_branding(response=response)
 
     assert result.application_title == "AgentifUI"
     assert result.favicon_url == "/favicon.ico"
@@ -47,11 +46,9 @@ async def test_branding_endpoint_uses_setting_overrides(monkeypatch: pytest.Monk
     )
     monkeypatch.setattr(branding, "get_settings", lambda: settings)
 
-    request = Request({"type": "http", "headers": []})
-    request.state.tenant_id = "f6f8c16a-2774-4f78-aebb-9d2b292b6c78"
     response = Response()
 
-    result = await branding.get_branding(request=request, response=response)
+    result = await branding.get_branding(response=response)
 
     assert result.application_title == "Custom UI"
     assert result.favicon_url == "/custom.ico"

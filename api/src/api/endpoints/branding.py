@@ -2,7 +2,7 @@
 Branding endpoint exposing environment and version metadata.
 """
 
-from fastapi import Request, Response
+from fastapi import Response
 from src.core.config import Settings, get_settings
 from src.core.router import public_router
 from src.schemas.branding import BrandingResponse
@@ -15,9 +15,9 @@ DEFAULT_APPLE_TOUCH_ICON_URL = "/apple-touch-icon.png"
 DEFAULT_MANIFEST_URL = "/manifest.json"
 
 
-def _build_branding_response(settings: Settings, tenant_id: str | None = None) -> BrandingResponse:
+def _build_branding_response(settings: Settings) -> BrandingResponse:
     """
-    Assemble branding payload, keeping tenant context available for future overrides.
+    Assemble branding payload using configured defaults.
     """
     return BrandingResponse(
         application_title=settings.branding_application_title or DEFAULT_APPLICATION_TITLE,
@@ -36,14 +36,13 @@ def _build_branding_response(settings: Settings, tenant_id: str | None = None) -
     summary="Get branding metadata",
     description="Returns branding assets, environment suffix, and version for the frontend.",
 )
-async def get_branding(request: Request, response: Response) -> BrandingResponse:
+async def get_branding(response: Response) -> BrandingResponse:
     """
     Return branding information and environment metadata for frontend consumers.
     """
     settings = get_settings()
-    tenant_id = getattr(request.state, "tenant_id", None)
 
-    branding_payload = _build_branding_response(settings=settings, tenant_id=tenant_id)
+    branding_payload = _build_branding_response(settings=settings)
 
     response.headers["X-App-Version"] = settings.app_version
     response.headers["X-App-Env"] = settings.environment

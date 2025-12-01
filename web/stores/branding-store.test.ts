@@ -12,10 +12,17 @@ const cloneDefaultBranding = (): BrandingPayload => ({
 
 describe("branding store", () => {
   beforeEach(() => {
-    const { setBranding, setEnvironmentSuffix, setLoading } =
-      useBrandingStore.getState();
+    const {
+      setBranding,
+      setEnvironmentSuffix,
+      setLoading,
+      setEnvironment,
+      setVersion,
+    } = useBrandingStore.getState();
     setBranding(cloneDefaultBranding());
     setEnvironmentSuffix(undefined);
+    setEnvironment(undefined);
+    setVersion(undefined);
     setLoading(true);
   });
 
@@ -24,6 +31,8 @@ describe("branding store", () => {
     expect(state.branding).toEqual(DEFAULT_BRANDING);
     expect(state.isLoading).toBe(true);
     expect(state.environmentSuffix).toBeUndefined();
+    expect(state.environment).toBeUndefined();
+    expect(state.version).toBeUndefined();
   });
 
   it("updates branding payload immutably", () => {
@@ -54,5 +63,19 @@ describe("branding store", () => {
 
     useBrandingStore.getState().setEnvironmentSuffix(undefined);
     expect(useBrandingStore.getState().environmentSuffix).toBeUndefined();
+  });
+
+  it("stores environment and version", () => {
+    useBrandingStore.getState().setEnvironment("staging");
+    useBrandingStore.getState().setVersion("1.2.3");
+
+    expect(useBrandingStore.getState().environment).toBe("staging");
+    expect(useBrandingStore.getState().version).toBe("1.2.3");
+
+    useBrandingStore.getState().setEnvironment(undefined);
+    useBrandingStore.getState().setVersion(undefined);
+
+    expect(useBrandingStore.getState().environment).toBeUndefined();
+    expect(useBrandingStore.getState().version).toBeUndefined();
   });
 });

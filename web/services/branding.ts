@@ -27,21 +27,11 @@ const toPayload = (payload: BrandingApiResponse): BrandingPayload => ({
 const normalizeOptional = (value?: string): string | undefined =>
   value?.trim() || undefined;
 
-const extractEnvironmentSuffix = (
-  payload: BrandingApiResponse
-): string | undefined => normalizeOptional(payload.environment_suffix);
-
-const extractEnvironment = (payload: BrandingApiResponse): string | undefined =>
-  normalizeOptional(payload.environment);
-
-const extractVersion = (payload: BrandingApiResponse): string | undefined =>
-  normalizeOptional(payload.version);
-
 const toBrandingResult = (payload: BrandingApiResponse): BrandingResult => ({
   branding: toPayload(payload),
-  environmentSuffix: extractEnvironmentSuffix(payload),
-  environment: extractEnvironment(payload),
-  version: extractVersion(payload),
+  environmentSuffix: normalizeOptional(payload.environment_suffix),
+  environment: normalizeOptional(payload.environment),
+  version: normalizeOptional(payload.version),
   resolvedFromApi: true,
 });
 

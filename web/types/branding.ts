@@ -31,6 +31,8 @@ export interface BrandingState {
   branding: BrandingPayload;
   isLoading: boolean;
   environmentSuffix?: string;
+  environment?: string;
+  version?: string;
 }
 
 export interface BrandingResult {

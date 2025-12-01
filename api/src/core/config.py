@@ -125,8 +125,6 @@ class Settings(BaseSettings):
         """
         Strip whitespace and treat empty branding values as unset.
         """
-        if value is None:
-            return None
         if isinstance(value, str):
             normalized = value.strip()
             return normalized or None

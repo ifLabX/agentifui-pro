@@ -1,7 +1,7 @@
 import { useBrandingStore } from "@/stores/branding-store";
 
 import type { BrandingPayload } from "@/types/branding";
-import { BRANDING_ENV_SUFFIX, DEFAULT_BRANDING } from "@/config/branding";
+import { DEFAULT_BRANDING } from "@/config/branding";
 
 const cloneDefaultBranding = (): BrandingPayload => ({
   applicationTitle: DEFAULT_BRANDING.applicationTitle,
@@ -15,7 +15,7 @@ describe("branding store", () => {
     const { setBranding, setEnvironmentSuffix, setLoading } =
       useBrandingStore.getState();
     setBranding(cloneDefaultBranding());
-    setEnvironmentSuffix(BRANDING_ENV_SUFFIX);
+    setEnvironmentSuffix(undefined);
     setLoading(true);
   });
 
@@ -23,7 +23,7 @@ describe("branding store", () => {
     const state = useBrandingStore.getState();
     expect(state.branding).toEqual(DEFAULT_BRANDING);
     expect(state.isLoading).toBe(true);
-    expect(state.environmentSuffix).toBe(BRANDING_ENV_SUFFIX);
+    expect(state.environmentSuffix).toBeUndefined();
   });
 
   it("updates branding payload immutably", () => {

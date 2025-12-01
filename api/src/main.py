@@ -10,6 +10,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.api.endpoints.branding import router as branding_router
 from src.api.endpoints.health import router as health_router
 from src.core.config import get_settings
 from src.core.db import dispose_engine
@@ -71,6 +72,7 @@ def create_app() -> FastAPI:
     setup_error_handling(app)
 
     # Include routers
+    app.include_router(branding_router)
     app.include_router(health_router)
 
     return app

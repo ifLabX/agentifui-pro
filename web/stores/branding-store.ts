@@ -3,7 +3,7 @@
 import { createWithEqualityFn } from "zustand/traditional";
 
 import type { BrandingPayload } from "@/types/branding";
-import { BRANDING_ENV_SUFFIX, DEFAULT_BRANDING } from "@/config/branding";
+import { DEFAULT_BRANDING } from "@/config/branding";
 
 type BrandingStore = {
   branding: BrandingPayload;
@@ -17,7 +17,7 @@ type BrandingStore = {
 export const useBrandingStore = createWithEqualityFn<BrandingStore>(set => ({
   branding: DEFAULT_BRANDING,
   isLoading: true,
-  environmentSuffix: BRANDING_ENV_SUFFIX,
+  environmentSuffix: undefined,
   setBranding: payload => set({ branding: payload }),
   setLoading: value => set({ isLoading: value }),
   setEnvironmentSuffix: value => set({ environmentSuffix: value }),

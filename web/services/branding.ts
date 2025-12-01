@@ -24,13 +24,24 @@ const toPayload = (payload: BrandingApiResponse): BrandingPayload => ({
   manifestUrl: payload.manifest_url ?? DEFAULT_BRANDING.manifestUrl,
 });
 
+const normalizeOptional = (value?: string): string | undefined =>
+  value?.trim() || undefined;
+
 const extractEnvironmentSuffix = (
   payload: BrandingApiResponse
-): string | undefined => payload.environment_suffix?.trim() || undefined;
+): string | undefined => normalizeOptional(payload.environment_suffix);
+
+const extractEnvironment = (payload: BrandingApiResponse): string | undefined =>
+  normalizeOptional(payload.environment);
+
+const extractVersion = (payload: BrandingApiResponse): string | undefined =>
+  normalizeOptional(payload.version);
 
 const toBrandingResult = (payload: BrandingApiResponse): BrandingResult => ({
   branding: toPayload(payload),
   environmentSuffix: extractEnvironmentSuffix(payload),
+  environment: extractEnvironment(payload),
+  version: extractVersion(payload),
   resolvedFromApi: true,
 });
 

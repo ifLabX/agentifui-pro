@@ -35,11 +35,7 @@ export const buildApiUrl = (path: string): string => {
   }
 
   if (path.startsWith("/")) {
-    const runtimeOrigin =
-      typeof window !== "undefined" && window.location
-        ? window.location.origin
-        : API_BASE_URL;
-    return ensureAbsolute(path, runtimeOrigin);
+    return ensureAbsolute(path, API_BASE_URL);
   }
 
   return `${API_BASE_URL}/${path}`;

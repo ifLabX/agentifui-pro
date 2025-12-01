@@ -4,7 +4,7 @@
 
 **Agentifui Pro** is a modern monorepo featuring:
 
-- **Backend**: FastAPI (Python >=3.12) managed by `uv`
+- **Backend**: FastAPI (Python >=3.11) managed by `uv`
 - **Frontend**: Next.js 15 (TypeScript) managed by `pnpm`
 
 ## Contributing Rules

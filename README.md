@@ -6,7 +6,7 @@ A modern full-stack monorepo with enterprise-grade tooling and development pract
 
 **Dual-stack monorepo** with:
 
-- **Backend (`api/`)**: FastAPI + Python 3.12+ managed by `uv`
+- **Backend (`api/`)**: FastAPI + Python 3.11+ managed by `uv`
 - **Frontend (`web/`)**: Next.js 15 + TypeScript + React 19 managed by `pnpm`
 
 ## Tech Stack
@@ -31,7 +31,7 @@ A modern full-stack monorepo with enterprise-grade tooling and development pract
 ### Prerequisites
 
 - Node.js ≥20.0.0
-- Python ≥3.12
+- Python ≥3.11
 - pnpm@10.17.0
 
 ### Backend

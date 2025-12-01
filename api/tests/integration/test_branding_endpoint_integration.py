@@ -20,5 +20,3 @@ async def test_branding_endpoint_returns_payload(async_client) -> None:
     assert payload["environment"] == settings.environment
     assert payload["version"] == settings.app_version
     assert payload["environment_suffix"] == settings.branding_environment_suffix
-    assert response.headers["X-App-Version"] == settings.app_version
-    assert response.headers["X-App-Env"] == settings.environment

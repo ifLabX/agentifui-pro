@@ -4,7 +4,7 @@ Branding endpoint exposing environment and version metadata.
 
 from typing import Annotated
 
-from fastapi import Depends, Response
+from fastapi import Depends
 from src.core.config import Settings, get_settings
 from src.core.router import public_router
 from src.schemas.branding import BrandingResponse
@@ -38,13 +38,10 @@ def _build_branding_response(settings: Settings) -> BrandingResponse:
     summary="Get branding metadata",
     description="Returns branding assets, environment suffix, and version for the frontend.",
 )
-async def get_branding(response: Response, settings: Annotated[Settings, Depends(get_settings)]) -> BrandingResponse:
+async def get_branding(settings: Annotated[Settings, Depends(get_settings)]) -> BrandingResponse:
     """
     Return branding information and environment metadata for frontend consumers.
     """
     branding_payload = _build_branding_response(settings=settings)
-
-    response.headers["X-App-Version"] = settings.app_version
-    response.headers["X-App-Env"] = settings.environment
 
     return branding_payload

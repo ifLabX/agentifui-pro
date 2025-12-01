@@ -1,7 +1,6 @@
 from types import SimpleNamespace
 
 import pytest
-from fastapi import Response
 from src.api.endpoints import branding
 from src.api.endpoints.branding import (
     DEFAULT_APPLE_TOUCH_ICON_URL,
@@ -23,9 +22,7 @@ async def test_branding_endpoint_returns_defaults() -> None:
         environment="staging",
     )
 
-    response = Response()
-
-    result = await branding.get_branding(response=response, settings=settings)
+    result = await branding.get_branding(settings=settings)
 
     assert result.application_title == DEFAULT_APPLICATION_TITLE
     assert result.favicon_url == DEFAULT_FAVICON_URL
@@ -34,8 +31,6 @@ async def test_branding_endpoint_returns_defaults() -> None:
     assert result.environment_suffix is None
     assert result.version == "0.1.0"
     assert result.environment == "staging"
-    assert response.headers["X-App-Version"] == "0.1.0"
-    assert response.headers["X-App-Env"] == "staging"
 
 
 @pytest.mark.asyncio
@@ -50,9 +45,7 @@ async def test_branding_endpoint_uses_setting_overrides() -> None:
         environment="production",
     )
 
-    response = Response()
-
-    result = await branding.get_branding(response=response, settings=settings)
+    result = await branding.get_branding(settings=settings)
 
     assert result.application_title == "Custom UI"
     assert result.favicon_url == "/custom.ico"
@@ -61,5 +54,3 @@ async def test_branding_endpoint_uses_setting_overrides() -> None:
     assert result.environment_suffix == "Preview"
     assert result.version == "9.9.9"
     assert result.environment == "production"
-    assert response.headers["X-App-Version"] == "9.9.9"
-    assert response.headers["X-App-Env"] == "production"

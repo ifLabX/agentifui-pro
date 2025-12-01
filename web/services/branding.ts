@@ -41,5 +41,8 @@ export const fetchBranding = async (): Promise<BrandingResult> =>
 export const brandingQueryOptions = () => ({
   queryKey: BRANDING_QUERY_KEY,
   queryFn: fetchBranding,
-  staleTime: 10 * 60 * 1000,
+  staleTime: Infinity,
+  gcTime: Infinity,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
 });

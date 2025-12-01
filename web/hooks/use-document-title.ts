@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from "react";
 import { useBrandingStore } from "@/stores/branding-store";
 import { useTitle } from "ahooks";
-import { shallow } from "zustand/shallow";
 
 import { DEFAULT_BRANDING } from "@/config/branding";
 import { setFaviconLinks } from "@/lib/favicon";
@@ -26,14 +25,9 @@ export const useDocumentTitle = ({
   disableBranding = false,
   loadingTitle,
 }: UseDocumentTitleOptions = {}) => {
-  const { branding, isLoading, environmentSuffix } = useBrandingStore(
-    state => ({
-      branding: state.branding,
-      isLoading: state.isLoading,
-      environmentSuffix: state.environmentSuffix,
-    }),
-    shallow
-  );
+  const branding = useBrandingStore(state => state.branding);
+  const isLoading = useBrandingStore(state => state.isLoading);
+  const environmentSuffix = useBrandingStore(state => state.environmentSuffix);
 
   const computedSuffix = suffix ?? environmentSuffix;
 

@@ -1,5 +1,3 @@
-import { cache } from "react";
-
 import type {
   BrandingApiResponse,
   BrandingPayload,
@@ -34,10 +32,10 @@ const buildBrandingUrl = (): string => {
 };
 
 /**
- * Server-side branding fetch with React cache() deduplication.
+ * Server-side branding fetch that always gets fresh data.
  * Falls back to defaults on error.
  */
-export const fetchBrandingServer = cache(async (): Promise<BrandingResult> => {
+export const fetchBrandingServer = async (): Promise<BrandingResult> => {
   try {
     const url = buildBrandingUrl();
     const response = await fetch(url, {
@@ -62,4 +60,4 @@ export const fetchBrandingServer = cache(async (): Promise<BrandingResult> => {
       resolvedFromApi: false,
     };
   }
-});
+};

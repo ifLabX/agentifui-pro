@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type PropsWithChildren } from "react";
+import { useLayoutEffect, type PropsWithChildren } from "react";
 import { useBrandingStore } from "@/stores/branding-store";
 
 import type { BrandingResult } from "@/types/branding";
@@ -21,7 +21,7 @@ export function BrandingProvider({
   const setEnvironment = useBrandingStore(state => state.setEnvironment);
   const setVersion = useBrandingStore(state => state.setVersion);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setBranding(initialBranding.branding);
     if (initialBranding.resolvedFromApi) {
       setEnvironmentSuffix(initialBranding.environmentSuffix);

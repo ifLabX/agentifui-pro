@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextIntlClientProvider, type AbstractIntlMessages } from "next-intl";
 
+import type { BrandingResult } from "@/types/branding";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -15,6 +16,7 @@ type AppProvidersProps = PropsWithChildren<{
   locale: Locale;
   messages: AbstractIntlMessages;
   timeZone: string;
+  initialBranding: BrandingResult;
 }>;
 
 export function AppProviders({
@@ -22,6 +24,7 @@ export function AppProviders({
   locale,
   messages,
   timeZone,
+  initialBranding,
 }: AppProvidersProps) {
   const [queryClient] = useState(() => new QueryClient());
 
@@ -34,7 +37,9 @@ export function AppProviders({
             messages={messages}
             timeZone={timeZone}
           >
-            <BrandingProvider>{children}</BrandingProvider>
+            <BrandingProvider initialBranding={initialBranding}>
+              {children}
+            </BrandingProvider>
           </NextIntlClientProvider>
         </TooltipProvider>
       </ThemeProvider>

@@ -96,6 +96,13 @@ DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/agentifui_pro
 DEBUG=true
 ENVIRONMENT=development
 
+# Branding (optional overrides; defaults applied when unset)
+BRANDING_APPLICATION_TITLE=AgentifUI
+BRANDING_FAVICON_URL=/favicon.ico
+BRANDING_APPLE_TOUCH_ICON_URL=/apple-touch-icon.png
+BRANDING_MANIFEST_URL=/manifest.json
+BRANDING_ENVIRONMENT_SUFFIX=
+
 # CORS
 CORS_ORIGINS=["http://localhost:3000"]
 ```

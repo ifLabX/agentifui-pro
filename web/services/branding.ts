@@ -24,13 +24,14 @@ const toPayload = (payload: BrandingApiResponse): BrandingPayload => ({
   manifestUrl: payload.manifest_url ?? DEFAULT_BRANDING.manifestUrl,
 });
 
-const extractEnvironmentSuffix = (
-  payload: BrandingApiResponse
-): string | undefined => payload.environment_suffix?.trim() || undefined;
+const trimOptional = (value?: string): string | undefined =>
+  value?.trim() || undefined;
 
 const toBrandingResult = (payload: BrandingApiResponse): BrandingResult => ({
   branding: toPayload(payload),
-  environmentSuffix: extractEnvironmentSuffix(payload),
+  environmentSuffix: trimOptional(payload.environment_suffix),
+  environment: payload.environment.trim(),
+  version: payload.version.trim(),
   resolvedFromApi: true,
 });
 
@@ -40,5 +41,8 @@ export const fetchBranding = async (): Promise<BrandingResult> =>
 export const brandingQueryOptions = () => ({
   queryKey: BRANDING_QUERY_KEY,
   queryFn: fetchBranding,
-  staleTime: 10 * 60 * 1000,
+  staleTime: Infinity,
+  gcTime: Infinity,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
 });

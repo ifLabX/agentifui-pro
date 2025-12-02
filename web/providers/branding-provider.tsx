@@ -29,8 +29,14 @@ export function BrandingProvider({
       setVersion(initialBranding.version);
     }
     setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    initialBranding,
+    setBranding,
+    setEnvironmentSuffix,
+    setEnvironment,
+    setVersion,
+    setLoading,
+  ]);
 
   return children;
 }

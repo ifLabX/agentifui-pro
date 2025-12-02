@@ -22,6 +22,11 @@ export function BrandingProvider({
   const setVersion = useBrandingStore(state => state.setVersion);
 
   useLayoutEffect(() => {
+    console.log("[BrandingProvider] Syncing branding to store:", {
+      applicationTitle: initialBranding.branding.applicationTitle,
+      resolvedFromApi: initialBranding.resolvedFromApi,
+    });
+
     setBranding(initialBranding.branding);
     if (initialBranding.resolvedFromApi) {
       setEnvironmentSuffix(initialBranding.environmentSuffix);
@@ -29,6 +34,8 @@ export function BrandingProvider({
       setVersion(initialBranding.version);
     }
     setLoading(false);
+
+    console.log("[BrandingProvider] Store updated, isLoading set to false");
   }, [
     initialBranding,
     setBranding,

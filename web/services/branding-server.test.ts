@@ -34,9 +34,7 @@ describe("fetchBrandingServer", () => {
 
     const result = await fetchBrandingServer();
 
-    expect(fetch).toHaveBeenCalledWith(`${API_BASE_URL}${BRANDING_ENDPOINT}`, {
-      cache: "no-store",
-    });
+    expect(fetch).toHaveBeenCalledWith(`${API_BASE_URL}${BRANDING_ENDPOINT}`);
     expect(result.branding.applicationTitle).toBe("Server Test App");
     expect(result.environment).toBe("server-testing");
     expect(result.version).toBe("2.0.0");
@@ -154,6 +152,6 @@ describe("fetchBrandingServer", () => {
     await fetchBrandingServer();
 
     const expectedUrl = API_BASE_URL.replace(/\/+$/, "") + BRANDING_ENDPOINT;
-    expect(fetch).toHaveBeenCalledWith(expectedUrl, expect.any(Object));
+    expect(fetch).toHaveBeenCalledWith(expectedUrl);
   });
 });

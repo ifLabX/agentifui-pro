@@ -44,14 +44,31 @@ export const useDocumentTitle = ({
   );
 
   useEffect(() => {
+    console.log("[useDocumentTitle] Effect triggered:", {
+      isLoading,
+      loadingTitle,
+      formattedTitle,
+      currentTitle: document.title,
+    });
+
     if (isLoading) {
       if (loadingTitle) {
+        console.log("[useDocumentTitle] Setting loading title:", loadingTitle);
         document.title = loadingTitle;
+      } else {
+        console.log(
+          "[useDocumentTitle] Loading but no loadingTitle, preserving:",
+          document.title
+        );
       }
       return;
     }
 
     if (formattedTitle) {
+      console.log(
+        "[useDocumentTitle] Setting formatted title:",
+        formattedTitle
+      );
       document.title = formattedTitle;
     }
   }, [isLoading, loadingTitle, formattedTitle]);

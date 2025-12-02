@@ -32,15 +32,14 @@ const buildBrandingUrl = (): string => {
 };
 
 /**
- * Server-side branding fetch that always gets fresh data.
+ * Server-side branding fetch with automatic deduplication.
+ * Next.js will automatically dedupe identical fetch calls within the same request.
  * Falls back to defaults on error.
  */
 export const fetchBrandingServer = async (): Promise<BrandingResult> => {
   try {
     const url = buildBrandingUrl();
-    const response = await fetch(url, {
-      cache: "no-store",
-    });
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error(

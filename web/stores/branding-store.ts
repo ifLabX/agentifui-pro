@@ -3,7 +3,7 @@
 import { create } from "zustand";
 
 import type { BrandingPayload } from "@/types/branding";
-import { DEFAULT_BRANDING } from "@/config/branding";
+import { BRANDING_FROM_ENV, DEFAULT_BRANDING } from "@/config/branding";
 
 type BrandingStore = {
   branding: BrandingPayload;
@@ -19,11 +19,11 @@ type BrandingStore = {
 };
 
 export const useBrandingStore = create<BrandingStore>(set => ({
-  branding: DEFAULT_BRANDING,
-  isLoading: true,
-  environmentSuffix: undefined,
-  environment: undefined,
-  version: undefined,
+  branding: BRANDING_FROM_ENV.branding ?? DEFAULT_BRANDING,
+  isLoading: false,
+  environmentSuffix: BRANDING_FROM_ENV.environmentSuffix,
+  environment: BRANDING_FROM_ENV.environment,
+  version: BRANDING_FROM_ENV.version,
   setBranding: payload => set({ branding: payload }),
   setLoading: value => set({ isLoading: value }),
   setEnvironmentSuffix: value => set({ environmentSuffix: value }),

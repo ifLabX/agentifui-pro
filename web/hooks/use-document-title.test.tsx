@@ -18,13 +18,13 @@ describe("useDocumentTitle", () => {
     resetBrandingStore();
   });
 
-  it("keeps document.title empty while branding is loading", async () => {
+  it("preserves existing document.title while branding is loading", async () => {
     const { unmount } = renderHook(() =>
       useDocumentTitle({ title: "Dashboard" })
     );
 
     await waitFor(() => {
-      expect(document.title).toBe("");
+      expect(document.title).toBe("Test Harness");
     });
 
     unmount();
@@ -51,7 +51,7 @@ describe("useDocumentTitle", () => {
     );
 
     await waitFor(() => {
-      expect(document.title).toBe("");
+      expect(document.title).toBe("Test Harness");
     });
 
     act(() => {

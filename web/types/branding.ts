@@ -17,16 +17,6 @@ export interface BrandingPayload {
   manifestUrl?: string;
 }
 
-export interface BrandingApiResponse {
-  application_title?: string;
-  favicon_url?: string;
-  apple_touch_icon_url?: string;
-  manifest_url?: string;
-  environment_suffix?: string;
-  environment: string;
-  version: string;
-}
-
 export interface BrandingState {
   branding: BrandingPayload;
   isLoading: boolean;
@@ -38,7 +28,7 @@ export interface BrandingState {
 export interface BrandingResult {
   branding: BrandingPayload;
   environmentSuffix?: string;
-  environment: string;
-  version: string;
-  resolvedFromApi: boolean;
+  environment?: string;
+  version?: string;
+  resolvedFromEnv: boolean;
 }

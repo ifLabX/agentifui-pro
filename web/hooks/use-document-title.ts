@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect, useMemo } from "react";
 import { useBrandingStore } from "@/stores/branding-store";
-import { useTitle } from "ahooks";
 
 import { DEFAULT_BRANDING } from "@/config/branding";
 import { setFaviconLinks } from "@/lib/favicon";
@@ -45,14 +44,17 @@ export const useDocumentTitle = ({
   );
 
   const resolvedTitle = useMemo(() => {
-    if (isLoading) {
-      return loadingTitle ?? "";
-    }
+    if (isLoading) return loadingTitle;
 
     return formattedTitle;
   }, [isLoading, loadingTitle, formattedTitle]);
 
-  useTitle(resolvedTitle);
+  useLayoutEffect(() => {
+    if (!resolvedTitle) {
+      return;
+    }
+    document.title = resolvedTitle;
+  }, [resolvedTitle]);
 
   const favicon = branding.faviconUrl || DEFAULT_BRANDING.faviconUrl;
   const appleTouchIcon = branding.appleTouchIconUrl;

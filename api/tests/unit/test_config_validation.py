@@ -263,29 +263,3 @@ def test_config_validation_errors_descriptive() -> None:
             # Error message should mention the missing field
             error_str = str(e).lower()
             assert "database_url" in error_str or "field required" in error_str
-
-
-def test_branding_settings_are_normalized() -> None:
-    """Test branding settings strip whitespace and treat empty strings as unset."""
-    from src.core.config import Settings
-
-    with patch.dict(
-        os.environ,
-        {
-            "DATABASE_URL": "postgresql+asyncpg://user:pass@localhost:5432/test",
-            "REDIS_URL": "redis://localhost:6379/0",
-            "BRANDING_APPLICATION_TITLE": "  Custom App  ",
-            "BRANDING_FAVICON_URL": " /favicon.ico ",
-            "BRANDING_APPLE_TOUCH_ICON_URL": "",
-            "BRANDING_ENVIRONMENT_SUFFIX": "   ",
-            "BRANDING_MANIFEST_URL": " ",
-        },
-        clear=True,
-    ):
-        settings = Settings()
-
-    assert settings.branding_application_title == "Custom App"
-    assert settings.branding_favicon_url == "/favicon.ico"
-    assert settings.branding_apple_touch_icon_url is None
-    assert settings.branding_environment_suffix is None
-    assert settings.branding_manifest_url is None

@@ -35,7 +35,7 @@ def test_endpoint_routers_enforce_tenant_dependencies() -> None:
     """
     import src.api.endpoints as endpoints_pkg
 
-    public_prefixes = {"/health", "/branding"}
+    public_prefixes = {"/health"}
     violations: list[str] = []
 
     for module_info in pkgutil.iter_modules(endpoints_pkg.__path__):

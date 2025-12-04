@@ -114,5 +114,77 @@ describe("Popover", () => {
       const content = screen.getByText("Content");
       expect(content).toHaveClass("z-50", "rounded-md", "border", "shadow-md");
     });
+
+    test("applies matchTriggerWidth class when enabled", () => {
+      render(
+        <Popover open>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverContent matchTriggerWidth>Content</PopoverContent>
+        </Popover>
+      );
+
+      const content = screen.getByText("Content");
+      expect(content).toHaveClass("w-[var(--radix-popover-trigger-width)]");
+    });
+  });
+
+  describe("Keyboard interaction", () => {
+    test("closes on Escape key press", async () => {
+      const user = userEvent.setup();
+      render(
+        <Popover>
+          <PopoverTrigger>Open popover</PopoverTrigger>
+          <PopoverContent>Popover content</PopoverContent>
+        </Popover>
+      );
+
+      await user.click(screen.getByText("Open popover"));
+      expect(screen.getByText("Popover content")).toBeInTheDocument();
+
+      await user.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(screen.queryByText("Popover content")).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("Modal behavior", () => {
+    test("modal mode blocks pointer events outside popover", async () => {
+      const user = userEvent.setup();
+      render(
+        <div>
+          <Popover modal>
+            <PopoverTrigger>Open popover</PopoverTrigger>
+            <PopoverContent>Popover content</PopoverContent>
+          </Popover>
+          <button>Outside button</button>
+        </div>
+      );
+
+      await user.click(screen.getByText("Open popover"));
+      expect(screen.getByText("Popover content")).toBeInTheDocument();
+
+      // In modal mode, body has pointer-events: none which blocks outside clicks
+      // This is the expected behavior - popover stays open
+      expect(document.body).toHaveStyle("pointer-events: none");
+    });
+
+    test("modal popover closes on Escape", async () => {
+      const user = userEvent.setup();
+      render(
+        <Popover modal>
+          <PopoverTrigger>Open popover</PopoverTrigger>
+          <PopoverContent>Popover content</PopoverContent>
+        </Popover>
+      );
+
+      await user.click(screen.getByText("Open popover"));
+      expect(screen.getByText("Popover content")).toBeInTheDocument();
+
+      await user.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(screen.queryByText("Popover content")).not.toBeInTheDocument();
+      });
+    });
   });
 });

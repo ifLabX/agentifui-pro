@@ -208,3 +208,47 @@ const CustomWidthDemo = () => {
 export const CustomWidth: Story = {
   render: () => <CustomWidthDemo />,
 };
+
+const MatchTriggerWidthDemo = () => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="w-64">
+          Match trigger width
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent matchTriggerWidth>
+        <p className="text-sm">
+          This popover matches the width of its trigger button.
+        </p>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const MatchTriggerWidth: Story = {
+  render: () => <MatchTriggerWidthDemo />,
+};
+
+const ModalDemo = () => {
+  return (
+    <Popover modal>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Modal popover</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div className="space-y-2">
+          <h4 className="font-medium leading-none">Modal mode</h4>
+          <p className="text-sm text-muted-foreground">
+            This popover is in modal mode. Clicking outside won&apos;t close it.
+            Press Escape or click the trigger again to close.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const Modal: Story = {
+  render: () => <ModalDemo />,
+};

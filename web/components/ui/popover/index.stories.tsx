@@ -1,19 +1,9 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { fn } from "storybook/test";
 
-import { Button } from "../button";
-import {
-  Popover,
-  PopoverBody,
-  PopoverClose,
-  PopoverContent,
-  PopoverDivider,
-  PopoverFooter,
-  PopoverHeader,
-  PopoverItem,
-  PopoverTrigger,
-} from "./index";
+import { Button } from "@/components/ui/button";
+
+import { Popover, PopoverContent, PopoverTrigger } from "./index";
 
 const meta = {
   title: "UI/Popover",
@@ -25,228 +15,240 @@ const meta = {
 } satisfies Meta<typeof Popover>;
 
 export default meta;
-type Story = Omit<StoryObj<typeof meta>, "args"> & {
-  render: () => React.ReactElement;
-};
 
-export const Basic: Story = {
-  render: () => (
+type Story = StoryObj<typeof meta>;
+
+const DefaultPopoverDemo = () => {
+  return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button>Open Popover</Button>
+        <Button variant="outline">Open popover</Button>
       </PopoverTrigger>
       <PopoverContent>
-        <PopoverItem onClick={fn()}>Profile</PopoverItem>
-        <PopoverItem onClick={fn()}>Settings</PopoverItem>
-        <PopoverDivider />
-        <PopoverItem onClick={fn()}>Logout</PopoverItem>
+        <div className="space-y-2">
+          <h4 className="font-medium leading-none">Dimensions</h4>
+          <p className="text-sm text-muted-foreground">
+            Set the dimensions for the layer.
+          </p>
+        </div>
       </PopoverContent>
     </Popover>
-  ),
+  );
 };
 
-export const Uncontrolled: Story = {
-  render: () => (
+export const Default: Story = {
+  render: () => <DefaultPopoverDemo />,
+};
+
+const PositionDemo = ({
+  side,
+}: {
+  side: "top" | "right" | "bottom" | "left";
+}) => {
+  return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button>Uncontrolled Popover</Button>
+        <Button variant="outline">{side}</Button>
       </PopoverTrigger>
-      <PopoverContent>
-        <PopoverHeader>Actions</PopoverHeader>
-        <PopoverItem onClick={fn()}>Edit</PopoverItem>
-        <PopoverItem onClick={fn()}>Duplicate</PopoverItem>
-        <PopoverDivider />
-        <PopoverItem danger onClick={fn()}>
-          Delete
-        </PopoverItem>
+      <PopoverContent side={side}>
+        <p className="text-sm">Popover positioned on {side}</p>
       </PopoverContent>
     </Popover>
-  ),
+  );
+};
+
+export const Top: Story = {
+  render: () => <PositionDemo side="top" />,
+};
+
+export const Right: Story = {
+  render: () => <PositionDemo side="right" />,
+};
+
+export const Bottom: Story = {
+  render: () => <PositionDemo side="bottom" />,
+};
+
+export const Left: Story = {
+  render: () => <PositionDemo side="left" />,
+};
+
+const ControlledDemo = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Controlled popover</Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <p className="text-sm">This is a controlled popover</p>
+        </PopoverContent>
+      </Popover>
+      <div className="flex gap-2">
+        <Button size="sm" onClick={() => setOpen(true)}>
+          Open
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => setOpen(false)}>
+          Close
+        </Button>
+      </div>
+      <div className="text-sm text-muted-foreground">
+        Popover is {open ? "open" : "closed"}
+      </div>
+    </div>
+  );
 };
 
 export const Controlled: Story = {
-  render: () => {
-    const ControlledDemo = () => {
-      const [open, setOpen] = useState(false);
+  render: () => <ControlledDemo />,
+};
 
-      return (
-        <div className="flex flex-col gap-4">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button>Controlled Popover</Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverHeader>Controlled Menu</PopoverHeader>
-              <PopoverItem onClick={() => setOpen(false)}>
-                Close from Item
-              </PopoverItem>
-              <PopoverItem onClick={fn()}>Keep Open</PopoverItem>
-            </PopoverContent>
-          </Popover>
-          <div className="text-sm">Popover is {open ? "open" : "closed"}</div>
+const AlignmentDemo = () => {
+  return (
+    <div className="flex flex-col gap-4">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Start alignment</Button>
+        </PopoverTrigger>
+        <PopoverContent align="start">
+          <p className="text-sm">Aligned to start</p>
+        </PopoverContent>
+      </Popover>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Center alignment</Button>
+        </PopoverTrigger>
+        <PopoverContent align="center">
+          <p className="text-sm">Aligned to center</p>
+        </PopoverContent>
+      </Popover>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">End alignment</Button>
+        </PopoverTrigger>
+        <PopoverContent align="end">
+          <p className="text-sm">Aligned to end</p>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+};
+
+export const Alignments: Story = {
+  render: () => <AlignmentDemo />,
+};
+
+const WithFormDemo = () => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Update dimensions</Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h4 className="font-medium leading-none">Dimensions</h4>
+            <p className="text-sm text-muted-foreground">
+              Set the dimensions for the layer.
+            </p>
+          </div>
+          <div className="grid gap-2">
+            <div className="grid grid-cols-3 items-center gap-4">
+              <label htmlFor="width" className="text-sm">
+                Width
+              </label>
+              <input
+                id="width"
+                defaultValue="100%"
+                className="col-span-2 h-8 rounded-md border px-2 text-sm"
+              />
+            </div>
+            <div className="grid grid-cols-3 items-center gap-4">
+              <label htmlFor="height" className="text-sm">
+                Height
+              </label>
+              <input
+                id="height"
+                defaultValue="25px"
+                className="col-span-2 h-8 rounded-md border px-2 text-sm"
+              />
+            </div>
+          </div>
         </div>
-      );
-    };
-
-    return <ControlledDemo />;
-  },
+      </PopoverContent>
+    </Popover>
+  );
 };
 
-export const WithHeaderBodyFooter: Story = {
-  render: () => (
+export const WithForm: Story = {
+  render: () => <WithFormDemo />,
+};
+
+const CustomWidthDemo = () => {
+  return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button>Show Dialog</Button>
+        <Button variant="outline">Wide popover</Button>
       </PopoverTrigger>
-      <PopoverContent>
-        <PopoverHeader>Confirm Action</PopoverHeader>
-        <PopoverBody>
-          Are you sure you want to proceed with this action?
-        </PopoverBody>
-        <PopoverFooter>
-          <PopoverClose>
-            <Button variant="outline" size="sm">
-              Cancel
-            </Button>
-          </PopoverClose>
-          <Button size="sm" onClick={fn()}>
-            Confirm
-          </Button>
-        </PopoverFooter>
+      <PopoverContent className="w-96">
+        <div className="space-y-2">
+          <h4 className="font-medium leading-none">Wide content</h4>
+          <p className="text-sm text-muted-foreground">
+            This popover has a custom width of 24rem (384px). You can customize
+            the width by adding a className to PopoverContent.
+          </p>
+        </div>
       </PopoverContent>
     </Popover>
-  ),
-};
-
-export const WithIcons: Story = {
-  render: () => (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button>Options</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverItem
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          }
-          onClick={fn()}
-        >
-          Profile
-        </PopoverItem>
-        <PopoverItem
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          }
-          onClick={fn()}
-        >
-          Settings
-        </PopoverItem>
-        <PopoverDivider />
-        <PopoverItem
-          danger
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" x2="9" y1="12" y2="12" />
-            </svg>
-          }
-          onClick={fn()}
-        >
-          Logout
-        </PopoverItem>
-      </PopoverContent>
-    </Popover>
-  ),
-};
-
-export const WithDisabledItems: Story = {
-  render: () => (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Menu</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverItem onClick={fn()}>Active Item</PopoverItem>
-        <PopoverItem disabled>Disabled Item</PopoverItem>
-        <PopoverItem onClick={fn()}>Another Active Item</PopoverItem>
-      </PopoverContent>
-    </Popover>
-  ),
-};
-
-export const Modal: Story = {
-  render: () => (
-    <Popover modal>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Modal Popover</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverHeader>Modal Dialog</PopoverHeader>
-        <PopoverBody>
-          This is a modal popover with backdrop and focus lock.
-        </PopoverBody>
-        <PopoverFooter>
-          <PopoverClose>
-            <Button variant="outline" size="sm">
-              Close
-            </Button>
-          </PopoverClose>
-        </PopoverFooter>
-      </PopoverContent>
-    </Popover>
-  ),
+  );
 };
 
 export const CustomWidth: Story = {
-  render: () => (
+  render: () => <CustomWidthDemo />,
+};
+
+const MatchTriggerWidthDemo = () => {
+  return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">Wide Popover</Button>
+        <Button variant="outline" className="w-64">
+          Match trigger width
+        </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <PopoverHeader>Custom Width</PopoverHeader>
-        <PopoverBody>
-          This popover has a custom width applied using the className prop. You
-          can adjust the width to match your design requirements.
-        </PopoverBody>
+      <PopoverContent matchTriggerWidth>
+        <p className="text-sm">
+          This popover matches the width of its trigger button.
+        </p>
       </PopoverContent>
     </Popover>
-  ),
+  );
+};
+
+export const MatchTriggerWidth: Story = {
+  render: () => <MatchTriggerWidthDemo />,
+};
+
+const ModalDemo = () => {
+  return (
+    <Popover modal>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Modal popover</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div className="space-y-2">
+          <h4 className="font-medium leading-none">Modal mode</h4>
+          <p className="text-sm text-muted-foreground">
+            This popover is in modal mode. Clicking outside won&apos;t close it.
+            Press Escape or click the trigger again to close.
+          </p>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const Modal: Story = {
+  render: () => <ModalDemo />,
 };

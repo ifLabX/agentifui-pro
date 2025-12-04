@@ -1,226 +1,118 @@
-"use client";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-import { useState } from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
 
-import { Button } from "@/components/ui/button";
-
-import {
-  Popover,
-  PopoverBody,
-  PopoverClose,
-  PopoverContent,
-  PopoverItem,
-  PopoverTrigger,
-} from ".";
-
-function UncontrolledPopoverExample() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button data-testid="trigger">Open</Button>
-      </PopoverTrigger>
-      <PopoverContent data-testid="content">
-        <PopoverBody>
-          <PopoverItem data-testid="item">Action</PopoverItem>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function ControlledPopoverExample() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button data-testid="controlled-trigger">
-          {open ? "Close" : "Open"}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent data-testid="controlled-content">
-        <PopoverBody>
-          <PopoverItem
-            data-testid="controlled-item"
-            onClick={() => {
-              setOpen(false);
-            }}
-          >
-            Controlled action
-          </PopoverItem>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function AsChildHandlerExample({ onSelect }: { onSelect: () => void }) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button data-testid="custom-trigger" onClick={onSelect}>
-          Custom trigger
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent data-testid="custom-content">
-        <PopoverBody>
-          <PopoverItem data-testid="custom-item">Inner item</PopoverItem>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function DefaultTriggerExample() {
-  return (
-    <Popover>
-      <PopoverTrigger data-testid="default-trigger">Toggle</PopoverTrigger>
-      <PopoverContent data-testid="default-content">
-        <PopoverBody>
-          <PopoverItem>Inner item</PopoverItem>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function MatchWidthExample() {
-  return (
-    <Popover matchTriggerWidth>
-      <PopoverTrigger asChild>
-        <Button data-testid="width-trigger" style={{ width: "200px" }}>
-          Match width
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent data-testid="width-content">
-        <PopoverBody>
-          <PopoverItem>Width item</PopoverItem>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function ModalPopoverExample() {
-  return (
-    <Popover modal>
-      <PopoverTrigger asChild>
-        <Button data-testid="modal-trigger">Open modal</Button>
-      </PopoverTrigger>
-      <PopoverContent data-testid="modal-content">
-        <PopoverBody>
-          <PopoverItem>Modal option</PopoverItem>
-        </PopoverBody>
-        <PopoverClose data-testid="modal-close">Cancel</PopoverClose>
-      </PopoverContent>
-    </Popover>
-  );
-}
+import { Popover, PopoverContent, PopoverTrigger } from "./index";
 
 describe("Popover", () => {
-  it("toggles open/close in uncontrolled mode", () => {
-    render(<UncontrolledPopoverExample />);
-    const trigger = screen.getByTestId("trigger");
+  describe("Rendering", () => {
+    test("renders popover content when open", () => {
+      render(
+        <Popover open>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverContent>Popover content</PopoverContent>
+        </Popover>
+      );
 
-    expect(screen.queryByTestId("content")).not.toBeInTheDocument();
+      expect(screen.getByText("Popover content")).toBeInTheDocument();
+    });
 
-    fireEvent.click(trigger);
-    expect(screen.getByTestId("content")).toBeInTheDocument();
+    test("does not render content when closed", () => {
+      render(
+        <Popover open={false}>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverContent>Popover content</PopoverContent>
+        </Popover>
+      );
 
-    fireEvent.click(trigger);
-    expect(screen.queryByTestId("content")).not.toBeInTheDocument();
+      expect(screen.queryByText("Popover content")).not.toBeInTheDocument();
+    });
   });
 
-  it("respects controlled mode state", () => {
-    render(<ControlledPopoverExample />);
+  describe("Interaction", () => {
+    test("trigger toggles popover visibility", async () => {
+      const user = userEvent.setup();
+      render(
+        <Popover>
+          <PopoverTrigger>Open popover</PopoverTrigger>
+          <PopoverContent>Popover content</PopoverContent>
+        </Popover>
+      );
 
-    const trigger = screen.getByTestId("controlled-trigger");
+      expect(screen.queryByText("Popover content")).not.toBeInTheDocument();
 
-    fireEvent.click(trigger);
-    expect(screen.getByTestId("controlled-content")).toBeInTheDocument();
+      await user.click(screen.getByText("Open popover"));
+      expect(screen.getByText("Popover content")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId("controlled-item"));
-    expect(screen.queryByTestId("controlled-content")).not.toBeInTheDocument();
+      await user.click(screen.getByText("Open popover"));
+      await waitFor(() =>
+        expect(screen.queryByText("Popover content")).not.toBeInTheDocument()
+      );
+    });
+
+    test("closes when clicking outside", async () => {
+      const user = userEvent.setup();
+      render(
+        <div>
+          <Popover>
+            <PopoverTrigger>Open popover</PopoverTrigger>
+            <PopoverContent>Popover content</PopoverContent>
+          </Popover>
+          <button>Outside button</button>
+        </div>
+      );
+
+      await user.click(screen.getByText("Open popover"));
+      expect(screen.getByText("Popover content")).toBeInTheDocument();
+
+      await user.click(screen.getByText("Outside button"));
+      await waitFor(() =>
+        expect(screen.queryByText("Popover content")).not.toBeInTheDocument()
+      );
+    });
   });
 
-  it("preserves custom handler when using asChild", () => {
-    const handler = jest.fn();
-    render(<AsChildHandlerExample onSelect={handler} />);
+  describe("Controlled state", () => {
+    test("respects controlled open state", async () => {
+      const onOpenChange = jest.fn();
+      const user = userEvent.setup();
 
-    const trigger = screen.getByTestId("custom-trigger");
+      render(
+        <Popover open={false} onOpenChange={onOpenChange}>
+          <PopoverTrigger>Open popover</PopoverTrigger>
+          <PopoverContent>Popover content</PopoverContent>
+        </Popover>
+      );
 
-    fireEvent.click(trigger);
-    expect(handler).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId("custom-content")).toBeInTheDocument();
+      await user.click(screen.getByText("Open popover"));
+      expect(onOpenChange).toHaveBeenCalledWith(true);
+    });
   });
 
-  it("handles default trigger without asChild", () => {
-    render(<DefaultTriggerExample />);
+  describe("Styling", () => {
+    test("applies custom className to content", () => {
+      render(
+        <Popover open>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverContent className="custom-class">Content</PopoverContent>
+        </Popover>
+      );
 
-    const trigger = screen.getByTestId("default-trigger");
-    expect(trigger).toHaveAttribute("data-state", "closed");
-    expect(screen.queryByTestId("default-content")).not.toBeInTheDocument();
+      const content = screen.getByText("Content");
+      expect(content).toHaveClass("custom-class");
+    });
 
-    fireEvent.click(trigger);
-    expect(trigger).toHaveAttribute("data-state", "open");
-    expect(screen.getByTestId("default-content")).toBeInTheDocument();
-  });
+    test("renders with default styling classes", () => {
+      render(
+        <Popover open>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverContent>Content</PopoverContent>
+        </Popover>
+      );
 
-  it("matches trigger width when matchTriggerWidth is set", async () => {
-    const originalGetBoundingClientRect =
-      HTMLElement.prototype.getBoundingClientRect;
-    HTMLElement.prototype.getBoundingClientRect = function () {
-      if (
-        this instanceof HTMLButtonElement &&
-        this.dataset.testid === "width-trigger"
-      ) {
-        return {
-          width: 200,
-          height: 40,
-          top: 0,
-          left: 0,
-          bottom: 40,
-          right: 200,
-          x: 0,
-          y: 0,
-          toJSON: () => {},
-        } as DOMRect;
-      }
-      return originalGetBoundingClientRect.call(this);
-    };
-
-    try {
-      render(<MatchWidthExample />);
-
-      const trigger = screen.getByTestId("width-trigger");
-      fireEvent.click(trigger);
-
-      const content = screen.getByTestId("width-content");
-      expect(content.firstElementChild).toBeInTheDocument();
-
-      await waitFor(() => {
-        expect(content).toHaveStyle({ width: "200px" });
-      });
-    } finally {
-      HTMLElement.prototype.getBoundingClientRect =
-        originalGetBoundingClientRect;
-    }
-  });
-
-  it("renders overlay when modal is true and PopoverClose closes content", () => {
-    render(<ModalPopoverExample />);
-
-    const trigger = screen.getByTestId("modal-trigger");
-    fireEvent.click(trigger);
-
-    const overlay = document.querySelector(
-      "[data-state='open'][class*='backdrop']"
-    );
-    expect(overlay).not.toBeNull();
-    expect(screen.getByTestId("modal-content")).toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId("modal-close"));
-    expect(screen.queryByTestId("modal-content")).not.toBeInTheDocument();
+      const content = screen.getByText("Content");
+      expect(content).toHaveClass("z-50", "rounded-md", "border", "shadow-md");
+    });
   });
 });

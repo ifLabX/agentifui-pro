@@ -30,7 +30,7 @@ Browse all stories by running `pnpm storybook` and exploring the UI category in 
 
 ### Main Config (`.storybook/main.js`)
 
-- **Framework**: `@storybook/react-vite` (Vite builder for better Next.js 15 compatibility)
+- **Framework**: `@storybook/react-vite` (Vite builder for better Next.js 16 compatibility)
 - **Stories**: Automatically discovers `*.stories.tsx` in `components/` and `app/`
 - **Addons**:
   - `@storybook/addon-essentials` - Core tooling (controls, actions, backgrounds, docs, etc.)
@@ -109,9 +109,9 @@ export const Controlled: Story = {
 
 ## Technical Notes
 
-### Next.js 15 + React 19 Compatibility
+### Next.js 16 + React 19 Compatibility
 
-This setup uses `@storybook/react-vite` instead of `@storybook/nextjs` to avoid webpack compatibility issues with Next.js 15. Key configurations:
+This setup uses `@storybook/react-vite` instead of `@storybook/nextjs` to avoid webpack compatibility issues with Next.js 16. Key configurations:
 
 - **Vite Builder**: Faster builds and better compatibility with modern tooling
 - **Tailwind CSS v4**: Inline PostCSS configuration for the new plugin format

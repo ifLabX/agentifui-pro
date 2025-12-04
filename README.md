@@ -7,7 +7,7 @@ A modern full-stack monorepo with enterprise-grade tooling and development pract
 **Dual-stack monorepo** with:
 
 - **Backend (`api/`)**: FastAPI + Python 3.12+ managed by `uv`
-- **Frontend (`web/`)**: Next.js 15 + TypeScript + React 19 managed by `pnpm`
+- **Frontend (`web/`)**: Next.js 16 + TypeScript + React 19 managed by `pnpm`
 
 ## Tech Stack
 
@@ -20,7 +20,7 @@ A modern full-stack monorepo with enterprise-grade tooling and development pract
 
 ### Frontend
 
-- **Next.js 15**: React framework with App Router
+- **Next.js 16**: React framework with App Router
 - **TypeScript**: Static type checking
 - **Tailwind CSS v4**: Utility-first CSS framework
 - **Jest**: Testing framework with React Testing Library

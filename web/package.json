@@ -117,6 +117,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
     "eslint-plugin-oxlint": "^1.16.0",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
     "eslint-plugin-storybook": "10.0.2",
     "happy-dom": "^20.0.10",
     "husky": "^9.1.7",

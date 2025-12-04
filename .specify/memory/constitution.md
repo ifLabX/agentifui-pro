@@ -23,7 +23,7 @@ Follow-up TODOs: None
 
 ### I. Dual-Stack Excellence
 
-Every change MUST maintain parity between the Next.js 15 frontend (App Router, Server Components by default) and the FastAPI 3.12+ backend. APIs expose typed OpenAPI schemas backed by Pydantic models, and the frontend consumes generated TypeScript clients/interfaces from the same schema. Server Components remain the default; Client Components are used only when interactivity demands and are documented.
+Every change MUST maintain parity between the Next.js 16 frontend (App Router, Server Components by default) and the FastAPI 3.12+ backend. APIs expose typed OpenAPI schemas backed by Pydantic models, and the frontend consumes generated TypeScript clients/interfaces from the same schema. Server Components remain the default; Client Components are used only when interactivity demands and are documented.
 
 **Rationale**: Guarantees type safety across the stack, reduces integration risk, and keeps contracts synchronized.
 
@@ -75,7 +75,7 @@ Naming and communication remain predictable:
 ### Technology Stack
 
 - Backend: FastAPI on Python 3.12+ managed by uv; async-first with Pydantic models
-- Frontend: Next.js 15 App Router with React 19, TypeScript strict mode, Tailwind CSS v4, pnpm 10.17+
+- Frontend: Next.js 16 App Router with React 19, TypeScript strict mode, Tailwind CSS v4, pnpm 10.17+
 - Database: PostgreSQL 18+ (native `uuidv7()` support required); schema changes go through Alembic migrations only
 - Tooling: pytest (backend), Jest + React Testing Library (frontend), Husky/pre-commit for local validation
 

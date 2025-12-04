@@ -5,14 +5,14 @@ import { brandingQueryOptions } from "@/services/branding";
 import { useBrandingStore } from "@/stores/branding-store";
 import { useQuery } from "@tanstack/react-query";
 
-import { BRANDING_ENV_SUFFIX } from "@/config/branding";
-
 export function BrandingProvider({ children }: PropsWithChildren) {
   const setBranding = useBrandingStore(state => state.setBranding);
   const setLoading = useBrandingStore(state => state.setLoading);
   const setEnvironmentSuffix = useBrandingStore(
     state => state.setEnvironmentSuffix
   );
+  const setEnvironment = useBrandingStore(state => state.setEnvironment);
+  const setVersion = useBrandingStore(state => state.setVersion);
   const { data, isPending, error } = useQuery(brandingQueryOptions());
 
   useEffect(() => {
@@ -25,12 +25,10 @@ export function BrandingProvider({ children }: PropsWithChildren) {
     if (!data.resolvedFromApi) {
       return;
     }
-    if (data.environmentSuffix !== undefined) {
-      setEnvironmentSuffix(data.environmentSuffix);
-    } else {
-      setEnvironmentSuffix(BRANDING_ENV_SUFFIX);
-    }
-  }, [data, setBranding, setEnvironmentSuffix]);
+    setEnvironmentSuffix(data.environmentSuffix);
+    setEnvironment(data.environment);
+    setVersion(data.version);
+  }, [data, setBranding, setEnvironmentSuffix, setEnvironment, setVersion]);
 
   useEffect(() => {
     if (!error) return;

@@ -5,7 +5,7 @@ Single source of truth (CLAUDE.md is a symlink): edit this file only.
 ## Stack
 
 - Backend `api/`: FastAPI, Python 3.11+, PostgreSQL 18 (native `uuidv7()`), managed by `uv` (port 8000).
-- Frontend `web/`: Next.js 15 + React 19 + TypeScript, Node.js ≥20, managed by `pnpm` (port 3000).
+- Frontend `web/`: Next.js 16 + React 19 + TypeScript, Node.js ≥20, managed by `pnpm` (port 3000).
 
 ## Fast commands
 
@@ -21,7 +21,7 @@ Frontend (run inside `web/`):
 
 ```bash
 pnpm test                      # Frontend tests
-pnpm fix                       # ESLint only (no Prettier)
+pnpm lint:fix                  # ESLint fix (no Prettier)
 pnpm type-check                # TypeScript
 pnpm quality                   # Type-check + lint + prettier check
 ```

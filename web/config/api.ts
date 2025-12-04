@@ -11,6 +11,21 @@ const rawBaseUrl = sanitizeBaseUrl(process.env.NEXT_PUBLIC_API_URL);
 
 export const API_BASE_URL = rawBaseUrl || FALLBACK_BASE_URL;
 
+const resolveRelativeBaseUrl = (): string => {
+  if (rawBaseUrl) {
+    return rawBaseUrl;
+  }
+
+  if (typeof window !== "undefined" && window.location?.origin) {
+    const runtimeOrigin = sanitizeBaseUrl(window.location.origin);
+    if (runtimeOrigin) {
+      return runtimeOrigin;
+    }
+  }
+
+  return FALLBACK_BASE_URL;
+};
+
 const rawTimeout = Number.parseInt(
   process.env.NEXT_PUBLIC_API_TIMEOUT_MS ?? "",
   10
@@ -34,13 +49,7 @@ export const buildApiUrl = (path: string): string => {
     return path;
   }
 
-  if (path.startsWith("/")) {
-    const runtimeOrigin =
-      typeof window !== "undefined" && window.location
-        ? window.location.origin
-        : API_BASE_URL;
-    return ensureAbsolute(path, runtimeOrigin);
-  }
-
-  return `${API_BASE_URL}/${path}`;
+  const baseUrl = resolveRelativeBaseUrl();
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return ensureAbsolute(normalizedPath, baseUrl);
 };

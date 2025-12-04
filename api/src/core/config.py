@@ -67,6 +67,13 @@ class Settings(BaseSettings):
     # Environment
     environment: str = Field(default="development")
 
+    # Branding Configuration
+    branding_application_title: str | None = Field(default=None)
+    branding_favicon_url: str | None = Field(default=None)
+    branding_apple_touch_icon_url: str | None = Field(default=None)
+    branding_manifest_url: str | None = Field(default=None)
+    branding_environment_suffix: str | None = Field(default=None)
+
     # Feature Flags
     enable_docs: bool = Field(default=True)
     enable_redoc: bool = Field(default=True)
@@ -112,6 +119,24 @@ class Settings(BaseSettings):
         if not v.strip():
             raise ValueError("Redis key prefix cannot be empty")
         return v.strip()
+
+    @field_validator(
+        "branding_application_title",
+        "branding_favicon_url",
+        "branding_apple_touch_icon_url",
+        "branding_manifest_url",
+        "branding_environment_suffix",
+        mode="before",
+    )
+    @classmethod
+    def _normalize_branding_fields(cls, value: Any) -> str | None:
+        """
+        Strip whitespace and treat empty branding values as unset.
+        """
+        if isinstance(value, str):
+            normalized = value.strip()
+            return normalized or None
+        return None
 
     @model_validator(mode="before")
     @classmethod

@@ -20,7 +20,7 @@ const spinnerVariants = cva("animate-spin", {
 
 interface SpinnerProps
   extends React.ComponentPropsWithoutRef<"svg">,
-    VariantProps<typeof spinnerVariants> {
+  VariantProps<typeof spinnerVariants> {
   variant?: "default" | "loader";
 }
 

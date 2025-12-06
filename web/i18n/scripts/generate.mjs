@@ -151,7 +151,7 @@ function addLocale(locale) {
     );
 
     fs.writeFileSync(configPath, configContent);
-    console.log(`   ✅ Updated: i18n/config.ts`);
+    console.log("   ✅ Updated: i18n/config.ts");
 
     // Update current state for next iteration
     currentLocales.push(locale);
@@ -207,7 +207,7 @@ function addNamespace(namespace) {
       `export const namespaces = [${newNamespaces.map(n => `"${n}"`).join(", ")}] as const;`
     );
     fs.writeFileSync(configPath, configContent);
-    console.log(`   ✅ Updated: i18n/config.ts`);
+    console.log("   ✅ Updated: i18n/config.ts");
 
     // 3. Update types
     const typesPath = path.join(__dirname, "../../types/i18n.d.ts");
@@ -262,7 +262,7 @@ function addNamespace(namespace) {
     );
 
     fs.writeFileSync(typesPath, typesContent);
-    console.log(`   ✅ Updated: types/i18n.d.ts`);
+    console.log("   ✅ Updated: types/i18n.d.ts");
 
     // Update current state for next iteration
     currentNamespaces.push(namespace);

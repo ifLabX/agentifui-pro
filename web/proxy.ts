@@ -27,9 +27,9 @@ export function proxy(_request: NextRequest) {
       // Parse allowed origins (handle comma-separated string)
       const originsList = allowedOrigins
         ? allowedOrigins
-            .split(",")
-            .map(origin => origin.trim())
-            .filter(Boolean)
+          .split(",")
+          .map(origin => origin.trim())
+          .filter(Boolean)
         : [];
 
       // Production: strict origins only, NO localhost wildcards

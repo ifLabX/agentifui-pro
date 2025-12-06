@@ -186,10 +186,10 @@ type SeparatorRootProps = React.ComponentPropsWithoutRef<
 
 export interface DividerProps
   extends Omit<
-      React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>,
-      "orientation"
-    >,
-    DividerVariants {
+    React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>,
+    "orientation"
+  >,
+  DividerVariants {
   orientation?: "horizontal" | "vertical";
   label?: string;
   labelPosition?: "start" | "center" | "end";
@@ -257,7 +257,7 @@ export const Divider = React.forwardRef<
         Omit<SeparatorRootProps, "orientation">[keyof Omit<
           SeparatorRootProps,
           "orientation"
-        >],
+        >]
       ]
     >;
 

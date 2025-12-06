@@ -38,11 +38,40 @@ const toBrandingResult = (payload: BrandingApiResponse): BrandingResult => ({
 export const fetchBranding = async (): Promise<BrandingResult> =>
   toBrandingResult(await fetchBrandingFromApi());
 
-export const brandingQueryOptions = () => ({
+export const brandingQueryOptions = (initialData?: BrandingResult) => ({
   queryKey: BRANDING_QUERY_KEY,
   queryFn: fetchBranding,
   staleTime: Infinity,
   gcTime: Infinity,
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
+  refetchOnMount: false,
+  ...(initialData && {
+    initialData,
+    enabled: false,
+  }),
 });
+
+/**
+ * Manually refresh branding from API and update store.
+ * Alternative: use router.refresh() for full SSR refresh.
+ */
+export const refreshBranding = async (): Promise<void> => {
+  const { useBrandingStore } = await import("@/stores/branding-store");
+
+  try {
+    const result = await fetchBranding();
+
+    const store = useBrandingStore.getState();
+    store.setBranding(result.branding);
+
+    if (result.resolvedFromApi) {
+      store.setEnvironmentSuffix(result.environmentSuffix);
+      store.setEnvironment(result.environment);
+      store.setVersion(result.version);
+    }
+  } catch (error) {
+    console.error("[branding] Failed to refresh branding:", error);
+    throw error;
+  }
+};

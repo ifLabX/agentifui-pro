@@ -1,11 +1,18 @@
 "use client";
 
-import { useEffect, type PropsWithChildren } from "react";
-import { brandingQueryOptions } from "@/services/branding";
+import { useLayoutEffect, type PropsWithChildren } from "react";
 import { useBrandingStore } from "@/stores/branding-store";
-import { useQuery } from "@tanstack/react-query";
 
-export function BrandingProvider({ children }: PropsWithChildren) {
+import type { BrandingResult } from "@/types/branding";
+
+type BrandingProviderProps = PropsWithChildren<{
+  initialBranding: BrandingResult;
+}>;
+
+export function BrandingProvider({
+  children,
+  initialBranding,
+}: BrandingProviderProps) {
   const setBranding = useBrandingStore(state => state.setBranding);
   const setLoading = useBrandingStore(state => state.setLoading);
   const setEnvironmentSuffix = useBrandingStore(
@@ -13,28 +20,30 @@ export function BrandingProvider({ children }: PropsWithChildren) {
   );
   const setEnvironment = useBrandingStore(state => state.setEnvironment);
   const setVersion = useBrandingStore(state => state.setVersion);
-  const { data, isPending, error } = useQuery(brandingQueryOptions());
 
-  useEffect(() => {
-    setLoading(isPending);
-  }, [isPending, setLoading]);
+  useLayoutEffect(() => {
+    console.log("[BrandingProvider] Syncing branding to store:", {
+      applicationTitle: initialBranding.branding.applicationTitle,
+      resolvedFromApi: initialBranding.resolvedFromApi,
+    });
 
-  useEffect(() => {
-    if (!data) return;
-    setBranding(data.branding);
-    if (!data.resolvedFromApi) {
-      return;
+    setBranding(initialBranding.branding);
+    if (initialBranding.resolvedFromApi) {
+      setEnvironmentSuffix(initialBranding.environmentSuffix);
+      setEnvironment(initialBranding.environment);
+      setVersion(initialBranding.version);
     }
-    setEnvironmentSuffix(data.environmentSuffix);
-    setEnvironment(data.environment);
-    setVersion(data.version);
-  }, [data, setBranding, setEnvironmentSuffix, setEnvironment, setVersion]);
-
-  useEffect(() => {
-    if (!error) return;
-    // In error mode we consider branding loading complete to unblock UI.
     setLoading(false);
-  }, [error, setLoading]);
+
+    console.log("[BrandingProvider] Store updated, isLoading set to false");
+  }, [
+    initialBranding,
+    setBranding,
+    setEnvironmentSuffix,
+    setEnvironment,
+    setVersion,
+    setLoading,
+  ]);
 
   return children;
 }

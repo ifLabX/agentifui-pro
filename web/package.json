@@ -17,15 +17,13 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
-    "lint": "pnpx oxlint && pnpm eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
-    "lint:quiet": "pnpx oxlint && pnpm eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --quiet",
+    "lint": "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
+    "lint:quiet": "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --quiet",
     "lint:complexity": "eslint --rule 'complexity: [error, {max: 15}]' --quiet",
     "lint:fix": "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix",
     "lint:fix:quiet": "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix --quiet",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
-    "quality": "pnpm run type-check && pnpm run lint && pnpm run format:check",
+    "quality": "pnpm run type-check && pnpm run lint",
     "i18n:locale": "node i18n/scripts/generate.mjs locale",
     "i18n:namespace": "node i18n/scripts/generate.mjs namespace",
     "i18n:check": "node i18n/scripts/check.mjs",
@@ -96,7 +94,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@happy-dom/jest-environment": "^20.0.8",
-    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@next/bundle-analyzer": "^16.0.7",
     "@next/eslint-plugin-next": "16.0.7",
     "@storybook/addon-a11y": "10.0.2",
@@ -116,16 +113,19 @@
     "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-oxlint": "^1.16.0",
+    "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-storybook": "10.0.2",
+    "@stylistic/eslint-plugin": "^2.11.0",
     "happy-dom": "^20.0.10",
     "husky": "^9.1.7",
     "jest": "^30.0.5",
     "lint-staged": "^16.1.5",
     "oxlint": "^1.23.0",
     "postcss": "^8.5.0",
-    "prettier": "^3.6.2",
     "resize-observer-polyfill": "^1.5.1",
     "storybook": "10.0.2",
     "tailwindcss": "^4.1.9",
@@ -137,11 +137,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,mjs}": [
-      "oxlint",
       "eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache --fix"
-    ],
-    "**/*.{js,jsx,ts,tsx,mjs,json,css,md}": [
-      "prettier --write"
     ]
   }
 }

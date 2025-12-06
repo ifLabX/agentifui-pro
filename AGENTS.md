@@ -23,7 +23,7 @@ Frontend (run inside `web/`):
 pnpm test                      # Frontend tests
 pnpm lint:fix                  # ESLint fix (no Prettier)
 pnpm type-check                # TypeScript
-pnpm quality                   # Type-check + lint + prettier check
+pnpm quality                   # Type-check + lint (Oxlint embedded)
 ```
 
 ## Rules for AI changes

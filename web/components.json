@@ -9,12 +9,15 @@
     "baseColor": "stone",
     "cssVariables": true
   },
+  "iconLibrary": "lucide",
   "aliases": {
     "components": "@/components",
+    "utils": "@/lib/utils",
     "ui": "@/components/ui",
     "lib": "@/lib",
-    "hooks": "@/hooks",
-    "utils": "@/lib/utils"
+    "hooks": "@/hooks"
   },
-  "iconLibrary": "lucide"
+  "registries": {
+    "@ai-elements": "https://registry.ai-sdk.dev/{name}.json"
+  }
 }

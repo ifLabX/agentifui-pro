@@ -1,11 +1,13 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import reactCompiler from "eslint-plugin-react-compiler";
 import storybook from "eslint-plugin-storybook";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  reactCompiler.configs.recommended,
   globalIgnores([
     "node_modules/**",
     ".next/**",
